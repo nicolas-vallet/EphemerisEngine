@@ -36,19 +36,19 @@ public class JeanMeeusTest {
 		long tEnd;
 		long tStart = System.currentTimeMillis();
 
-		System.out.println("Jour julien pour le 4.81 octobre 1957 = "
-				+ JulianDay.getJulianDayFromDateAsDouble(1957.100481d));
-		System.out.println("Jour julien pour le 27.5 janvier 333 = "
-				+ JulianDay.getJulianDayFromDateAsDouble(333.01275d));
-		System.out.println("Jour julien pour le 28.63 mai -584 = "
-				+ JulianDay.getJulianDayFromDateAsDouble(-584.052863d));
+//		System.out.println("Jour julien pour le 4.81 octobre 1957 = "
+//				+ JulianDay.getJulianDayFromDateAsDouble(1957.100481d));
+//		System.out.println("Jour julien pour le 27.5 janvier 333 = "
+//				+ JulianDay.getJulianDayFromDateAsDouble(333.01275d));
+//		System.out.println("Jour julien pour le 28.63 mai -584 = "
+//				+ JulianDay.getJulianDayFromDateAsDouble(-584.052863d));
 
-		System.out.println("Date pour le jour julien 2436116.31 = "
-				+ sdf.format(JulianDay.getDateFromJulianDay(2436116.31d)));
-		System.out.println("Date pour le jour julien 1842713.0 = "
-				+ sdf.format(JulianDay.getDateFromJulianDay(1842713.0d)));
-		System.out.println("Date pour le jour julien 1507900.13 = "
-				+ sdf.format(JulianDay.getDateFromJulianDay(1507900.13d)));
+//		System.out.println("Date pour le jour julien 2436116.31 = "
+//				+ sdf.format(JulianDay.getDateFromJulianDay(2436116.31d)));
+//		System.out.println("Date pour le jour julien 1842713.0 = "
+//				+ sdf.format(JulianDay.getDateFromJulianDay(1842713.0d)));
+//		System.out.println("Date pour le jour julien 1507900.13 = "
+//				+ sdf.format(JulianDay.getDateFromJulianDay(1507900.13d)));
 
 		System.out
 				.println("Intervalle de temps entre les passages de la comète de Halley du 16 novembre 1835 et du 20 avril 1910 = "
