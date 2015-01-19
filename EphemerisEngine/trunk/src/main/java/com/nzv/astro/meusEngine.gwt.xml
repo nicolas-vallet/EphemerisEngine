@@ -1,0 +1,10 @@
+<module>
+	<inherits name="com.google.gwt.user.User" />
+	<source path="ephemeris" />
+	<source path="ephemeris.impl" />
+	<source path="ephemeris.interpolation" />
+	<source path="ephemeris.interpolation.impl" />
+	<source path="ephemeris.coordinate" />
+	<source path="ephemeris.coordinate.impl" />
+	<source path="ephemeris.coordinate.adapter" />
+</module>
