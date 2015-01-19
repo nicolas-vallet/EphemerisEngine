@@ -6,7 +6,9 @@ import java.text.SimpleDateFormat;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.nzv.astro.ephemeris.JulianDay;
 import com.nzv.astro.ephemeris.MeeusEphemeris;
+import com.nzv.astro.ephemeris.Sexagesimal;
 
 public class MeeusEphemerisImplTest {
 
@@ -26,5 +28,24 @@ public class MeeusEphemerisImplTest {
 		} catch (InvalidParameterException ex) {
 			Assert.assertTrue(true);
 		}
+	}
+	
+	@Test
+	public void testGetMeanSideralTime() {
+		// Temps sideral moyen a Greenwich pour le 13 novembre 1978 à 0h
+		double jd = JulianDay.getJulianDayFromDateAsDouble(1978.1113);
+		Sexagesimal s = Sexagesimal.decimalToSexagesimal(meeusEngine
+				.getMeanSiderealTimeAsHoursFromJulianDay(jd));
+		Assert.assertEquals(3, s.getUnit(), 0);
+		Assert.assertEquals(27, s.getMinute(), 0);
+		Assert.assertEquals(1.3302423518148, s.getSecond(), 0);
+		
+		// Temps sideral moyen a Greenwich pour le 13 novembre 1978 à 4h 34m 0s
+		jd = JulianDay.getJulianDayFromDateAsDouble(1978.1113);
+		s = Sexagesimal.decimalToSexagesimal(meeusEngine.getMeanSiderealTimeAsHoursFromJulianDay(
+				jd, new Sexagesimal(4, 34, 0)));
+		Assert.assertEquals(8, s.getUnit(), 0);
+		Assert.assertEquals(1, s.getMinute(), 0);
+		Assert.assertEquals(46.341449871816, s.getSecond(), 0);
 	}
 }

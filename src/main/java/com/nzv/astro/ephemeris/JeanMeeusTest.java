@@ -85,20 +85,20 @@ public class JeanMeeusTest {
 //			System.out.println(ex.getMessage());
 //		}
 
-		Sexagesimal phi1 = new Sexagesimal(50, 47, 55);
-		Sexagesimal phi2 = Sexagesimal
-				.decimalToSexagesimal((double) (50 * 3600 + 47 * 60 + 55) / 3600);
-		System.out.println(phi1.toString(SexagesimalType.DEGREES));
-		System.out.println(phi2.toString(SexagesimalType.DEGREES));
-		GeocentricCoordinates gc = new GeocentricCoordinates(50, 47, 55, 105);
-		System.out.println("Coordonnées geocentriques pour la position +50° 47' 55\" : abscisse="
-				+ gc.getAbscissa() + "; ordonnées=" + gc.getOrdinate());
-		GeocentricCoordinates gc2 = new GeocentricCoordinates((50 + ((double)47 / 60) + ((double)55 / 3600)), 105);
-		System.out.println(gc.getAbscissa() + " / " + gc.getOrdinate());
-		System.out.println(gc2.getAbscissa() + " / " + gc2.getOrdinate());
-		if (gc.getAbscissa() != gc2.getAbscissa() || gc.getOrdinate() != gc2.getOrdinate()) {
-			throw new RuntimeException("Erreur!");
-		}
+//		Sexagesimal phi1 = new Sexagesimal(50, 47, 55);
+//		Sexagesimal phi2 = Sexagesimal
+//				.decimalToSexagesimal((double) (50 * 3600 + 47 * 60 + 55) / 3600);
+//		System.out.println(phi1.toString(SexagesimalType.DEGREES));
+//		System.out.println(phi2.toString(SexagesimalType.DEGREES));
+//		GeocentricCoordinates gc = new GeocentricCoordinates(50, 47, 55, 105);
+//		System.out.println("Coordonnées geocentriques pour la position +50° 47' 55\" : abscisse="
+//				+ gc.getAbscissa() + "; ordonnées=" + gc.getOrdinate());
+//		GeocentricCoordinates gc2 = new GeocentricCoordinates((50 + ((double)47 / 60) + ((double)55 / 3600)), 105);
+//		System.out.println(gc.getAbscissa() + " / " + gc.getOrdinate());
+//		System.out.println(gc2.getAbscissa() + " / " + gc2.getOrdinate());
+//		if (gc.getAbscissa() != gc2.getAbscissa() || gc.getOrdinate() != gc2.getOrdinate()) {
+//			throw new RuntimeException("Erreur!");
+//		}
 
 		System.out.println("Temps sideral moyen a Greenwich pour le 13 novembre 1978 à 0h");
 		double jd = JulianDay.getJulianDayFromDateAsDouble(1978.1113);
