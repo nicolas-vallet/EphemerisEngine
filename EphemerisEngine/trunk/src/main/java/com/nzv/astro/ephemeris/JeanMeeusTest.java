@@ -50,40 +50,40 @@ public class JeanMeeusTest {
 //		System.out.println("Date pour le jour julien 1507900.13 = "
 //				+ sdf.format(JulianDay.getDateFromJulianDay(1507900.13d)));
 
-		System.out
-				.println("Intervalle de temps entre les passages de la comète de Halley du 16 novembre 1835 et du 20 avril 1910 = "
-						+ (JulianDay.getJulianDayFromDateAsDouble(1910.0420d) - JulianDay
-								.getJulianDayFromDateAsDouble(1835.1116d)) + " jours");
+//		System.out
+//				.println("Intervalle de temps entre les passages de la comète de Halley du 16 novembre 1835 et du 20 avril 1910 = "
+//						+ (JulianDay.getJulianDayFromDateAsDouble(1910.0420d) - JulianDay
+//								.getJulianDayFromDateAsDouble(1835.1116d)) + " jours");
 
-		System.out.println("Date se trouvant 10 000 jours après le 30 juin 1954 = "
-				+ sdf.format(JulianDay.getDateFromJulianDay(JulianDay
-						.getJulianDayFromDateAsDouble(1954.0630d) + 10000)));
+//		System.out.println("Date se trouvant 10 000 jours après le 30 juin 1954 = "
+//				+ sdf.format(JulianDay.getDateFromJulianDay(JulianDay
+//						.getJulianDayFromDateAsDouble(1954.0630d) + 10000)));
 
-		System.out.println("Jour de la semaine correspondant au 30 juin 1954 = "
-				+ JulianDay.getDayOfWeekFromDayAsDouble(1954.0630d));
+//		System.out.println("Jour de la semaine correspondant au 30 juin 1954 = "
+//				+ JulianDay.getDayOfWeekFromDayAsDouble(1954.0630d));
 
-		System.out.println("Jour de l'année correspondant au 14 novembre 1978 = "
-				+ JulianDay.getDayOfYearFromDateAsDouble(1978.1114d));
-		System.out.println("Jour de l'année correspondant au 22 avril 1980 = "
-				+ JulianDay.getDayOfYearFromDateAsDouble(1980.0422d));
+//		System.out.println("Jour de l'année correspondant au 14 novembre 1978 = "
+//				+ JulianDay.getDayOfYearFromDateAsDouble(1978.1114d));
+//		System.out.println("Jour de l'année correspondant au 22 avril 1980 = "
+//				+ JulianDay.getDayOfYearFromDateAsDouble(1980.0422d));
 
-		sdf = new SimpleDateFormat("EEEE dd MMMM");
-		System.out.println("Jour de Pâques pour l'année 1978 = "
-				+ sdf.format(meeusEngine.getEasterDateForYear(1978)));
-		System.out.println("Jour de Pâques pour l'année 1979 = "
-				+ sdf.format(meeusEngine.getEasterDateForYear(1979)));
-		System.out.println("Jour de Pâques pour l'année 1980 = "
-				+ sdf.format(meeusEngine.getEasterDateForYear(1980)));
-		System.out.println("Jour de Pâques pour l'année 1954 = "
-				+ sdf.format(meeusEngine.getEasterDateForYear(1954)));
-		System.out.println("Jour de Pâques pour l'année 2000 = "
-				+ sdf.format(meeusEngine.getEasterDateForYear(2000)));
-		System.out.println("Jour de Pâques pour l'année 1000...");
-		try {
-			meeusEngine.getEasterDateForYear(1000);
-		} catch (InvalidParameterException ex) {
-			System.out.println(ex.getMessage());
-		}
+//		sdf = new SimpleDateFormat("EEEE dd MMMM");
+//		System.out.println("Jour de Pâques pour l'année 1978 = "
+//				+ sdf.format(meeusEngine.getEasterDateForYear(1978)));
+//		System.out.println("Jour de Pâques pour l'année 1979 = "
+//				+ sdf.format(meeusEngine.getEasterDateForYear(1979)));
+//		System.out.println("Jour de Pâques pour l'année 1980 = "
+//				+ sdf.format(meeusEngine.getEasterDateForYear(1980)));
+//		System.out.println("Jour de Pâques pour l'année 1954 = "
+//				+ sdf.format(meeusEngine.getEasterDateForYear(1954)));
+//		System.out.println("Jour de Pâques pour l'année 2000 = "
+//				+ sdf.format(meeusEngine.getEasterDateForYear(2000)));
+//		System.out.println("Jour de Pâques pour l'année 1000...");
+//		try {
+//			meeusEngine.getEasterDateForYear(1000);
+//		} catch (InvalidParameterException ex) {
+//			System.out.println(ex.getMessage());
+//		}
 
 		Sexagesimal phi1 = new Sexagesimal(50, 47, 55);
 		Sexagesimal phi2 = Sexagesimal
