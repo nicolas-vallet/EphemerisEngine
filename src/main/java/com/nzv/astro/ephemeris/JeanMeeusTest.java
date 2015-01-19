@@ -100,160 +100,160 @@ public class JeanMeeusTest {
 //			throw new RuntimeException("Erreur!");
 //		}
 
-		System.out.println("Temps sideral moyen a Greenwich pour le 13 novembre 1978 à 0h");
-		double jd = JulianDay.getJulianDayFromDateAsDouble(1978.1113);
-		Sexagesimal s = Sexagesimal.decimalToSexagesimal(meeusEngine
-				.getMeanSiderealTimeAsHoursFromJulianDay(jd));
-		System.out.println(s.getUnit() + "h " + s.getMinute() + "m " + s.getSecond() + "s");
+//		System.out.println("Temps sideral moyen a Greenwich pour le 13 novembre 1978 à 0h");
+//		double jd = JulianDay.getJulianDayFromDateAsDouble(1978.1113);
+//		Sexagesimal s = Sexagesimal.decimalToSexagesimal(meeusEngine
+//				.getMeanSiderealTimeAsHoursFromJulianDay(jd));
+//		System.out.println(s.getUnit() + "h " + s.getMinute() + "m " + s.getSecond() + "s");
+//
+//		System.out.println("Temps sideral moyen a Greenwich pour le 13 novembre 1978 à 4h 34m 0s");
+//		jd = JulianDay.getJulianDayFromDateAsDouble(1978.1113);
+//		s = Sexagesimal.decimalToSexagesimal(meeusEngine.getMeanSiderealTimeAsHoursFromJulianDay(
+//				jd, new Sexagesimal(4, 34, 0)));
+//		System.out.println(s.getUnit() + "h " + s.getMinute() + "m " + s.getSecond() + "s");
 
-		System.out.println("Temps sideral moyen a Greenwich pour le 13 novembre 1978 à 4h 34m 0s");
-		jd = JulianDay.getJulianDayFromDateAsDouble(1978.1113);
-		s = Sexagesimal.decimalToSexagesimal(meeusEngine.getMeanSiderealTimeAsHoursFromJulianDay(
-				jd, new Sexagesimal(4, 34, 0)));
-		System.out.println(s.getUnit() + "h " + s.getMinute() + "m " + s.getSecond() + "s");
+//		double  jd = JulianDay.getJulianDayFromDateAsDouble(1978.1113, new Sexagesimal(4, 34, 0));
+//		System.out.println("Pour le 13 novembre 1978 à 4h 34m TU...");
+//		System.out.println("Nutation en longitude = " + engine.getNutationInLongitude(jd));
+//		System.out.println("Nutation en inclinaison = " + engine.getNutationInObliquity(jd));
 
-		jd = JulianDay.getJulianDayFromDateAsDouble(1978.1113, new Sexagesimal(4, 34, 0));
-		System.out.println("Pour le 13 novembre 1978 à 4h 34m TU...");
-		System.out.println("Nutation en longitude = " + engine.getNutationInLongitude(jd));
-		System.out.println("Nutation en inclinaison = " + engine.getNutationInObliquity(jd));
+//		Sexagesimal apparentSiderealTime = Sexagesimal.decimalToSexagesimal(meeusEngine
+//				.getApparentSiderealTimeAsHoursFromJulianDay(
+//						JulianDay.getJulianDayFromDateAsDouble(1978.1113),
+//						new Sexagesimal(4, 34, 0)));
+//		System.out.println("Temps sidéral apparent � Greenwich le 13 novembre 1978 à 4h 34m TU = "
+//				+ apparentSiderealTime.toString(SexagesimalType.HOURS));
+//
+//		System.out.println("Temps des ephemerides pour le 6 fevrier -555 à 6h TU = "
+//				+ meeusEngine.universalTimeToEphemerisTime(-555.0206, new Sexagesimal(6, 0, 0))
+//						.toString(SexagesimalType.HOURS));
+//
+//		System.out.println("Temps universel pour le 4 avril 1977 à 4h 19m = "
+//				+ meeusEngine.ephemerisTimeToUniversalTime(1977.0404, new Sexagesimal(4, 19, 0))
+//						.toString(SexagesimalType.HOURS));
 
-		Sexagesimal apparentSiderealTime = Sexagesimal.decimalToSexagesimal(meeusEngine
-				.getApparentSiderealTimeAsHoursFromJulianDay(
-						JulianDay.getJulianDayFromDateAsDouble(1978.1113),
-						new Sexagesimal(4, 34, 0)));
-		System.out.println("Temps sidéral apparent � Greenwich le 13 novembre 1978 à 4h 34m TU = "
-				+ apparentSiderealTime.toString(SexagesimalType.HOURS));
+//		System.out.println("dT en seconde pour -2000 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(-2000.0101)));
+//		System.out.println("dT en seconde pour 200 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(200.0101)));
+//		System.out.println("dT en seconde pour 600 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(600.0101)));
+//		System.out.println("dT en seconde pour 1673 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(1673.0101)));
+//		System.out.println("dT en seconde pour 1750 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(1750.0101)));
+//		System.out.println("dT en seconde pour 1850 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(1850.0101)));
+//		System.out.println("dT en seconde pour 1870 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(1870.0101)));
+//		System.out.println("dT en seconde pour 1910 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(1910.0101)));
+//		System.out.println("dT en seconde pour 1930 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(1930.0101)));
+//		System.out.println("dT en seconde pour 1950 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(1950.0101)));
+//		System.out.println("dT en seconde pour 1990 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(1990.0101)));
+//		System.out.println("dT en seconde pour 2014 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(2014.0101)));
+//		System.out.println("dT en seconde pour 2100 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(2100.0101)));
+//		System.out.println("dT en seconde pour 2200 = "
+//				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
+//						.getJulianDayFromDateAsDouble(2200.0101)));
 
-		System.out.println("Temps des ephemerides pour le 6 fevrier -555 à 6h TU = "
-				+ meeusEngine.universalTimeToEphemerisTime(-555.0206, new Sexagesimal(6, 0, 0))
-						.toString(SexagesimalType.HOURS));
+//		System.out.println("Inclinaison de l'ecliptique pour l'année 1950 = "
+//				+ Constants.ECLIPTIC_OBLIQUITY_1950.toString(SexagesimalType.DEGREES));
+//		System.out.println("Inclinaison de l'ecliptique pour l'année 2000 = "
+//				+ Constants.ECLIPTIC_OBLIQUITY_2000.toString(SexagesimalType.DEGREES));
+//		System.out.println("Aplatissement de la Terre = " + Constants.EARTH_FLATTENING);
 
-		System.out.println("Temps universel pour le 4 avril 1977 à 4h 19m = "
-				+ meeusEngine.ephemerisTimeToUniversalTime(1977.0404, new Sexagesimal(4, 19, 0))
-						.toString(SexagesimalType.HOURS));
-
-		System.out.println("dT en seconde pour -2000 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(-2000.0101)));
-		System.out.println("dT en seconde pour 200 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(200.0101)));
-		System.out.println("dT en seconde pour 600 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(600.0101)));
-		System.out.println("dT en seconde pour 1673 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(1673.0101)));
-		System.out.println("dT en seconde pour 1750 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(1750.0101)));
-		System.out.println("dT en seconde pour 1850 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(1850.0101)));
-		System.out.println("dT en seconde pour 1870 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(1870.0101)));
-		System.out.println("dT en seconde pour 1910 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(1910.0101)));
-		System.out.println("dT en seconde pour 1930 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(1930.0101)));
-		System.out.println("dT en seconde pour 1950 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(1950.0101)));
-		System.out.println("dT en seconde pour 1990 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(1990.0101)));
-		System.out.println("dT en seconde pour 2014 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(2014.0101)));
-		System.out.println("dT en seconde pour 2100 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(2100.0101)));
-		System.out.println("dT en seconde pour 2200 = "
-				+ meeusEngine.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(JulianDay
-						.getJulianDayFromDateAsDouble(2200.0101)));
-
-		System.out.println("Inclinaison de l'ecliptique pour l'année 1950 = "
-				+ Constants.ECLIPTIC_OBLIQUITY_1950.toString(SexagesimalType.DEGREES));
-		System.out.println("Inclinaison de l'ecliptique pour l'année 2000 = "
-				+ Constants.ECLIPTIC_OBLIQUITY_2000.toString(SexagesimalType.DEGREES));
-		System.out.println("Aplatissement de la Terre = " + Constants.EARTH_FLATTENING);
-
-		System.out
-				.println("Coordonnées ecliptiques de Pollux dont les coordonnées équatoriaux sont RA=7h 42m 15.525s / DEC=+28° 08' 55.11\" : ");
+//		System.out
+//				.println("Coordonnées ecliptiques de Pollux dont les coordonnées équatoriaux sont RA=7h 42m 15.525s / DEC=+28° 08' 55.11\" : ");
 		EquatorialCoordinatesAdapter equatorialCoordinateAdapter = new EquatorialCoordinatesAdapter(
 				new EquatorialCoordinates(115.564688d, 28.148642d));
-		System.out.println("LAMBDA=" + equatorialCoordinateAdapter.getEcliptiqueLongitude());
-		System.out.println("BETA=" + equatorialCoordinateAdapter.getEcliptiqueLatitude());
+//		System.out.println("LAMBDA=" + equatorialCoordinateAdapter.getEcliptiqueLongitude());
+//		System.out.println("BETA=" + equatorialCoordinateAdapter.getEcliptiqueLatitude());
 
-		System.out
-				.println("Coordonnées équatoriaux de Pollux dont les coordonnées ecliptiques sont LAMBDA=112.52538° / BETA=6.68058°");
-		EclipticCoordinatesAdapter eclipticCoordinateAdapter = new EclipticCoordinatesAdapter(
-				new EclipticCoordinates(112.52537339688136d, 6.680581550926902d));
-		Sexagesimal RA = new Sexagesimal(eclipticCoordinateAdapter.getRightAscension() / 15);
-		Sexagesimal DEC = new Sexagesimal(eclipticCoordinateAdapter.getDeclinaison());
-		System.out.println("RA=" + RA.toString(SexagesimalType.HOURS));
-		System.out.println("DEC=" + DEC.toString(SexagesimalType.DEGREES));
+//		System.out
+//				.println("Coordonnées équatoriaux de Pollux dont les coordonnées ecliptiques sont LAMBDA=112.52538° / BETA=6.68058°");
+//		EclipticCoordinatesAdapter eclipticCoordinateAdapter = new EclipticCoordinatesAdapter(
+//				new EclipticCoordinates(112.52537339688136d, 6.680581550926902d));
+//		Sexagesimal RA = new Sexagesimal(eclipticCoordinateAdapter.getRightAscension() / 15);
+//		Sexagesimal DEC = new Sexagesimal(eclipticCoordinateAdapter.getDeclinaison());
+//		System.out.println("RA=" + RA.toString(SexagesimalType.HOURS));
+//		System.out.println("DEC=" + DEC.toString(SexagesimalType.DEGREES));
+//
+//		Sexagesimal rightAscension = new Sexagesimal(7, 42, 15.525);
+//		System.out.println("Valeur en degrées de RA(7h 42m 15.525s) = "
+//				+ rightAscension.getValueAsUnits() * 15);
 
-		Sexagesimal rightAscension = new Sexagesimal(7, 42, 15.525);
-		System.out.println("Valeur en degrées de RA(7h 42m 15.525s) = "
-				+ rightAscension.getValueAsUnits() * 15);
+//		System.out
+//				.println("Coordonnées galactiques de Nova Serpentis 1978 (RA=17h 48m 59.74s / DEC=-14° 43' 08.2\")");
+//		Sexagesimal novaSerpentisRA = new Sexagesimal(17, 48, 59.74);
+//		Sexagesimal novaSerpentisDEC = new Sexagesimal(-14, 43, 8.2);
+//		equatorialCoordinateAdapter.setEquatorialCoordinates(new EquatorialCoordinates(
+//				novaSerpentisRA.getValueAsUnits() * 15, novaSerpentisDEC.getValueAsUnits()));
+//		System.out.println("l=" + equatorialCoordinateAdapter.getGalacticLongitude());
+//		System.out.println("b=" + equatorialCoordinateAdapter.getGalacticLatitude());
 
-		System.out
-				.println("Coordonnées galactiques de Nova Serpentis 1978 (RA=17h 48m 59.74s / DEC=-14° 43' 08.2\")");
-		Sexagesimal novaSerpentisRA = new Sexagesimal(17, 48, 59.74);
-		Sexagesimal novaSerpentisDEC = new Sexagesimal(-14, 43, 8.2);
-		equatorialCoordinateAdapter.setEquatorialCoordinates(new EquatorialCoordinates(
-				novaSerpentisRA.getValueAsUnits() * 15, novaSerpentisDEC.getValueAsUnits()));
-		System.out.println("l=" + equatorialCoordinateAdapter.getGalacticLongitude());
-		System.out.println("b=" + equatorialCoordinateAdapter.getGalacticLatitude());
+//		System.out
+//				.println("Coordonnées équatoriaux de Nova Serpentis 1978 (l=12.9593° / b=6.0463°)");
+//		GalacticCoordinatesAdapter galacticCoordinatesAdapter = new GalacticCoordinatesAdapter(
+//				new GalacticCoordinates(12.9593d, 6.0463d));
+//		Sexagesimal ra = new Sexagesimal(galacticCoordinatesAdapter.getRightAscension() / 15);
+//		Sexagesimal dec = new Sexagesimal(galacticCoordinatesAdapter.getDeclinaison());
+//		System.out.println("RA=" + ra.toString(SexagesimalType.HOURS));
+//		System.out.println("DEC=" + dec.toString(SexagesimalType.DEGREES));
 
-		System.out
-				.println("Coordonnées équatoriaux de Nova Serpentis 1978 (l=12.9593° / b=6.0463°)");
-		GalacticCoordinatesAdapter galacticCoordinatesAdapter = new GalacticCoordinatesAdapter(
-				new GalacticCoordinates(12.9593d, 6.0463d));
-		Sexagesimal ra = new Sexagesimal(galacticCoordinatesAdapter.getRightAscension() / 15);
-		Sexagesimal dec = new Sexagesimal(galacticCoordinatesAdapter.getDeclinaison());
-		System.out.println("RA=" + ra.toString(SexagesimalType.HOURS));
-		System.out.println("DEC=" + dec.toString(SexagesimalType.DEGREES));
-
-		System.out
-				.println("Coordonnées Alt/Az de Saturne le 13 novembre 1978 à 4h 34m 00s UT (RA=10h 57' 35.681\" / DEC=8° 25' 58.10\") "
-						+ "à l'Observatoire d'Uccle (longitude -0h 17m 25.94s / latitude +50° 47' 55\")");
-		equatorialCoordinateAdapter.setEquatorialCoordinates(new EquatorialCoordinates(Sexagesimal
-				.sexagesimalToDecimal(new Sexagesimal(10, 57, 35.681)), Sexagesimal
-				.sexagesimalToDecimal(new Sexagesimal(8, 25, 58.10))));
-		GeographicCoordinates observerSite = new GeographicCoordinates(
-				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(50, 47, 55)),
-				-(Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 17, 25.94)) * 15));
-		double siderealTime = meeusEngine.getApparentSiderealTimeAsHoursFromJulianDay(
-				JulianDay.getJulianDayFromDateAsDouble(1978.1113), new Sexagesimal(4, 34, 0));
-		Sexagesimal azimut = new Sexagesimal(equatorialCoordinateAdapter.getAzimuth(observerSite,
-				siderealTime));
-		Sexagesimal elevation = new Sexagesimal(equatorialCoordinateAdapter.getElevation(
-				observerSite, siderealTime));
-		System.out.println("Azimuth   A= " + azimut.toString(SexagesimalType.DEGREES));
-		System.out.println("Elevation h= " + elevation.toString(SexagesimalType.DEGREES));
-
-		HorizontalCoordinates hc = new HorizontalCoordinates(
-				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(128, 18, 3.0128d)),
-				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(36, 32, 25.7272d)));
-		System.out.println("Coordonnées équatoriales du point situé à "
-				+ "Azimut=128° 18' 3.013\" / Altitude=36° 32' 25.7272\", "
-				+ "le 13/11/1978 à 4h 34m 00s TU à l'Observatoire d'Uccle : ");
-		HorizontalCoordinatesAdapter horizontalCoordinatesAdapter = new HorizontalCoordinatesAdapter(
-				hc);
-		System.out.println("RA = "
-				+ Sexagesimal
-						.decimalToSexagesimal(
-								horizontalCoordinatesAdapter.getRightAscension(observerSite,
-										siderealTime) / 15).toString(SexagesimalType.HOURS));
-		System.out.println("DEC = "
-				+ Sexagesimal.decimalToSexagesimal(
-						horizontalCoordinatesAdapter.getDeclinaison(observerSite, siderealTime))
-						.toString(SexagesimalType.DEGREES));
+//		System.out
+//				.println("Coordonnées Alt/Az de Saturne le 13 novembre 1978 à 4h 34m 00s UT (RA=10h 57' 35.681\" / DEC=8° 25' 58.10\") "
+//						+ "à l'Observatoire d'Uccle (longitude -0h 17m 25.94s / latitude +50° 47' 55\")");
+//		equatorialCoordinateAdapter.setEquatorialCoordinates(new EquatorialCoordinates(Sexagesimal
+//				.sexagesimalToDecimal(new Sexagesimal(10, 57, 35.681)), Sexagesimal
+//				.sexagesimalToDecimal(new Sexagesimal(8, 25, 58.10))));
+//		GeographicCoordinates observerSite = new GeographicCoordinates(
+//				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(50, 47, 55)),
+//				-(Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 17, 25.94)) * 15));
+//		double siderealTime = meeusEngine.getApparentSiderealTimeAsHoursFromJulianDay(
+//				JulianDay.getJulianDayFromDateAsDouble(1978.1113), new Sexagesimal(4, 34, 0));
+//		Sexagesimal azimut = new Sexagesimal(equatorialCoordinateAdapter.getAzimuth(observerSite,
+//				siderealTime));
+//		Sexagesimal elevation = new Sexagesimal(equatorialCoordinateAdapter.getElevation(
+//				observerSite, siderealTime));
+//		System.out.println("Azimuth   A= " + azimut.toString(SexagesimalType.DEGREES));
+//		System.out.println("Elevation h= " + elevation.toString(SexagesimalType.DEGREES));
+//
+//		HorizontalCoordinates hc = new HorizontalCoordinates(
+//				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(128, 18, 3.0128d)),
+//				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(36, 32, 25.7272d)));
+//		System.out.println("Coordonnées équatoriales du point situé à "
+//				+ "Azimut=128° 18' 3.013\" / Altitude=36° 32' 25.7272\", "
+//				+ "le 13/11/1978 à 4h 34m 00s TU à l'Observatoire d'Uccle : ");
+//		HorizontalCoordinatesAdapter horizontalCoordinatesAdapter = new HorizontalCoordinatesAdapter(
+//				hc);
+//		System.out.println("RA = "
+//				+ Sexagesimal
+//						.decimalToSexagesimal(
+//								horizontalCoordinatesAdapter.getRightAscension(observerSite,
+//										siderealTime) / 15).toString(SexagesimalType.HOURS));
+//		System.out.println("DEC = "
+//				+ Sexagesimal.decimalToSexagesimal(
+//						horizontalCoordinatesAdapter.getDeclinaison(observerSite, siderealTime))
+//						.toString(SexagesimalType.DEGREES));
 
 		// Refraction atmospherique...
 		AtmosphericRefractionCalculator arc = new AtmosphericRefractionCalculatorImpl();
