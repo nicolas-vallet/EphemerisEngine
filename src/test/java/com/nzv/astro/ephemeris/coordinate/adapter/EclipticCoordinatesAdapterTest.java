@@ -16,7 +16,6 @@ public class EclipticCoordinatesAdapterTest {
 		Sexagesimal RA = new Sexagesimal(eca.getRightAscension() / 15);
 		Sexagesimal DEC = new Sexagesimal(eca.getDeclinaison());
 		Assert.assertTrue("7H 42m 15.5268052663122s".equals(RA.toString(SexagesimalType.HOURS)));
-		System.out.println(DEC.toString(SexagesimalType.DEGREES));
 		Assert.assertTrue("28° 8' 55.101619260024\"".equals(DEC.toString(SexagesimalType.DEGREES)));
 	}
 }

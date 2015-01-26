@@ -1,6 +1,7 @@
 package com.nzv.astro.ephemeris.coordinate.adapter;
 
 import static java.lang.Math.asin;
+import static java.lang.Math.atan;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -62,7 +63,8 @@ public class EquatorialCoordinatesAdapter implements IEcliptiqueCoordinates, IGa
 		double term1 = sin(toRadians(192.25d - ec.getRightAscension()));
 		double term2 = cos(toRadians(192.25d - ec.getRightAscension())) * sin(toRadians(27.4d));
 		double term3 = tan(toRadians(ec.getDeclinaison())) * cos(toRadians(27.4d));
-		double x = toDegrees(atan2(term1, (term2 - term3)));
+//		double x = toDegrees(atan2(term1, (term2 - term3)));
+		double x = toDegrees(atan(term1 / (term2 - term3)));
 		double l = 303 - x;
 		return l % 360;
 	}
