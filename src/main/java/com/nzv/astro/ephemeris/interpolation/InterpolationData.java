@@ -6,20 +6,20 @@ package com.nzv.astro.ephemeris.interpolation;
  */
 public class InterpolationData {
 
-	private double x;
-	private double y;
+    private double x;
+    private double y;
 
-	public InterpolationData(double x, double y) {
-		this.x = x;
-		this.y = y;
-	}
+    public InterpolationData(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
 
-	public double getX() {
-		return x;
-	}
+    public double getX() {
+        return x;
+    }
 
-	public double getY() {
-		return y;
-	}
+    public double getY() {
+        return y;
+    }
 
 }

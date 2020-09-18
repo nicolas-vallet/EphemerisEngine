@@ -1,22 +1,8 @@
 package com.nzv.astro.ephemeris;
 
-import java.security.InvalidParameterException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import com.nzv.astro.ephemeris.Sexagesimal.SexagesimalType;
-import com.nzv.astro.ephemeris.coordinate.GeocentricCoordinates;
-import com.nzv.astro.ephemeris.coordinate.GeographicCoordinates;
-import com.nzv.astro.ephemeris.coordinate.adapter.EclipticCoordinatesAdapter;
 import com.nzv.astro.ephemeris.coordinate.adapter.EquatorialCoordinatesAdapter;
-import com.nzv.astro.ephemeris.coordinate.adapter.GalacticCoordinatesAdapter;
-import com.nzv.astro.ephemeris.coordinate.adapter.HorizontalCoordinatesAdapter;
-import com.nzv.astro.ephemeris.coordinate.impl.EclipticCoordinates;
 import com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates;
-import com.nzv.astro.ephemeris.coordinate.impl.GalacticCoordinates;
-import com.nzv.astro.ephemeris.coordinate.impl.HorizontalCoordinates;
 import com.nzv.astro.ephemeris.impl.AtmosphericRefractionCalculatorImpl;
 import com.nzv.astro.ephemeris.impl.EphemerisEngineImpl;
 import com.nzv.astro.ephemeris.impl.MeeusEphemerisImpl;
@@ -25,16 +11,21 @@ import com.nzv.astro.ephemeris.interpolation.InterpolationEngine;
 import com.nzv.astro.ephemeris.interpolation.InterpolationException;
 import com.nzv.astro.ephemeris.interpolation.impl.InterpolationEngineImpl;
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 public class JeanMeeusTest {
 
-	public static void main(String[] args) {
-		SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd MMMM yyy GG, HH:mm:ss");
+    public static void main(String[] args) {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd MMMM yyy GG, HH:mm:ss");
 
-		MeeusEphemeris meeusEngine = new MeeusEphemerisImpl();
-		EphemerisEngine engine = new EphemerisEngineImpl();
+        MeeusEphemeris meeusEngine = new MeeusEphemerisImpl();
+        EphemerisEngine engine = new EphemerisEngineImpl();
 
-		long tEnd;
-		long tStart = System.currentTimeMillis();
+        long tEnd;
+        long tStart = System.currentTimeMillis();
 
 //		System.out.println("Jour julien pour le 4.81 octobre 1957 = "
 //				+ JulianDay.getJulianDayFromDateAsDouble(1957.100481d));
@@ -183,8 +174,8 @@ public class JeanMeeusTest {
 
 //		System.out
 //				.println("Coordonnées ecliptiques de Pollux dont les coordonnées équatoriaux sont RA=7h 42m 15.525s / DEC=+28° 08' 55.11\" : ");
-		EquatorialCoordinatesAdapter equatorialCoordinateAdapter = new EquatorialCoordinatesAdapter(
-				new EquatorialCoordinates(115.564688d, 28.148642d));
+        EquatorialCoordinatesAdapter equatorialCoordinateAdapter = new EquatorialCoordinatesAdapter(
+                new EquatorialCoordinates(115.564688d, 28.148642d));
 //		System.out.println("LAMBDA=" + equatorialCoordinateAdapter.getEcliptiqueLongitude());
 //		System.out.println("BETA=" + equatorialCoordinateAdapter.getEcliptiqueLatitude());
 
@@ -255,261 +246,261 @@ public class JeanMeeusTest {
 //						horizontalCoordinatesAdapter.getDeclinaison(observerSite, siderealTime))
 //						.toString(SexagesimalType.DEGREES));
 
-		// Refraction atmospherique...
-		AtmosphericRefractionCalculator arc = new AtmosphericRefractionCalculatorImpl();
-		Sexagesimal trueElevation = Sexagesimal.decimalToSexagesimal(arc
-				.getTrueElevation(Sexagesimal.sexagesimalToDecimal(new Sexagesimal(32, 04, 17))));
-		System.out
-				.println("Hauteur vraie d'une étoile dont la hauteur est mesurée à 32° 04' 17\" au dessus de l'horizon : "
-						+ trueElevation.toString(SexagesimalType.DEGREES));
-		trueElevation = Sexagesimal.decimalToSexagesimal(arc.getTrueElevation(
-				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(32, 04, 17)), 10, 1013));
-		System.out.println("Influence de T(10°C) et P(1013 hPa) :  : "
-				+ trueElevation.toString(SexagesimalType.DEGREES));
+        // Refraction atmospherique...
+        AtmosphericRefractionCalculator arc = new AtmosphericRefractionCalculatorImpl();
+        Sexagesimal trueElevation = Sexagesimal.decimalToSexagesimal(arc
+                .getTrueElevation(Sexagesimal.sexagesimalToDecimal(new Sexagesimal(32, 04, 17))));
+        System.out
+                .println("Hauteur vraie d'une étoile dont la hauteur est mesurée à 32° 04' 17\" au dessus de l'horizon : "
+                        + trueElevation.toString(SexagesimalType.DEGREES));
+        trueElevation = Sexagesimal.decimalToSexagesimal(arc.getTrueElevation(
+                Sexagesimal.sexagesimalToDecimal(new Sexagesimal(32, 04, 17)), 10, 1013));
+        System.out.println("Influence de T(10°C) et P(1013 hPa) :  : "
+                + trueElevation.toString(SexagesimalType.DEGREES));
 
-		System.out
-				.println("Hauteur apparente d'une étoile dont la hauteur vraie est de 32° 2' 44.24\" : ");
-		Sexagesimal apparentElevation = Sexagesimal.decimalToSexagesimal(arc
-				.getApparentElevation(Sexagesimal
-						.sexagesimalToDecimal(new Sexagesimal(32, 2, 44.24))));
-		System.out.println(apparentElevation.toString(SexagesimalType.DEGREES));
+        System.out
+                .println("Hauteur apparente d'une étoile dont la hauteur vraie est de 32° 2' 44.24\" : ");
+        Sexagesimal apparentElevation = Sexagesimal.decimalToSexagesimal(arc
+                .getApparentElevation(Sexagesimal
+                        .sexagesimalToDecimal(new Sexagesimal(32, 2, 44.24))));
+        System.out.println(apparentElevation.toString(SexagesimalType.DEGREES));
 
-		System.out.println("Hauteur apparente d'une étoile dont la hauteur vraie est de 1° 57' : ");
-		apparentElevation = Sexagesimal.decimalToSexagesimal(arc.getApparentElevation(Sexagesimal
-				.sexagesimalToDecimal(new Sexagesimal(1, 57, 0))));
-		System.out.println(apparentElevation.toString(SexagesimalType.DEGREES));
+        System.out.println("Hauteur apparente d'une étoile dont la hauteur vraie est de 1° 57' : ");
+        apparentElevation = Sexagesimal.decimalToSexagesimal(arc.getApparentElevation(Sexagesimal
+                .sexagesimalToDecimal(new Sexagesimal(1, 57, 0))));
+        System.out.println(apparentElevation.toString(SexagesimalType.DEGREES));
 
-		trueElevation = Sexagesimal.decimalToSexagesimal(arc.getTrueElevation(Sexagesimal
-				.sexagesimalToDecimal(new Sexagesimal(2, 14, 19.34))));
-		System.out
-				.println("Hauteur vrai d'une étoile dont la hauteur apparente est de 2° 14' 19.34\" : "
-						+ trueElevation.toString(SexagesimalType.DEGREES));
+        trueElevation = Sexagesimal.decimalToSexagesimal(arc.getTrueElevation(Sexagesimal
+                .sexagesimalToDecimal(new Sexagesimal(2, 14, 19.34))));
+        System.out
+                .println("Hauteur vrai d'une étoile dont la hauteur apparente est de 2° 14' 19.34\" : "
+                        + trueElevation.toString(SexagesimalType.DEGREES));
 
-		trueElevation = Sexagesimal.decimalToSexagesimal(arc.getTrueElevation(
-				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(2, 14, 19.34)), 38, 1023));
-		System.out.println("Influence de T(38° C) et P(1023 hPa) : "
-				+ trueElevation.toString(SexagesimalType.DEGREES));
+        trueElevation = Sexagesimal.decimalToSexagesimal(arc.getTrueElevation(
+                Sexagesimal.sexagesimalToDecimal(new Sexagesimal(2, 14, 19.34)), 38, 1023));
+        System.out.println("Influence de T(38° C) et P(1023 hPa) : "
+                + trueElevation.toString(SexagesimalType.DEGREES));
 
-		System.out.println("Hauteur apparente d'une étoile dont la hauteur vrai est de 90° : ");
-		apparentElevation = Sexagesimal.decimalToSexagesimal(arc.getApparentElevation(Sexagesimal
-				.sexagesimalToDecimal(new Sexagesimal(90, 0, 0))));
-		System.out.println(apparentElevation.toString(SexagesimalType.DEGREES));
+        System.out.println("Hauteur apparente d'une étoile dont la hauteur vrai est de 90° : ");
+        apparentElevation = Sexagesimal.decimalToSexagesimal(arc.getApparentElevation(Sexagesimal
+                .sexagesimalToDecimal(new Sexagesimal(90, 0, 0))));
+        System.out.println(apparentElevation.toString(SexagesimalType.DEGREES));
 
-		System.out.println("Hauteur vrai d'une étoile dont la hauteur apparente est de 90° : ");
-		trueElevation = Sexagesimal.decimalToSexagesimal(arc.getTrueElevation(Sexagesimal
-				.sexagesimalToDecimal(new Sexagesimal(90, 0, 0))));
-		System.out.println(trueElevation.toString(SexagesimalType.DEGREES));
+        System.out.println("Hauteur vrai d'une étoile dont la hauteur apparente est de 90° : ");
+        trueElevation = Sexagesimal.decimalToSexagesimal(arc.getTrueElevation(Sexagesimal
+                .sexagesimalToDecimal(new Sexagesimal(90, 0, 0))));
+        System.out.println(trueElevation.toString(SexagesimalType.DEGREES));
 
-		InterpolationEngine iei = new InterpolationEngineImpl();
-		long sNano, eNano;
+        InterpolationEngine iei = new InterpolationEngineImpl();
+        long sNano, eNano;
 
-		{
-			InterpolationData input1 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1969.0805), 0.664531);
-			InterpolationData input2 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1969.0806), 0.669651);
-			InterpolationData input3 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1969.0807), 0.674800);
-			try {
-				sNano = System.nanoTime();
-				Double distanceMarsTerre = iei.interpolate(input1, input2, input3, JulianDay
-						.getJulianDayFromDateAsDouble(1969.0807, new Sexagesimal(4, 21, 0)));
-				eNano = System.nanoTime();
-				System.out
-						.println("METHODE 1 => Distance Terre-Mars en le 06 aout 1969 à 22h14 TE = "
-								+ distanceMarsTerre + " UA");
-				System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
-			} catch (InterpolationException ex) {
-				System.out.println(ex.getMessage());
-			}
+        {
+            InterpolationData input1 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1969.0805), 0.664531);
+            InterpolationData input2 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1969.0806), 0.669651);
+            InterpolationData input3 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1969.0807), 0.674800);
+            try {
+                sNano = System.nanoTime();
+                Double distanceMarsTerre = iei.interpolate(input1, input2, input3, JulianDay
+                        .getJulianDayFromDateAsDouble(1969.0807, new Sexagesimal(4, 21, 0)));
+                eNano = System.nanoTime();
+                System.out
+                        .println("METHODE 1 => Distance Terre-Mars en le 06 aout 1969 à 22h14 TE = "
+                                + distanceMarsTerre + " UA");
+                System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
+            } catch (InterpolationException ex) {
+                System.out.println(ex.getMessage());
+            }
 
-			List<InterpolationData> samples = Arrays.asList(input1, input2, input3);
-			try {
-				sNano = System.nanoTime();
-				Double distanceMarsTerre = iei.interpolate(samples, JulianDay
-						.getJulianDayFromDateAsDouble(1969.0807, new Sexagesimal(4, 21, 0)));
-				eNano = System.nanoTime();
-				System.out
-						.println("METHODE 2 => Distance Terre-Mars en le 06 aout 1969 à 22h14 TE = "
-								+ distanceMarsTerre + " UA");
-				System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
-			} catch (InterpolationException ex) {
-				System.out.println(ex.getMessage());
-			}
-		}
+            List<InterpolationData> samples = Arrays.asList(input1, input2, input3);
+            try {
+                sNano = System.nanoTime();
+                Double distanceMarsTerre = iei.interpolate(samples, JulianDay
+                        .getJulianDayFromDateAsDouble(1969.0807, new Sexagesimal(4, 21, 0)));
+                eNano = System.nanoTime();
+                System.out
+                        .println("METHODE 2 => Distance Terre-Mars en le 06 aout 1969 à 22h14 TE = "
+                                + distanceMarsTerre + " UA");
+                System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
+            } catch (InterpolationException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
 
-		{
-			InterpolationData input1 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1966.0111), 1.381701);
-			InterpolationData input2 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1966.0115), 1.381502);
-			InterpolationData input3 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1966.0119), 1.381535);
-			try {
-				sNano = System.nanoTime();
-				InterpolationData marsPerihelie = iei.findExtremum(input1, input2, input3);
-				eNano = System.nanoTime();
-				System.out.println("Mars atteint son perihelie le "
-						+ sdf.format(JulianDay.getDateFromJulianDay(marsPerihelie.getX()))
-						+ " avec une distance Mars-Soleil de " + marsPerihelie.getY() + " UA.");
-				System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
-			} catch (InterpolationException ex) {
-				System.out.println(ex.getMessage());
-			}
-		}
+        {
+            InterpolationData input1 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1966.0111), 1.381701);
+            InterpolationData input2 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1966.0115), 1.381502);
+            InterpolationData input3 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1966.0119), 1.381535);
+            try {
+                sNano = System.nanoTime();
+                InterpolationData marsPerihelie = iei.findExtremum(input1, input2, input3);
+                eNano = System.nanoTime();
+                System.out.println("Mars atteint son perihelie le "
+                        + sdf.format(JulianDay.getDateFromJulianDay(marsPerihelie.getX()))
+                        + " avec une distance Mars-Soleil de " + marsPerihelie.getY() + " UA.");
+                System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
+            } catch (InterpolationException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
 
-		{
-			InterpolationData input1 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1973.0226),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 28, 13.4)) * -3600);
-			InterpolationData input2 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1973.0227),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 6, 46.3)) * 3600);
-			InterpolationData input3 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1973.0228),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 38, 23.2)) * 3600);
-			try {
-				sNano = System.nanoTime();
-				double tmp = iei.findZero(input1, input2, input3);
-				eNano = System.nanoTime();
-				Date zeroDeclinaisonOfMercure = JulianDay.getDateFromJulianDay(tmp);
-				System.out.println("La declinaison de Mercure est égale à zero le "
-						+ sdf.format(zeroDeclinaisonOfMercure));
-				System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
-			} catch (InterpolationException ex) {
-				System.out.println(ex.getMessage());
-			}
-		}
+        {
+            InterpolationData input1 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1973.0226),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 28, 13.4)) * -3600);
+            InterpolationData input2 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1973.0227),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 6, 46.3)) * 3600);
+            InterpolationData input3 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1973.0228),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 38, 23.2)) * 3600);
+            try {
+                sNano = System.nanoTime();
+                double tmp = iei.findZero(input1, input2, input3);
+                eNano = System.nanoTime();
+                Date zeroDeclinaisonOfMercure = JulianDay.getDateFromJulianDay(tmp);
+                System.out.println("La declinaison de Mercure est égale à zero le "
+                        + sdf.format(zeroDeclinaisonOfMercure));
+                System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
+            } catch (InterpolationException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
 
-		{
-			InterpolationData input1 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1979.1209), Sexagesimal
-							.sexagesimalToBigDecimal(new Sexagesimal(0, 54, 45.5099)).doubleValue());
-			InterpolationData input2 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1979.12095), Sexagesimal
-							.sexagesimalToBigDecimal(new Sexagesimal(0, 54, 34.4060)).doubleValue());
-			InterpolationData input3 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1979.1210), Sexagesimal
-							.sexagesimalToBigDecimal(new Sexagesimal(0, 54, 25.6303)).doubleValue());
-			InterpolationData input4 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1979.12105), Sexagesimal
-							.sexagesimalToBigDecimal(new Sexagesimal(0, 54, 19.3253)).doubleValue());
-			InterpolationData input5 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1979.1211), Sexagesimal
-							.sexagesimalToBigDecimal(new Sexagesimal(0, 54, 15.5940)).doubleValue());
-			double searchValueFor = JulianDay.getJulianDayFromDateAsDouble(1979.1210,
-					new Sexagesimal(3, 20, 0));
-			try {
-				sNano = System.nanoTime();
-				double moonParallaxe = iei.interpolate(input1, input2, input3, input4, input5,
-						searchValueFor);
-				eNano = System.nanoTime();
-				System.out
-						.println("METHODE 1 => Parallaxe de la Lune le 10 décembre 1979 à 3h20 TE = "
-								+ Sexagesimal.decimalToSexagesimal(moonParallaxe).toString(
-										SexagesimalType.DEGREES));
-				System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
-			} catch (InterpolationException ex) {
-				System.out.println(ex.getMessage());
-			}
+        {
+            InterpolationData input1 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1979.1209), Sexagesimal
+                    .sexagesimalToBigDecimal(new Sexagesimal(0, 54, 45.5099)).doubleValue());
+            InterpolationData input2 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1979.12095), Sexagesimal
+                    .sexagesimalToBigDecimal(new Sexagesimal(0, 54, 34.4060)).doubleValue());
+            InterpolationData input3 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1979.1210), Sexagesimal
+                    .sexagesimalToBigDecimal(new Sexagesimal(0, 54, 25.6303)).doubleValue());
+            InterpolationData input4 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1979.12105), Sexagesimal
+                    .sexagesimalToBigDecimal(new Sexagesimal(0, 54, 19.3253)).doubleValue());
+            InterpolationData input5 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1979.1211), Sexagesimal
+                    .sexagesimalToBigDecimal(new Sexagesimal(0, 54, 15.5940)).doubleValue());
+            double searchValueFor = JulianDay.getJulianDayFromDateAsDouble(1979.1210,
+                    new Sexagesimal(3, 20, 0));
+            try {
+                sNano = System.nanoTime();
+                double moonParallaxe = iei.interpolate(input1, input2, input3, input4, input5,
+                        searchValueFor);
+                eNano = System.nanoTime();
+                System.out
+                        .println("METHODE 1 => Parallaxe de la Lune le 10 décembre 1979 à 3h20 TE = "
+                                + Sexagesimal.decimalToSexagesimal(moonParallaxe).toString(
+                                SexagesimalType.DEGREES));
+                System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
+            } catch (InterpolationException ex) {
+                System.out.println(ex.getMessage());
+            }
 
-			try {
-				List<InterpolationData> samples = Arrays.asList(input1, input2, input3, input4,
-						input5);
-				sNano = System.nanoTime();
-				double moonParallaxe = iei.interpolate(samples, searchValueFor);
-				eNano = System.nanoTime();
-				System.out
-						.println("METHODE 2 => Parallaxe de la Lune le 10 décembre 1979 à 3h20 TE = "
-								+ Sexagesimal.decimalToSexagesimal(moonParallaxe).toString(
-										SexagesimalType.DEGREES));
-				System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
-			} catch (InterpolationException ex) {
-				System.out.println(ex.getMessage());
-			}
-		}
+            try {
+                List<InterpolationData> samples = Arrays.asList(input1, input2, input3, input4,
+                        input5);
+                sNano = System.nanoTime();
+                double moonParallaxe = iei.interpolate(samples, searchValueFor);
+                eNano = System.nanoTime();
+                System.out
+                        .println("METHODE 2 => Parallaxe de la Lune le 10 décembre 1979 à 3h20 TE = "
+                                + Sexagesimal.decimalToSexagesimal(moonParallaxe).toString(
+                                SexagesimalType.DEGREES));
+                System.out.println("Computation took " + (eNano - sNano) + " nanoseconds");
+            } catch (InterpolationException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
 
-		{
-			InterpolationData input1 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(2014.0701),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(20, 21, 0)));
-			InterpolationData input2 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(2014.0715),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(22, 30, 0)));
-			InterpolationData input3 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(2014.0731),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(22, 29, 0)));
-			InterpolationData input4 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(2014.0815),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(19, 58, 0)));
-			InterpolationData input5 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(2014.0831),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(14, 56, 0)));
-			try {
-				sNano = System.nanoTime();
-				InterpolationData maxDeclinaisonVenus = iei.findExtremum(input1, input2, input3,
-						input4, input5);
-				eNano = System.nanoTime();
-				System.out.println("Venus atteint sa déclinaison maximale le "
-						+ sdf.format(JulianDay.getDateFromJulianDay(maxDeclinaisonVenus.getX()))
-						+ " � une valeur de "
-						+ Sexagesimal.decimalToSexagesimal(maxDeclinaisonVenus.getY()).toString(
-								SexagesimalType.DEGREES));
-				System.out.println("Computation tooks " + (eNano - sNano) + " nanoseconds.");
-			} catch (InterpolationException ex) {
-				System.out.println(ex.getMessage());
-			}
-		}
+        {
+            InterpolationData input1 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(2014.0701),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(20, 21, 0)));
+            InterpolationData input2 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(2014.0715),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(22, 30, 0)));
+            InterpolationData input3 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(2014.0731),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(22, 29, 0)));
+            InterpolationData input4 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(2014.0815),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(19, 58, 0)));
+            InterpolationData input5 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(2014.0831),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(14, 56, 0)));
+            try {
+                sNano = System.nanoTime();
+                InterpolationData maxDeclinaisonVenus = iei.findExtremum(input1, input2, input3,
+                        input4, input5);
+                eNano = System.nanoTime();
+                System.out.println("Venus atteint sa déclinaison maximale le "
+                        + sdf.format(JulianDay.getDateFromJulianDay(maxDeclinaisonVenus.getX()))
+                        + " � une valeur de "
+                        + Sexagesimal.decimalToSexagesimal(maxDeclinaisonVenus.getY()).toString(
+                        SexagesimalType.DEGREES));
+                System.out.println("Computation tooks " + (eNano - sNano) + " nanoseconds.");
+            } catch (InterpolationException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
 
-		{
-			InterpolationData input1 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1979.0525),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(-1, 16, 0.5)));
-			InterpolationData input2 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1979.0526),
-					-Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 33, 1.3)));
-			InterpolationData input3 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1979.0527),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 11, 12.0)));
-			InterpolationData input4 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1979.0528),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 56, 3.3)));
-			InterpolationData input5 = new InterpolationData(
-					JulianDay.getJulianDayFromDateAsDouble(1979.0529),
-					Sexagesimal.sexagesimalToDecimal(new Sexagesimal(1, 40, 52.2)));
-			try {
-				sNano = System.nanoTime();
-				double nullLatitudeOfMercure = iei.findZero(input1, input2, input3, input4, input5);
-				eNano = System.nanoTime();
-				System.out
-						.println("METHODE 1 => Mercure atteint le noeud ascendant de son orbite le "
-								+ sdf.format(JulianDay.getDateFromJulianDay(nullLatitudeOfMercure)));
-				System.out.println("Computation tooks " + (eNano - sNano) + " nanoseconds.");
-			} catch (InterpolationException ex) {
-				System.out.println(ex.getMessage());
-			}
+        {
+            InterpolationData input1 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1979.0525),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(-1, 16, 0.5)));
+            InterpolationData input2 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1979.0526),
+                    -Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 33, 1.3)));
+            InterpolationData input3 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1979.0527),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 11, 12.0)));
+            InterpolationData input4 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1979.0528),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 56, 3.3)));
+            InterpolationData input5 = new InterpolationData(
+                    JulianDay.getJulianDayFromDateAsDouble(1979.0529),
+                    Sexagesimal.sexagesimalToDecimal(new Sexagesimal(1, 40, 52.2)));
+            try {
+                sNano = System.nanoTime();
+                double nullLatitudeOfMercure = iei.findZero(input1, input2, input3, input4, input5);
+                eNano = System.nanoTime();
+                System.out
+                        .println("METHODE 1 => Mercure atteint le noeud ascendant de son orbite le "
+                                + sdf.format(JulianDay.getDateFromJulianDay(nullLatitudeOfMercure)));
+                System.out.println("Computation tooks " + (eNano - sNano) + " nanoseconds.");
+            } catch (InterpolationException ex) {
+                System.out.println(ex.getMessage());
+            }
 
-			// List<InterpolationData> samples = Arrays.asList(input1, input2, input3, input4,
-			// input5);
-			// try {
-			// s = System.nanoTime();
-			// double nullLatitudeOfMercure = iei.findZero(samples);
-			// e = System.nanoTime();
-			// System.out
-			// .println("METHODE 2 => Mercure atteint le noeud ascendant de son orbite le "
-			// + sdf.format(JulianDay.getDateFromJulianDay(nullLatitudeOfMercure)));
-			// System.out.println("Computation tooks " + (e - s) + " nanoseconds.");
-			// } catch (InterpolationException ex) {
-			// System.out.println(ex.getMessage());
-			// }
-		}
-		
-		System.out.println("Jour de la semaine pour le 23 decembre 2015: "+JulianDay.getDayOfWeekFromDayAsDouble(2015.1223));
-		System.out.println("Jour de la semaine pour le 14 fevrier 2015: "+JulianDay.getDayOfWeekFromDayAsDouble(2015.0214));
-		System.out.println("Jour de la semaine pour le 2 octobre 2015: "+JulianDay.getDayOfWeekFromDayAsDouble(2015.1002));
-		System.out.println("Jour de la semaine pour le 20 avril 2015: "+JulianDay.getDayOfWeekFromDayAsDouble(2015.0420));
+            // List<InterpolationData> samples = Arrays.asList(input1, input2, input3, input4,
+            // input5);
+            // try {
+            // s = System.nanoTime();
+            // double nullLatitudeOfMercure = iei.findZero(samples);
+            // e = System.nanoTime();
+            // System.out
+            // .println("METHODE 2 => Mercure atteint le noeud ascendant de son orbite le "
+            // + sdf.format(JulianDay.getDateFromJulianDay(nullLatitudeOfMercure)));
+            // System.out.println("Computation tooks " + (e - s) + " nanoseconds.");
+            // } catch (InterpolationException ex) {
+            // System.out.println(ex.getMessage());
+            // }
+        }
 
-		tEnd = System.currentTimeMillis();
-		System.out.println("Computation took " + (tEnd - tStart) + "ms");
-	}
+        System.out.println("Jour de la semaine pour le 23 decembre 2015: " + JulianDay.getDayOfWeekFromDayAsDouble(2015.1223));
+        System.out.println("Jour de la semaine pour le 14 fevrier 2015: " + JulianDay.getDayOfWeekFromDayAsDouble(2015.0214));
+        System.out.println("Jour de la semaine pour le 2 octobre 2015: " + JulianDay.getDayOfWeekFromDayAsDouble(2015.1002));
+        System.out.println("Jour de la semaine pour le 20 avril 2015: " + JulianDay.getDayOfWeekFromDayAsDouble(2015.0420));
+
+        tEnd = System.currentTimeMillis();
+        System.out.println("Computation took " + (tEnd - tStart) + "ms");
+    }
 }
