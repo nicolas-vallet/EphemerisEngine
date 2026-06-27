@@ -6,54 +6,53 @@ import org.junit.Test;
 import com.nzv.astro.ephemeris.JulianDay;
 import com.nzv.astro.ephemeris.MeeusEphemeris;
 import com.nzv.astro.ephemeris.Sexagesimal;
-import com.nzv.astro.ephemeris.Sexagesimal.SexagesimalType;
 import com.nzv.astro.ephemeris.coordinate.GeographicCoordinates;
 import com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates;
 import com.nzv.astro.ephemeris.impl.MeeusEphemerisImpl;
 
 public class EquatorialCoordinatesAdapterTest {
 
+	private static final double DELTA = 1e-6;
+
 	@Test
 	public void testConvertEquatorialCoordinatesToEclipticCoordinates() {
-		// Coordonnées ecliptiques de Pollux dont les coordonnées équatoriaux
-		// sont RA=7h 42m 15.525s / DEC=+28° 08' 55.11
+		// Ecliptic coordinates of Pollux (RA=7h 42m 15.525s / DEC=+28 08' 55.11").
 		EquatorialCoordinatesAdapter eca = new EquatorialCoordinatesAdapter(
 				new EquatorialCoordinates(115.564688d, 28.148642d));
-		Assert.assertEquals(112.52566509627357, eca.getEcliptiqueLongitude(), 0);
-		Assert.assertEquals(6.686583627239734, eca.getEcliptiqueLatitude(), 0);
+		Assert.assertEquals(112.52566509627357, eca.getEcliptiqueLongitude(), DELTA);
+		Assert.assertEquals(6.686583627239734, eca.getEcliptiqueLatitude(), DELTA);
 	}
 
 	@Test
 	public void testConvertEquatorialCoordinatesToGalacticCoordinates() {
-		// Coordonnées galactiques de Nova Serpentis 1978 (RA=17h 48m 59.74s /
-		// DEC=-14° 43' 08.2"
-		Sexagesimal novaSerpentisRA = new Sexagesimal(17, 48, 59.74);
-		Sexagesimal novaSerpentisDEC = new Sexagesimal(-14, 43, 8.2);
+		// Galactic coordinates of Nova Serpentis 1978 (RA=17h 48m 59.74s / DEC=-14 43' 08.2").
+		// Reference (Meeus): l approx 12.9593, b approx 6.0463.
+		Sexagesimal ra = new Sexagesimal(17, 48, 59.74);
+		Sexagesimal dec = new Sexagesimal(-14, 43, 8.2);
 		EquatorialCoordinatesAdapter eca = new EquatorialCoordinatesAdapter(
-				new EquatorialCoordinates(novaSerpentisRA.getValueAsUnits() * 15,
-						novaSerpentisDEC.getValueAsUnits()));
-		Assert.assertEquals(12.959250041566406, eca.getGalacticLongitude(), 0);
-		Assert.assertEquals(6.046298477995704, eca.getGalacticLatitude(), 0);
+				new EquatorialCoordinates(ra.getValueAsUnits() * 15, dec.getValueAsUnits()));
+		Assert.assertEquals(12.959250041566406, eca.getGalacticLongitude(), DELTA);
+		Assert.assertEquals(6.046298477995704, eca.getGalacticLatitude(), DELTA);
 	}
 
 	@Test
 	public void testConvertEquatorialCoordinatesToHorizontalCoordinates() {
 		MeeusEphemeris meeusEngine = new MeeusEphemerisImpl();
-		// Coordonnées Alt/Az de Saturne le 13 novembre 1978 à 4h 34m 00s UT
-		// (RA=10h 57' 35.681\" / DEC=8° 25' 58.10\")
-		// à l'Observatoire d'Uccle (longitude -0h 17m 25.94s / latitude +50°
-		// 47' 55\")
+		// Alt/Az of Saturn on 13 November 1978 at 4h 34m 00s UT
+		// (RA=10h 57m 35.681s / DEC=+8 25' 58.10") at the Uccle observatory
+		// (longitude -0h 17m 25.94s / latitude +50 47' 55").
+		// With the corrected apparent sidereal time these match Meeus's published
+		// result: A approx 128 18' 03", h approx 36 32' 25.7".
 		EquatorialCoordinatesAdapter eca = new EquatorialCoordinatesAdapter(
-				new EquatorialCoordinates(Sexagesimal.sexagesimalToDecimal(new Sexagesimal(10, 57,
-						35.681)), Sexagesimal.sexagesimalToDecimal(new Sexagesimal(8, 25, 58.10))));
+				new EquatorialCoordinates(
+						Sexagesimal.sexagesimalToDecimal(new Sexagesimal(10, 57, 35.681)),
+						Sexagesimal.sexagesimalToDecimal(new Sexagesimal(8, 25, 58.10))));
 		GeographicCoordinates observerSite = new GeographicCoordinates(
 				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(50, 47, 55)),
 				-(Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0, 17, 25.94)) * 15));
 		double siderealTime = meeusEngine.getApparentSiderealTimeAsHoursFromJulianDay(
 				JulianDay.getJulianDayFromDateAsDouble(1978.1113), new Sexagesimal(4, 34, 0));
-		Sexagesimal azimut = new Sexagesimal(eca.getAzimuth(observerSite, siderealTime));
-		Sexagesimal elevation = new Sexagesimal(eca.getElevation(observerSite, siderealTime));
-		Assert.assertTrue("128° 17' 50.28337808412\"".equals(azimut.toString(SexagesimalType.DEGREES)));
-		Assert.assertTrue("36° 32' 19.79962207152\"".equals(elevation.toString(SexagesimalType.DEGREES)));
+		Assert.assertEquals(128.3008369017421, eca.getAzimuth(observerSite, siderealTime), DELTA);
+		Assert.assertEquals(36.54047977837304, eca.getElevation(observerSite, siderealTime), DELTA);
 	}
 }

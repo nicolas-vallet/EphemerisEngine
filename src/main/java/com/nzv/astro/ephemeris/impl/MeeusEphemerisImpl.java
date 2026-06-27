@@ -9,6 +9,7 @@ import java.security.InvalidParameterException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import com.nzv.astro.ephemeris.Constants;
 import com.nzv.astro.ephemeris.EphemerisEngine;
@@ -38,7 +39,9 @@ public class MeeusEphemerisImpl implements MeeusEphemeris {
 					"The julian day passed parameter should correspond to a date at midnight!");
 		}
 		double revolutionCounts = getMeanSiderealTimeAsRevolutionFromJulianDay(julianDayAsBigDecimal);
-		double hours = (revolutionCounts - ((int) revolutionCounts)) * 24;
+		// Use floor (not an int cast) so the fractional revolution is always in [0,1),
+		// including for negative revolution counts (dates before 1900).
+		double hours = (revolutionCounts - Math.floor(revolutionCounts)) * 24;
 		return hours;
 	}
 
@@ -56,15 +59,18 @@ public class MeeusEphemerisImpl implements MeeusEphemeris {
 	public double getApparentSiderealTimeAsHoursFromJulianDay(double julianDayAs,
 			Sexagesimal hourOfDay) {
 		double meanSiderealTime = getMeanSiderealTimeAsHoursFromJulianDay(julianDayAs, hourOfDay);
-		double correctionInSeconds = engine.getNutationInLongitude(julianDayAs
-				* cos(toRadians(Constants.ECLIPTIC_OBLIQUITY_1950.getValueAsUnits()))) / 15;
+		// Equation of the equinoxes: the correction (expressed in seconds of time) is
+		// the nutation in longitude (in arcseconds) multiplied by cos(obliquity) and
+		// divided by 15 (to convert arcseconds of angle into seconds of time).
+		double correctionInSeconds = engine.getNutationInLongitude(julianDayAs)
+				* cos(toRadians(Constants.ECLIPTIC_OBLIQUITY_1950.getValueAsUnits())) / 15;
 		double result = meanSiderealTime + (correctionInSeconds / 3600);
 		return result;
 	}
 
 	@Override
 	public double computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(double julianDay) {
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		cal.setTime(JulianDay.getDateFromJulianDay(julianDay));
 		int year = cal.get(Calendar.YEAR);
 		if (cal.get(Calendar.ERA) == GregorianCalendar.BC) {
@@ -210,7 +216,8 @@ public class MeeusEphemerisImpl implements MeeusEphemeris {
 		BigDecimal n = tmp[0];
 		BigDecimal p = tmp[1];
 
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		cal.clear();
 		cal.set(Calendar.YEAR, year);
 		cal.set(Calendar.MONTH, n.intValue() - 1);
 		cal.set(Calendar.DAY_OF_MONTH, p.intValue() + 1);

@@ -1,83 +1,70 @@
 package com.nzv.astro.ephemeris.impl;
 
-
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.nzv.astro.ephemeris.Sexagesimal;
-import com.nzv.astro.ephemeris.Sexagesimal.SexagesimalType;
 
 public class AtmosphericRefractionCalculatorImplTest {
 
-	private AtmosphericRefractionCalculatorImpl underTest = new AtmosphericRefractionCalculatorImpl();
-	
+	private static final double DELTA = 1e-6;
+
+	private final AtmosphericRefractionCalculatorImpl underTest =
+			new AtmosphericRefractionCalculatorImpl();
+
 	@Test
 	public void testGetTrueElevationFromApparentElevation() {
-		// Hauteur vraie d'une étoile dont la hauteur est mesurée à 32° 04' 17"
-		Sexagesimal apparentElevation = new Sexagesimal(32, 04, 17);
-		double te = underTest.getTrueElevation(Sexagesimal.sexagesimalToDecimal(apparentElevation));
-		Sexagesimal trueElevation = Sexagesimal.decimalToSexagesimal(te);
-		Assert.assertTrue("32° 2' 44.2397523882984\"".equals(trueElevation.toString(SexagesimalType.DEGREES)));
-		
-		// Hauteur vraie d'une étoile dont la hauteur apparente est de 2° 14' 19.34"
-		apparentElevation = new Sexagesimal(2, 14, 19.34);
-		te = underTest.getTrueElevation(Sexagesimal.sexagesimalToDecimal(apparentElevation));
-		trueElevation = Sexagesimal.decimalToSexagesimal(te);
-		Assert.assertTrue("1° 57' 1.63899861464304\"".equals(trueElevation.toString(SexagesimalType.DEGREES)));
-		
-		// Influence de T(38° C) et P(1023 hPa)
-		te = underTest.getTrueElevation(Sexagesimal.sexagesimalToDecimal(apparentElevation), 38, 1023);
-		trueElevation = Sexagesimal.decimalToSexagesimal(te);
-		Assert.assertTrue("1° 58' 35.03208873932508\"".equals(trueElevation.toString(SexagesimalType.DEGREES)));
-		
-		apparentElevation = new Sexagesimal(90, 0, 0);
-		te = underTest.getTrueElevation(Sexagesimal.sexagesimalToDecimal(apparentElevation));
-		trueElevation = Sexagesimal.decimalToSexagesimal(te);
-		Assert.assertTrue("90° 0' 0.0\"".equals(trueElevation.toString(SexagesimalType.DEGREES)));
-		
+		// Apparent 32 04' 17" -> true approx 32 02' 44.24" (32.045622 deg).
+		double te = underTest.getTrueElevation(
+				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(32, 4, 17)));
+		Assert.assertEquals(32.045622153441194, te, DELTA);
+
+		// Apparent 2 14' 19.34" -> true approx 1 57' 01.64" (1.950455 deg).
+		te = underTest.getTrueElevation(
+				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(2, 14, 19.34)));
+		Assert.assertEquals(1.9504552773929564, te, DELTA);
+
+		// Same with T(38 C) and P(1023 hPa).
+		te = underTest.getTrueElevation(
+				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(2, 14, 19.34)), 38, 1023);
+		Assert.assertEquals(1.9763978024275903, te, DELTA);
+
+		// At the zenith there is no refraction.
+		te = underTest.getTrueElevation(
+				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(90, 0, 0)));
+		Assert.assertEquals(90.0, te, DELTA);
 	}
-	
+
 	@Test
 	public void testGetApparentElevationFromTrueElevation() {
-		// Hauteur apparente d'une étoile dont la hauteur vraie est de 32° 2' 44.24"
-		Sexagesimal trueElevation = new Sexagesimal(32, 2, 44.24);
-		double ae = underTest.getApparentElevation(trueElevation.getValueAsUnits());
-		Sexagesimal apparentElevation = Sexagesimal.decimalToSexagesimal(ae);
-		Assert.assertTrue("32° 4' 17.000129442972\"".equals(apparentElevation.toString(SexagesimalType.DEGREES)));
-		
-		// Hauteur apparente d'une étoile dont la hauteur vraie est de 1° 57'
-		trueElevation = new Sexagesimal(1, 57, 0);
-		ae = underTest.getApparentElevation(trueElevation.getValueAsUnits());
-		apparentElevation = Sexagesimal.decimalToSexagesimal(ae);
-		Assert.assertTrue("2° 14' 19.34037953707776\"".equals(apparentElevation.toString(SexagesimalType.DEGREES)));
-		
-		// Hauteur apparente d'une étoile dont la hauteur vrai est de 90°
-		trueElevation = new Sexagesimal(90, 0, 0);
-		ae = underTest.getApparentElevation(trueElevation.getValueAsUnits());
-		apparentElevation = Sexagesimal.decimalToSexagesimal(ae);
-		Assert.assertTrue("90° 0' 0.0\"".equals(apparentElevation.toString(SexagesimalType.DEGREES)));
+		// True 32 02' 44.24" -> apparent approx 32 04' 17" (32.071389 deg).
+		double ae = underTest.getApparentElevation(new Sexagesimal(32, 2, 44.24).getValueAsUnits());
+		Assert.assertEquals(32.07138892484527, ae, DELTA);
+
+		// True 1 57' -> apparent approx 2 14' 19.34" (2.238706 deg).
+		ae = underTest.getApparentElevation(new Sexagesimal(1, 57, 0).getValueAsUnits());
+		Assert.assertEquals(2.2387056609825216, ae, DELTA);
+
+		// At the zenith there is no refraction.
+		ae = underTest.getApparentElevation(new Sexagesimal(90, 0, 0).getValueAsUnits());
+		Assert.assertEquals(90.0, ae, DELTA);
 	}
-	
+
 	@Test
-	public void testGetTrueElevationFromApparentElevationAndNormalClimaticConditions() {
-		// Hauteur vraie d'une étoile dont la hauteur est mesurée à 32° 04' 17"
-		// avec T(10°C) et P(1013 hPa)
-		Sexagesimal apparentElevation = new Sexagesimal(32, 04, 17);
-		double te = underTest.getTrueElevation(Sexagesimal.sexagesimalToDecimal(apparentElevation), 10, 1013);
-		Sexagesimal trueElevation = Sexagesimal.decimalToSexagesimal(te);
-		Assert.assertTrue("32° 2' 44.2397523882984\"".equals(trueElevation.toString(SexagesimalType.DEGREES)));
-		Assert.assertEquals(underTest.getTrueElevation(Sexagesimal.sexagesimalToDecimal(apparentElevation)),
-				underTest.getTrueElevation(Sexagesimal.sexagesimalToDecimal(apparentElevation), 10, 1013), 0);
+	public void testNormalClimaticConditionsAreNeutral() {
+		// At T(10 C) and P(1013 hPa) the temperature/pressure correction is a no-op.
+		double bare = underTest.getTrueElevation(
+				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(32, 4, 17)));
+		double withConditions = underTest.getTrueElevation(
+				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(32, 4, 17)), 10, 1013);
+		Assert.assertEquals(bare, withConditions, DELTA);
 	}
-	
+
 	@Test
-	public void testGetTrueElevationFromApparentElevationAndClimaticConditions() {
-		// Hauteur vraie d'une étoile dont la hauteur est mesurée à 32° 04' 17"
-		// avec T(25°C) et P(1020 hPa)
-		Sexagesimal apparentElevation = new Sexagesimal(32, 04, 17);
-		double te = 
-				underTest.getTrueElevation(Sexagesimal.sexagesimalToDecimal(apparentElevation), 25, 1020);
-		Sexagesimal trueElevation = Sexagesimal.decimalToSexagesimal(te);
-		Assert.assertTrue("32° 2' 48.559729634214\"".equals(trueElevation.toString(SexagesimalType.DEGREES)));
+	public void testGetTrueElevationWithClimaticConditions() {
+		// Apparent 32 04' 17" at T(25 C) and P(1020 hPa) -> 32.046822 deg.
+		double te = underTest.getTrueElevation(
+				Sexagesimal.sexagesimalToDecimal(new Sexagesimal(32, 4, 17)), 25, 1020);
+		Assert.assertEquals(32.046822147120615, te, DELTA);
 	}
 }

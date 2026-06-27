@@ -3,6 +3,7 @@ package com.nzv.astro.ephemeris;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class JulianDay {
 
@@ -43,7 +44,8 @@ public class JulianDay {
 			y = C - 4715;
 		}
 
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		cal.clear();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
@@ -156,7 +158,7 @@ public class JulianDay {
 	public static int getDayOfYearFromDateAsDouble(double d) {
 		BigDecimal date = BigDecimal.valueOf(d);
 		Date dt = getDateFromJulianDay(getJulianDayFromDateAsDouble(date.doubleValue()));
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		cal.setTime(dt);
 
 		if (!isLeapYear(cal.get(Calendar.YEAR))) {
@@ -175,7 +177,8 @@ public class JulianDay {
 	}
 
 	public static boolean isLeapYear(int year) {
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = new java.util.GregorianCalendar(TimeZone.getTimeZone("UTC"));
+		cal.clear();
 		cal.set(Calendar.YEAR, year);
 		return cal.getActualMaximum(Calendar.DAY_OF_YEAR) > 365;
 	}

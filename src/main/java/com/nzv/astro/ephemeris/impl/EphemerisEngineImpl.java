@@ -133,7 +133,7 @@ public class EphemerisEngineImpl implements EphemerisEngine {
 				* cos(toRadians(2 * omega)) + 0.0884d * cos(toRadians(2 * Lprime)) + 0.0216d
 				* cos(toRadians(2 * L + M)) + 0.0183d * cos(toRadians(2 * Lprime - omega))
 				+ 0.0113d * cos(toRadians(2 * Lprime + Mprime)) - 0.0093d
-				* cos(toRadians(2 * L - M)) - 0.0066d * cos(2 * L - omega);
+				* cos(toRadians(2 * L - M)) - 0.0066d * cos(toRadians(2 * L - omega));
 		return nutationInObliquity;
 	}
 
