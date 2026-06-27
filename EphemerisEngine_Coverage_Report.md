@@ -1,7 +1,7 @@
 # EphemerisEngine vs. *Astronomical Formulae for Calculators* — Chapter-by-Chapter Coverage Report
 
 **Reference book:** Jean Meeus, *Astronomical Formulae for Calculators*, 4th edition (Willmann-Bell, 1988) — 43 chapters.
-**Library under review:** `com.nzv.astro:meeus-engine:1.2.0` (the EphemerisEngine project).
+**Library under review:** `com.nzv.astro:meeus-engine:1.3.0` (the EphemerisEngine project).
 **What the gauge means:** percentage of each chapter's formulae that the library actually exposes as callable, finished computations. A chapter that only supplies *inputs* (e.g. mean elements) to a calculation the book carries to completion is scored partial, not full.
 
 > Gauge legend: `██████████` = fully implemented · `░░░░░░░░░░` = not implemented.
@@ -10,6 +10,11 @@
 > moved up: **18 Solar Coordinates** (25% → 100%), **14 Precession** (0% → 100%),
 > **9 Angular Separation** (0% → 90%), **38 Stellar Magnitudes** (10% → 100%),
 > **6 Observer coordinates** (20% → 100%) and **42 Rising/Transit/Setting** (30% → 80%).
+>
+> **Version note (1.3.0):** Phase 2, step 1 (the star keystone) is complete.
+> **16 Apparent Place of a Star** moves 25% → 95%: proper motion, precession, nutation
+> and annual aberration (with the eccentricity terms) are now composed into a single
+> end-to-end routine.
 
 ---
 
@@ -18,19 +23,21 @@
 The library is now a faithful, well-tested implementation of the book's **timekeeping,
 calendar, coordinate and solar-position foundations**, plus precession, interpolation,
 refraction and the common positional utilities (angular separation, photometry,
-rise/transit/set). It still stops before most of the **physical-ephemeris payload**: the
+rise/transit/set) and the apparent place of a star. It still stops before most of the
+**physical-ephemeris payload**: the
 full Moon position, the planets, comets, eclipses and the remaining phenomenon chapters
 are absent. For the Moon the library computes the *mean elements* but not the periodic
 series, so that chapter remains partial.
 
 | Coverage band | Chapters | Count |
 |---|---|---|
-| **Strong (≥ 90%)** | 2 Interpolation · 3 Julian Day · 4 Easter · 5 ET/UT · 6 Observer coords · 7 Sidereal Time · 8 Coordinate Transformation · 9 Angular Separation · 14 Precession · 15 Nutation · 18 Solar Coordinates · 38 Stellar Magnitudes · 41 Refraction | 13 |
-| **Partial (10–80%)** | 1 Hints · 16 Apparent place of a star · 29 Parallax · 30 Moon position · 40 Regression · 42 Rising/Transit/Setting | 6 |
+| **Strong (≥ 90%)** | 2 Interpolation · 3 Julian Day · 4 Easter · 5 ET/UT · 6 Observer coords · 7 Sidereal Time · 8 Coordinate Transformation · 9 Angular Separation · 14 Precession · 15 Nutation · 16 Apparent place of a star · 18 Solar Coordinates · 38 Stellar Magnitudes · 41 Refraction | 14 |
+| **Partial (10–80%)** | 1 Hints · 29 Parallax · 30 Moon position · 40 Regression · 42 Rising/Transit/Setting | 5 |
 | **None (0%)** | 10–13, 17, 19–28, 31–37, 39, 43 | 24 |
 
 **Overall functional coverage: roughly one third of the book**, now spanning the entire
-foundational arc (Chapters 1–9) plus precession (14), nutation (15), solar coordinates (18),
+foundational arc (Chapters 1–9) plus precession (14), nutation (15), the apparent place of
+a star (16), solar coordinates (18),
 stellar magnitudes (38), refraction (41) and a strong partial on rising/transit/setting (42).
 
 ---
@@ -54,7 +61,7 @@ stellar magnitudes (38), refraction (41) and a strong partial on rising/transit/
 | 13 | Position Angle of the Moon's Bright Limb | LOW | `░░░░░░░░░░` 0% |
 | 14 | Precession | MEDIUM | `██████████` 100% |
 | 15 | Nutation | MEDIUM | `█████████░` 90% |
-| 16 | Apparent Place of a Star | HIGH | `██▌░░░░░░░` 25% |
+| 16 | Apparent Place of a Star | HIGH | `█████████▌` 95% |
 | 17 | Reduction of Ecliptical Elements (equinox→equinox) | MEDIUM | `░░░░░░░░░░` 0% |
 | 18 | Solar Coordinates | MEDIUM | `██████████` 100% |
 | 19 | Rectangular Coordinates of the Sun | MEDIUM | `░░░░░░░░░░` 0% |
@@ -162,10 +169,10 @@ stellar magnitudes (38), refraction (41) and a strong partial on rising/transit/
 **Applications.** Apparent sidereal time, apparent star/planet places, high-accuracy coordinate work.
 **Coverage.** `getNutationInLongitude` and `getNutationInObliquity` are implemented (principal terms), and the 1950/2000 obliquity constants are provided.
 
-### 16 — Apparent Place of a Star · Complexity: HIGH · `██▌░░░░░░░` 25%
+### 16 — Apparent Place of a Star · Complexity: HIGH · `█████████▌` 95%
 **Formulae.** Combine mean catalogue position with proper motion, precession, nutation, and annual aberration to get the apparent place.
 **Applications.** Telescope pointing; reducing a catalogue star to tonight's sky.
-**Coverage.** Two of the four ingredients are now present — **precession** (Ch. 14) and **nutation** (Ch. 15) — and the Sun's position needed for annual aberration is available (Ch. 18). The remaining work is to compose them with proper motion and the aberration terms into a single end-to-end routine; this is the Phase 2 star keystone.
+**Coverage.** *Implemented in 1.3.0.* `ApparentPlace` composes all four ingredients end to end: proper motion (a plain coordinate rate in arcsec/year), precession to the equinox of date (Ch. 14), and the nutation (Ch. 15) and annual-aberration reductions onto right ascension and declination, the latter including the terms in the eccentricity of the Earth's orbit and using the Sun's true longitude (Ch. 18). Validated on Theta Persei reduced to the house date 1978-11-13, with the nutation and aberration components cross-checked term by term.
 
 ### 17 — Reduction of Ecliptical Elements from One Equinox to Another · Complexity: MEDIUM · `░░░░░░░░░░` 0%
 **Formulae.** Transform orbital inclination, node, and perihelion argument between reference equinoxes.

@@ -2,7 +2,7 @@
 
 ### The astronomical formulae of Jean Meeus, in Java
 
-> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Solar Coordinates &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Precession &nbsp;·&nbsp; Angular Separation &nbsp;·&nbsp; Stellar Magnitudes &nbsp;·&nbsp; Rise / Transit / Set &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
+> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Solar Coordinates &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Precession &nbsp;·&nbsp; Angular Separation &nbsp;·&nbsp; Stellar Magnitudes &nbsp;·&nbsp; Rise / Transit / Set &nbsp;·&nbsp; Apparent Place of a Star &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
 
 ---
 
@@ -361,7 +361,42 @@ double sunset  = rts.getSetTimeUT();       // ~ 15:57 UT
 
 ---
 
-## 13. Constants — `Constants`
+## 13. Apparent Place of a Star — `ApparentPlace`
+
+`com.nzv.astro.ephemeris.ApparentPlace` / `impl.ApparentPlaceImpl`. Composes proper
+motion, precession (Ch 14), nutation (Ch 15) and annual aberration into the apparent
+place of a star. Construct the impl with an `EphemerisEngine` and a `Precession`.
+RA/Dec in **degrees**; proper motions in **arcsec/year** as plain coordinate rates
+(multiply a Meeus seconds-of-time/year value by 15). The equinox of date is derived
+from the JD, so you pass only the *catalogue* epoch.
+
+| Method | Returns |
+|---|---|
+| `apparentPlace(mean, catalogueEpoch, muAlpha, muDelta, jd)` | Apparent `EquatorialCoordinates` at the instant. |
+| `applyProperMotion(mean, muAlpha, muDelta, years)` | Mean place carried forward by proper motion. |
+| `nutationCorrection(mean, jd)` | `{Δα, Δδ}` nutation terms, degrees. |
+| `aberrationCorrection(mean, jd)` | `{Δα, Δδ}` annual-aberration terms (incl. eccentricity), degrees. |
+| `ABERRATION_CONSTANT` | Constant of aberration, 20.49552″ (static field on impl). |
+
+```java
+EphemerisEngine engine = new EphemerisEngineImpl();
+ApparentPlace ap = new ApparentPlaceImpl(engine, new PrecessionImpl());
+
+// Theta Persei (mean J2000) reduced to 1978-11-13:
+EquatorialCoordinates mean = new EquatorialCoordinates(
+    (2 + 44 / 60.0 + 11.986 / 3600.0) * 15, 49 + 13 / 60.0 + 42.48 / 3600.0);
+double jd = JulianDay.getJulianDayFromDateAsDouble(1978.1113);
+EquatorialCoordinates apparent =
+    ap.apparentPlace(mean, 2000.0, 0.03425 * 15, -0.0895, jd);  // 40.6964°, +49.1398°
+```
+
+> **HOT TIP:** aberration uses the Sun's **true** longitude (`sunTrueLongitude`), not the
+> apparent one — the apparent longitude already folds in nutation + aberration and would
+> double-count.
+
+---
+
+## 14. Constants — `Constants`
 
 | Constant | Value |
 |---|---|
@@ -374,20 +409,20 @@ double sunset  = rts.getSetTimeUT();       // ~ 15:57 UT
 
 ---
 
-## 14. BUILD & DEPENDENCIES
+## 15. BUILD & DEPENDENCIES
 
 ```
-mvn clean verify            # compile + run the 63-test suite + build the jar
+mvn clean verify            # compile + run the 68-test suite + build the jar
 ```
 
 - **Java:** 17+   ·   **Build:** Maven 3.8+   ·   **Test:** JUnit 4.13.2
 - **Runtime dependency:** Apache Commons Math 3.6.1 (interpolation only)
 - **CI:** GitHub Actions, JDK 17 and 21 matrix (`.github/workflows/maven.yml`)
-- **Artifact:** `com.nzv.astro:meeus-engine:1.2.0`
+- **Artifact:** `com.nzv.astro:meeus-engine:1.3.0`
 
 ---
 
-## 15. END-TO-END EXAMPLE
+## 16. END-TO-END EXAMPLE
 
 ```java
 // Where is Saturn in the sky from Uccle on 1978-11-13 at 04:34 UT?
@@ -413,5 +448,5 @@ double apparent = new AtmosphericRefractionCalculatorImpl().getApparentElevation
 
 ---
 
-*EphemerisEngine 1.2.0 — formulae after J. Meeus, "Astronomical Formulae for
+*EphemerisEngine 1.3.0 — formulae after J. Meeus, "Astronomical Formulae for
 Calculators". Reference card generated June 2026.*

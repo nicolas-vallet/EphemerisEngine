@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.3.0 — Phase 2 (step 1): the star keystone
+
+This release implements the first of the two Phase 2 keystones, **Chapter 16 — Apparent
+Place of a Star**, closing the star track's hard core. The suite grows from 63 to 68
+tests, all passing.
+
+### New features
+
+- **Chapter 16 — Apparent Place of a Star** (`ApparentPlace` / `ApparentPlaceImpl`):
+  reduces a mean catalogue position to its apparent place at a given instant by composing
+  proper motion, precession (Ch 14), nutation (Ch 15) and annual aberration. The
+  aberration includes the terms in the eccentricity of the Earth's orbit and uses the
+  Sun's *true* longitude (Ch 18). Proper motions are supplied as plain coordinate rates
+  in arcsec/year. The reduction also exposes its intermediate steps
+  (`applyProperMotion`, `nutationCorrection`, `aberrationCorrection`) for inspection and
+  testing. Validated on Theta Persei reduced to the house date 1978-11-13, with the
+  nutation and aberration components cross-checked term by term.
+
+### Conventions
+
+- Right ascension stays in **degrees** throughout, matching the Phase 1 convention, so the
+  apparent place feeds straight back into the coordinate-transformation adapters.
+
 ## 1.2.0 — Phase 1: enablers and quick wins
 
 This release implements **Phase 1** of the phased implementation plan, closing six
