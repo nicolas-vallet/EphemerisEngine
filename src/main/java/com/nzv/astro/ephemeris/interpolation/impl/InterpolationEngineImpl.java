@@ -16,6 +16,18 @@ import com.nzv.astro.ephemeris.interpolation.InterpolationException;
 
 public class InterpolationEngineImpl implements InterpolationEngine {
 
+	/**
+	 * Maximum number of iterations allowed for the iterative root/extremum solvers
+	 * before giving up and reporting non-convergence.
+	 */
+	private static final int MAX_ITERATIONS = 100;
+
+	/**
+	 * Convergence threshold for the iterative solvers. Iteration stops as soon as two
+	 * successive estimates differ by less than this value.
+	 */
+	private static final double CONVERGENCE_TOLERANCE = 1e-12;
+
 	@Override
 	public double interpolate(InterpolationData input1, InterpolationData input2,
 			InterpolationData input3, double searchValue) throws InterpolationException {
@@ -84,10 +96,16 @@ public class InterpolationEngineImpl implements InterpolationEngine {
 
 		double n = Double.MAX_VALUE;
 		double n0 = 0;
-		while (n - n0 != 0) {
+		int iterations = 0;
+		while (abs(n - n0) > CONVERGENCE_TOLERANCE && iterations < MAX_ITERATIONS) {
 			n = n0;
 			n0 = (6 * B + 6 * C - H - J + 3 * pow(n0, 2) * (H + J) + 2 * pow(n0, 3) * K)
 					/ (K - 12 * F);
+			iterations++;
+		}
+		if (abs(n - n0) > CONVERGENCE_TOLERANCE) {
+			throw new InterpolationException(
+					"findExtremum did not converge after " + MAX_ITERATIONS + " iterations.");
 		}
 
 		double interval = abs(input2.getX() - input1.getX());
@@ -107,9 +125,15 @@ public class InterpolationEngineImpl implements InterpolationEngine {
 
 		double n = Double.MAX_VALUE;
 		double n0 = 0;
-		while (n - n0 != 0) {
+		int iterations = 0;
+		while (abs(n - n0) > CONVERGENCE_TOLERANCE && iterations < MAX_ITERATIONS) {
 			n = n0;
 			n0 = -(2 * input2.getY()) / (a + b + (c * n));
+			iterations++;
+		}
+		if (abs(n - n0) > CONVERGENCE_TOLERANCE) {
+			throw new InterpolationException(
+					"findZero did not converge after " + MAX_ITERATIONS + " iterations.");
 		}
 
 		double interval = abs(input2.getX() - input1.getX());
@@ -135,11 +159,17 @@ public class InterpolationEngineImpl implements InterpolationEngine {
 
 		double n = Double.MAX_VALUE;
 		double n0 = 0;
-		while (n - n0 != 0) {
+		int iterations = 0;
+		while (abs(n - n0) > CONVERGENCE_TOLERANCE && iterations < MAX_ITERATIONS) {
 			n = n0;
 			n0 = (-24 * input3.getY() + pow(n, 2) * (K - 12 * F) - 2 * pow(n, 3) * (H + J) - pow(n,
 					4) * K)
 					/ (2 * (6 * B + 6 * C - H - J));
+			iterations++;
+		}
+		if (abs(n - n0) > CONVERGENCE_TOLERANCE) {
+			throw new InterpolationException(
+					"findZero did not converge after " + MAX_ITERATIONS + " iterations.");
 		}
 
 		double interval = abs(input2.getX() - input1.getX());
@@ -151,41 +181,33 @@ public class InterpolationEngineImpl implements InterpolationEngine {
 	public double interpolate(List<InterpolationData> samples, double searchValueFor)
 			throws InterpolationException {
 		PolynomialFunctionLagrangeForm poly = findPolynomialFunctionLagrange(samples);
-		double result = poly.value(searchValueFor);
-		
-		PolynomialFunction pf = new PolynomialFunction(poly.getCoefficients());
-		System.out.println("DEBUG => "+pf.toString());
-		
-		PolynomialFunction derivate = pf.polynomialDerivative();
-		System.out.println("DERIVEE => " + derivate.toString());
-		return result;
+		return poly.value(searchValueFor);
 	}
 
 	@Override
 	public InterpolationData findExtremum(List<InterpolationData> samples)
 			throws InterpolationException {
-		// TODO
-		return null;
+		throw new UnsupportedOperationException(
+				"findExtremum(List) is not implemented yet. Use the fixed-arity "
+						+ "findExtremum(InterpolationData...) overloads instead.");
 	}
-
 
 	@Override
 	public double findZero(List<InterpolationData> samples) throws InterpolationException {
 		PolynomialFunctionLagrangeForm poly = findPolynomialFunctionLagrange(samples);
 		PolynomialFunction pf = new PolynomialFunction(poly.getCoefficients());
 		PolynomialSolver solver = new LaguerreSolver();
-		double result = solver.solve(100, pf, 0);
-		return result;
+		return solver.solve(MAX_ITERATIONS, pf, 0);
 	}
 
-	private PolynomialFunctionLagrangeForm findPolynomialFunctionLagrange(List<InterpolationData> samples) {
+	private PolynomialFunctionLagrangeForm findPolynomialFunctionLagrange(
+			List<InterpolationData> samples) {
 		double[] x = new double[samples.size()];
 		double[] y = new double[samples.size()];
 		for (int i = 0; i < samples.size(); i++) {
 			x[i] = samples.get(i).getX();
 			y[i] = samples.get(i).getY();
 		}
-		PolynomialFunctionLagrangeForm poly = new PolynomialFunctionLagrangeForm(x, y);
-		return poly;
+		return new PolynomialFunctionLagrangeForm(x, y);
 	}
 }

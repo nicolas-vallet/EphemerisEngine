@@ -1,15 +1,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>com.nzv.astro</groupId>
 	<artifactId>meeus-engine</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.1.0</version>
+	<packaging>jar</packaging>
+
+	<name>EphemerisEngine</name>
+	<description>A Java implementation of the astronomical formulae of Jean Meeus
+		(Astronomical Formulae for Calculators): Julian day and calendar conversions,
+		sidereal time, nutation, Delta-T, coordinate-system conversions, atmospheric
+		refraction and interpolation.</description>
+	<url>https://github.com/nicolas-vallet/EphemerisEngine</url>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<commons-math3.version>3.3</commons-math3.version>
-		<junit.version>4.12</junit.version>
+		<maven.compiler.release>17</maven.compiler.release>
+		<commons-math3.version>3.6.1</commons-math3.version>
+		<junit.version>4.13.2</junit.version>
+		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+		<maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -27,43 +48,30 @@
 	</dependencies>
 
 	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**/*.java</include>
-					<include>**/*.gwt.xml</include>
-				</includes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
+				<version>${maven-compiler-plugin.version}</version>
 			</plugin>
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-source-plugin</artifactId> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>attach-sources</id> -->
-<!-- 						<goals> -->
-<!-- 							<goal>jar</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-                <version>2.7.1</version>
-                <configuration />
+				<version>${maven-surefire-plugin.version}</version>
 			</plugin>
-			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
