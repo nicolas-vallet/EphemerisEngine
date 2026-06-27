@@ -1,7 +1,10 @@
 package com.nzv.astro.ephemeris.impl;
 
+import static java.lang.Math.asin;
+import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
 
 import com.nzv.astro.ephemeris.Constants;
@@ -135,6 +138,83 @@ public class EphemerisEngineImpl implements EphemerisEngine {
 				+ 0.0113d * cos(toRadians(2 * Lprime + Mprime)) - 0.0093d
 				* cos(toRadians(2 * L - M)) - 0.0066d * cos(toRadians(2 * L - omega));
 		return nutationInObliquity;
+	}
+
+	// =====================================================================
+	// Chapter 18 - Solar Coordinates
+	// =====================================================================
+
+	@Override
+	public double meanObliquityOfEcliptic(double T) {
+		// Meeus, Astronomical Formulae for Calculators, chapter 18.
+		return 23.452294d - 0.0130125d * T - 0.00000164d * T * T + 0.000000503d * T * T * T;
+	}
+
+	@Override
+	public double sunEquationOfCenter(double T) {
+		double M = sunMeanAnomaly(T);
+		double C = (1.919460d - 0.004789d * T - 0.000014d * T * T) * sin(toRadians(M))
+				+ (0.020094d - 0.000100d * T) * sin(toRadians(2 * M))
+				+ 0.000293d * sin(toRadians(3 * M));
+		return C;
+	}
+
+	@Override
+	public double sunTrueLongitude(double T) {
+		return normalizeDegrees(sunMeanLongitude(T) + sunEquationOfCenter(T));
+	}
+
+	@Override
+	public double sunTrueAnomaly(double T) {
+		return normalizeDegrees(sunMeanAnomaly(T) + sunEquationOfCenter(T));
+	}
+
+	@Override
+	public double sunApparentLongitude(double T) {
+		// The Sun's apparent longitude is the true longitude corrected for
+		// nutation and aberration. Meeus (chapter 18) gives the combined
+		// correction as -0.00569 deg - 0.00479 deg * sin(omega).
+		double omega = moonAscendantNodeLongitude(T);
+		double apparent = sunTrueLongitude(T) - 0.00569d - 0.00479d * sin(toRadians(omega));
+		return normalizeDegrees(apparent);
+	}
+
+	@Override
+	public double sunRadiusVector(double T) {
+		double e = 0.01675104d - 0.0000418d * T - 0.000000126d * T * T;
+		double v = sunTrueAnomaly(T);
+		return (1.0000002d * (1 - e * e)) / (1 + e * cos(toRadians(v)));
+	}
+
+	@Override
+	public com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates sunApparentEquatorialCoordinates(
+			double julianDay) {
+		double T = T(julianDay);
+		double lambda = sunApparentLongitude(T);
+		// True obliquity of date: mean obliquity plus the nutation correction the
+		// apparent longitude already accounts for (Meeus, chapter 18).
+		double omega = moonAscendantNodeLongitude(T);
+		double epsilon = meanObliquityOfEcliptic(T) + 0.00256d * cos(toRadians(omega));
+
+		// The Sun's geocentric ecliptic latitude is taken as zero, so the standard
+		// ecliptic-to-equatorial rotation reduces to the expressions below.
+		double alpha = toDegrees(atan2(
+				cos(toRadians(epsilon)) * sin(toRadians(lambda)),
+				cos(toRadians(lambda))));
+		double delta = toDegrees(asin(sin(toRadians(epsilon)) * sin(toRadians(lambda))));
+		return new com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates(
+				normalizeDegrees(alpha), delta);
+	}
+
+	/**
+	 * Reduces an angle expressed in degrees to the range [0, 360).
+	 */
+	private static double normalizeDegrees(double degrees) {
+		double result = degrees % 360d;
+		if (result < 0) {
+			result += 360d;
+		}
+		return result;
 	}
 
 }

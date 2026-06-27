@@ -60,4 +60,28 @@ public class GeocentricCoordinates {
 		return ordinate;
 	}
 
+	/**
+	 * Returns the observer's quantity rho * sin(phi'), where phi' is the geocentric
+	 * latitude and rho the geocentric radius in units of the Earth's equatorial
+	 * radius. This is the value labelled the abscissa elsewhere in this class and
+	 * is the quantity used by the parallax reduction of chapter 29.
+	 *
+	 * @return rho * sin(phi').
+	 */
+	public double getRhoSinPhiPrime() {
+		return abscissa;
+	}
+
+	/**
+	 * Returns the observer's quantity rho * cos(phi'), where phi' is the geocentric
+	 * latitude and rho the geocentric radius in units of the Earth's equatorial
+	 * radius. This is the value labelled the ordinate elsewhere in this class and
+	 * is the quantity used by the parallax reduction of chapter 29.
+	 *
+	 * @return rho * cos(phi').
+	 */
+	public double getRhoCosPhiPrime() {
+		return ordinate;
+	}
+
 }
