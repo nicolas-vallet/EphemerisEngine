@@ -4,14 +4,15 @@
 
 	<groupId>com.nzv.astro</groupId>
 	<artifactId>meeus-engine</artifactId>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>EphemerisEngine</name>
 	<description>A Java implementation of the astronomical formulae of Jean Meeus
 		(Astronomical Formulae for Calculators): Julian day and calendar conversions,
-		sidereal time, nutation, Delta-T, coordinate-system conversions, atmospheric
-		refraction and interpolation.</description>
+		sidereal time, nutation, Delta-T, coordinate-system conversions, precession,
+		solar coordinates, angular separation, stellar magnitudes, rising/transit/setting,
+		atmospheric refraction and interpolation.</description>
 	<url>https://github.com/nicolas-vallet/EphemerisEngine</url>
 
 	<licenses>

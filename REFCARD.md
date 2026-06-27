@@ -2,7 +2,7 @@
 
 ### The astronomical formulae of Jean Meeus, in Java
 
-> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
+> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Solar Coordinates &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Precession &nbsp;·&nbsp; Angular Separation &nbsp;·&nbsp; Stellar Magnitudes &nbsp;·&nbsp; Rise / Transit / Set &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
 
 ---
 
@@ -129,6 +129,12 @@ double dT   = m.computeDeltaBetweenEphemerisTimeAndUniveralTimeInSecond(jd);  //
 | `getNutationInObliquity(double jd)` | Delta-epsilon, arcseconds. |
 | `earthDistanceToMoonInKilometers(double parallax)` | Earth-Moon distance, km. |
 | `H(double gst, double longitude, double rightAscension)` | Local hour angle, degrees. |
+| `meanObliquityOfEcliptic(double T)` | Mean obliquity epsilon-0, degrees. |
+| `sunEquationOfCenter(double T)` | Equation of centre C, degrees. |
+| `sunTrueLongitude(double T)` / `sunTrueAnomaly(double T)` | Sun true L, v, degrees [0,360). |
+| `sunApparentLongitude(double T)` | Apparent longitude (nutation + aberration), degrees. |
+| `sunRadiusVector(double T)` | Earth-Sun distance, AU. |
+| `sunApparentEquatorialCoordinates(double jd)` | Sun apparent `EquatorialCoordinates` (**RA in degrees**, Dec degrees). |
 
 ```java
 EphemerisEngine e = new EphemerisEngineImpl();
@@ -137,7 +143,18 @@ double dPsi = e.getNutationInLongitude(jd);   // ~ -3.378"
 double dEps = e.getNutationInObliquity(jd);   // ~ -9.321"
 double T = e.T(jd);
 double sunL = e.sunMeanLongitude(T);
+
+// Chapter 18 — the Sun's apparent place (RA returned in DEGREES; /15 for hours)
+double appLong = e.sunApparentLongitude(T);            // ~ 230.25 deg
+EquatorialCoordinates sun = e.sunApparentEquatorialCoordinates(jd);
+double sunRaHours = sun.getRightAscension() / 15.0;    // ~ 15h11m
+double sunDec     = sun.getDeclinaison();              // ~ -17.81 deg
 ```
+
+> **HOT TIP:** `sunApparentEquatorialCoordinates` returns right ascension in **degrees**
+> (consistent with the ecliptic/galactic adapters and with `Precession`,
+> `AngularSeparation` and `RiseTransitSetCalculator`). Divide by 15 for hours. The
+> apparent RA/Dec use the *true* obliquity of date (mean obliquity plus the nutation term).
 
 ---
 
@@ -237,7 +254,114 @@ InterpolationData perihelion = iei.findExtremum(a, b, c); // (x = JD, y = min di
 
 ---
 
-## 9. Constants — `Constants`
+## 9. Precession — `Precession`
+
+`com.nzv.astro.ephemeris.Precession` / `impl.PrecessionImpl`. Rigorous reduction of
+equatorial coordinates between two equinoxes (Chapter 14). RA and Dec in **degrees**;
+epochs are decimal years.
+
+| Method | Returns |
+|---|---|
+| `precess(EquatorialCoordinates c, double fromEpoch, double toEpoch)` | Coordinates referred to `toEpoch` (RA normalised to [0,360)). |
+| `precessionalAngles(double fromEpoch, double toEpoch)` | `{zeta, z, theta}` in degrees. |
+
+```java
+Precession p = new PrecessionImpl();
+// Regulus from B1950.0 to J2000.0
+EquatorialCoordinates b1950 = new EquatorialCoordinates(151.42875, 12.2125);
+EquatorialCoordinates j2000 = p.precess(b1950, 1950.0, 2000.0);  // RA 152.0973°, Dec 11.9673°
+double[] angles = p.precessionalAngles(1950.0, 2000.0);          // {0.32015, 0.32021, 0.27834}°
+```
+
+> **HOT TIP:** this is precession only. To reproduce a catalogue position you also need
+> proper motion, nutation and aberration (Chapter 16) — precession alone leaves the star's
+> own motion uncorrected.
+
+---
+
+## 10. Angular Separation — `AngularSeparation` (static)
+
+`com.nzv.astro.ephemeris.coordinate.AngularSeparation`. Great-circle separation and
+relative position angle (Chapter 9). Inputs in **degrees**; works with any consistent
+spherical pair (equatorial or ecliptic).
+
+| Method | Returns |
+|---|---|
+| `between(EquatorialCoordinates a, EquatorialCoordinates b)` | Separation, degrees [0,180]. |
+| `between(double lon1, double lat1, double lon2, double lat2)` | Separation, degrees [0,180]. |
+| `positionAngle(EquatorialCoordinates a, EquatorialCoordinates b)` | Position angle of `b` w.r.t. `a`, degrees [0,360). |
+
+```java
+EquatorialCoordinates arcturus = new EquatorialCoordinates(213.9154, 19.1825);
+EquatorialCoordinates spica    = new EquatorialCoordinates(201.2983, -11.1614);
+double sep = AngularSeparation.between(arcturus, spica);          // 32.793°
+double pa  = AngularSeparation.positionAngle(arcturus, spica);    // 203.308°
+```
+
+---
+
+## 11. Stellar Magnitudes — `StellarMagnitudes` (static)
+
+`com.nzv.astro.ephemeris.StellarMagnitudes`. Pogson's relation and combined magnitudes
+(Chapter 38).
+
+| Member | Returns |
+|---|---|
+| `POGSON_RATIO` | Brightness ratio for one magnitude (~2.512). |
+| `brightnessRatio(double m1, double m2)` | Ratio b1/b2 = 10^(0.4 (m2 - m1)). |
+| `magnitudeDifference(double ratio)` | 2.5 log10(ratio); throws `IllegalArgumentException` if ratio <= 0. |
+| `combinedMagnitude(double m1, double m2)` / `combinedMagnitude(double... ms)` | Combined magnitude of a blended source. |
+
+```java
+double combined = StellarMagnitudes.combinedMagnitude(1.96, 2.89);  // 1.576
+double ratio    = StellarMagnitudes.brightnessRatio(0.0, 1.0);      // 2.5119
+double dm       = StellarMagnitudes.magnitudeDifference(100.0);     // 5.0
+```
+
+---
+
+## 12. Rising, Transit & Setting — `RiseTransitSetCalculator`
+
+`com.nzv.astro.ephemeris.RiseTransitSetCalculator` → returns `RiseTransitSet` (Chapter 42).
+First-approximation method: the body's apparent RA/Dec are treated as constant over the
+day (exact for stars, a good estimate for Sun/planets). Body RA in **degrees**, observer
+longitude positive **west**, Greenwich apparent sidereal time in **hours**. Times are UT
+decimal hours in [0,24).
+
+| Member | Returns |
+|---|---|
+| `STANDARD_ALTITUDE_STAR_PLANET` / `STANDARD_ALTITUDE_SUN` | Horizon altitudes -0.5667 / -0.8333 deg. |
+| `compute(body, observer, ast0h)` | `RiseTransitSet` using the star/planet horizon. |
+| `compute(body, observer, ast0h, standardAltitude)` | `RiseTransitSet` for a chosen horizon. |
+| `RiseTransitSet`: `getRiseTimeUT()`, `getTransitTimeUT()`, `getSetTimeUT()` | UT hours (NaN if no rise/set). |
+| `RiseTransitSet`: `getRiseAzimuth()`, `getSetAzimuth()`, `getTransitAltitude()` | Degrees. |
+| `RiseTransitSet`: `isCircumpolar()`, `isAlwaysBelowHorizon()` | Horizon-crossing flags. |
+
+```java
+// Sunrise / transit / sunset of the Sun from Uccle on 1978-11-13
+EphemerisEngine e = new EphemerisEngineImpl();
+MeeusEphemeris  m = new MeeusEphemerisImpl();
+double jd    = JulianDay.getJulianDayFromDateAsDouble(1978.1113);
+double ast0h = m.getApparentSiderealTimeAsHoursFromJulianDay(jd, new Sexagesimal(0,0,0));
+EquatorialCoordinates sun = e.sunApparentEquatorialCoordinates(jd);
+GeographicCoordinates uccle = new GeographicCoordinates(
+        Sexagesimal.sexagesimalToDecimal(new Sexagesimal(50,47,55)),
+        -(Sexagesimal.sexagesimalToDecimal(new Sexagesimal(0,17,25.94)) * 15));
+
+RiseTransitSet rts = new RiseTransitSetCalculator()
+        .compute(sun, uccle, ast0h, RiseTransitSetCalculator.STANDARD_ALTITUDE_SUN);
+double sunrise = rts.getRiseTimeUT();      // ~ 06:52 UT
+double noon    = rts.getTransitTimeUT();   // ~ 11:25 UT
+double sunset  = rts.getSetTimeUT();       // ~ 15:57 UT
+```
+
+> **HOT TIP:** feed `sunApparentEquatorialCoordinates` straight in — both use RA in degrees.
+> For circumpolar or never-rising bodies the rise/set times are `NaN` and the matching flag
+> is set; the transit time is always defined.
+
+---
+
+## 13. Constants — `Constants`
 
 | Constant | Value |
 |---|---|
@@ -250,20 +374,20 @@ InterpolationData perihelion = iei.findExtremum(a, b, c); // (x = JD, y = min di
 
 ---
 
-## 10. BUILD & DEPENDENCIES
+## 14. BUILD & DEPENDENCIES
 
 ```
-mvn clean verify            # compile + run the 43-test suite + build the jar
+mvn clean verify            # compile + run the 63-test suite + build the jar
 ```
 
 - **Java:** 17+   ·   **Build:** Maven 3.8+   ·   **Test:** JUnit 4.13.2
 - **Runtime dependency:** Apache Commons Math 3.6.1 (interpolation only)
 - **CI:** GitHub Actions, JDK 17 and 21 matrix (`.github/workflows/maven.yml`)
-- **Artifact:** `com.nzv.astro:meeus-engine:1.1.0`
+- **Artifact:** `com.nzv.astro:meeus-engine:1.2.0`
 
 ---
 
-## 11. END-TO-END EXAMPLE
+## 15. END-TO-END EXAMPLE
 
 ```java
 // Where is Saturn in the sky from Uccle on 1978-11-13 at 04:34 UT?
@@ -289,5 +413,5 @@ double apparent = new AtmosphericRefractionCalculatorImpl().getApparentElevation
 
 ---
 
-*EphemerisEngine 1.1.0 — formulae after J. Meeus, "Astronomical Formulae for
+*EphemerisEngine 1.2.0 — formulae after J. Meeus, "Astronomical Formulae for
 Calculators". Reference card generated June 2026.*

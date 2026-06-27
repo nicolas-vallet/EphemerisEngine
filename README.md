@@ -4,8 +4,9 @@ A Java implementation of the astronomical formulae of **Jean Meeus**, as describ
 in his book *Astronomical Formulae for Calculators*.
 
 The library is a pure calculation engine (no UI). It covers date and time handling,
-sidereal time, nutation, Delta-T, conversions between the main astronomical
-coordinate systems, atmospheric refraction and numerical interpolation.
+sidereal time, nutation, Delta-T, the Sun's apparent position, precession, conversions
+between the main astronomical coordinate systems, angular separation, stellar
+magnitudes, rising/transit/setting, atmospheric refraction and numerical interpolation.
 
 ## Features
 
@@ -14,8 +15,16 @@ coordinate systems, atmospheric refraction and numerical interpolation.
   (Ephemeris Time vs Universal Time) and UT <-> ET conversion.
 - **Celestial mechanics** — mean longitude/anomaly of the Sun and Moon, Moon's node
   longitude, elongation, nutation in longitude and obliquity, Earth-Moon distance.
+- **Solar coordinates** — the Sun's equation of centre, true and apparent longitude,
+  radius vector, mean obliquity of the ecliptic, and apparent geocentric right ascension
+  and declination.
+- **Precession** — rigorous reduction of equatorial coordinates between two equinoxes.
 - **Coordinate systems** — Equatorial, Ecliptic, Galactic, Horizontal, Geographic and
-  Geocentric coordinates, with adapters that convert between them.
+  Geocentric coordinates, with adapters that convert between them; great-circle angular
+  separation and relative position angle between two bodies.
+- **Rising, transit & setting** — first-approximation rise/transit/set times, azimuths
+  and transit altitude, with circumpolar / never-rises detection.
+- **Photometry** — Pogson's relation, brightness ratios and combined magnitudes.
 - **Atmospheric refraction** — true <-> apparent elevation, with optional
   temperature/pressure corrections.
 - **Interpolation** — 3- and 5-point interpolation, extremum finding and zero finding.
@@ -35,7 +44,7 @@ mvn clean verify
 ```
 
 This compiles the sources, runs the JUnit test suite and produces
-`target/meeus-engine-1.1.0.jar`.
+`target/meeus-engine-1.2.0.jar`.
 
 ## Quick start
 

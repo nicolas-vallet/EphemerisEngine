@@ -106,4 +106,75 @@ public interface EphemerisEngine {
 	 */
 	public double getNutationInObliquity(double julianDay);
 
+	// ---------------------------------------------------------------------
+	// Chapter 18 - Solar Coordinates
+	// ---------------------------------------------------------------------
+
+	/**
+	 * Returns the mean obliquity of the ecliptic (epsilon zero) for a given
+	 * instant, following the polynomial of Meeus' <i>Astronomical Formulae for
+	 * Calculators</i>, chapter 18.
+	 * 
+	 * @param T the time expressed in Julian centuries from 0.5 January 1900.
+	 * @return the mean obliquity of the ecliptic, expressed in degrees.
+	 */
+	public double meanObliquityOfEcliptic(double T);
+
+	/**
+	 * Returns the Sun's equation of centre for a given instant (chapter 18).
+	 * 
+	 * @param T the time expressed in Julian centuries from 0.5 January 1900.
+	 * @return the equation of centre, expressed in degrees.
+	 */
+	public double sunEquationOfCenter(double T);
+
+	/**
+	 * Returns the Sun's <b>true</b> geometric longitude for a given instant: the
+	 * mean longitude corrected by the equation of centre (chapter 18).
+	 * 
+	 * @param T the time expressed in Julian centuries from 0.5 January 1900.
+	 * @return the Sun's true longitude, expressed in degrees in the range [0, 360).
+	 */
+	public double sunTrueLongitude(double T);
+
+	/**
+	 * Returns the Sun's true anomaly for a given instant: the mean anomaly
+	 * corrected by the equation of centre (chapter 18).
+	 * 
+	 * @param T the time expressed in Julian centuries from 0.5 January 1900.
+	 * @return the Sun's true anomaly, expressed in degrees in the range [0, 360).
+	 */
+	public double sunTrueAnomaly(double T);
+
+	/**
+	 * Returns the Sun's <b>apparent</b> longitude for a given instant: the true
+	 * longitude corrected for nutation and aberration (chapter 18).
+	 * 
+	 * @param T the time expressed in Julian centuries from 0.5 January 1900.
+	 * @return the Sun's apparent longitude, expressed in degrees in the range [0, 360).
+	 */
+	public double sunApparentLongitude(double T);
+
+	/**
+	 * Returns the Sun's radius vector (Earth-Sun distance) for a given instant,
+	 * expressed in astronomical units (chapter 18).
+	 * 
+	 * @param T the time expressed in Julian centuries from 0.5 January 1900.
+	 * @return the Sun's radius vector, expressed in astronomical units.
+	 */
+	public double sunRadiusVector(double T);
+
+	/**
+	 * Returns the Sun's apparent geocentric equatorial coordinates (right
+	 * ascension and declination) for a given instant (chapter 18). The right
+	 * ascension is expressed in <b>degrees</b> in the range [0, 360); divide by 15
+	 * to obtain hours.
+	 * 
+	 * @param julianDay the considered instant as Julian day.
+	 * @return the Sun's apparent equatorial coordinates (right ascension in
+	 *         degrees, declination in degrees).
+	 */
+	public com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates sunApparentEquatorialCoordinates(
+			double julianDay);
+
 }
