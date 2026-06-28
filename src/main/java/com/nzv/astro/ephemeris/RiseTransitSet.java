@@ -2,8 +2,10 @@ package com.nzv.astro.ephemeris;
 
 /**
  * Holds the result of a rising / transit / setting computation for a celestial
- * body, as produced by {@link RiseTransitSetCalculator} (chapter 42 of Jean
- * Meeus' <i>Astronomical Formulae for Calculators</i>).
+ * body, as produced by {@link RiseTransitSetCalculator}. This is a supplementary
+ * utility built from the standard rising/transit/setting method; it is not one of
+ * the chapters of the reference edition of Meeus' <i>Astronomical Formulae for
+ * Calculators</i> used by this project.
  * <p>
  * All times are expressed as Universal Time in decimal hours in the range
  * [0, 24). When the body never crosses the chosen horizon the corresponding

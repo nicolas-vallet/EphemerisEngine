@@ -303,7 +303,7 @@ double pa  = AngularSeparation.positionAngle(arcturus, spica);    // 203.308°
 ## 11. Stellar Magnitudes — `StellarMagnitudes` (static)
 
 `com.nzv.astro.ephemeris.StellarMagnitudes`. Pogson's relation and combined magnitudes
-(Chapter 38).
+(Chapter 37).
 
 | Member | Returns |
 |---|---|
@@ -322,7 +322,7 @@ double dm       = StellarMagnitudes.magnitudeDifference(100.0);     // 5.0
 
 ## 12. Rising, Transit & Setting — `RiseTransitSetCalculator`
 
-`com.nzv.astro.ephemeris.RiseTransitSetCalculator` → returns `RiseTransitSet` (Chapter 42).
+`com.nzv.astro.ephemeris.RiseTransitSetCalculator` → returns `RiseTransitSet` (supplementary utility — not a chapter of the reference edition).
 First-approximation method: the body's apparent RA/Dec are treated as constant over the
 day (exact for stars, a good estimate for Sun/planets). Body RA in **degrees**, observer
 longitude positive **west**, Greenwich apparent sidereal time in **hours**. Times are UT
@@ -428,7 +428,7 @@ engine.moonEquatorialHorizontalParallaxe(T);//    0.930249° (book 0.930249)
 
 ---
 
-## 15. Moon & Sun Phenomena — `EphemerisEngine` (Ch. 31, 13, 32, 20, 19)
+## 15. Moon & Sun Phenomena — `EphemerisEngine` (Ch. 31, 13, 32, 20, 19, 21, 29)
 
 Derived phenomena built on the Sun (Ch. 18) and Moon (Ch. 30) positions. All angles in degrees;
 phase/equinox methods return a Julian Ephemeris Day.
@@ -443,6 +443,8 @@ phase/equinox methods return a Julian Ephemeris Day.
 | `moonPhaseJulianDay(year, MoonPhase)` | JDE of the New/First/Full/Last phase nearest `year` (Ch. 32). |
 | `sunRectangularEquatorialCoordinates(jd)` | `double[]{X,Y,Z}` (AU), mean equinox of date (Ch. 19). |
 | `sunRectangularEquatorialCoordinates(jd, equinox)` | `double[]{X,Y,Z}` (AU), reduced to `equinox` (e.g. 1950.0). |
+| `equationOfTime(jd)` | equation of time in **minutes of time** (Ch. 21). |
+| `moonTopocentricEquatorialCoordinates(jd, observer, height, θ₀)` | Moon topocentric α/δ (deg) for an observer (Ch. 29). |
 
 ```java
 EphemerisEngine e = new EphemerisEngineImpl();
@@ -451,6 +453,17 @@ e.moonBrightLimbPositionAngle(jd);                          // χ ≈ 250.38° (
 e.equinoxSolsticeJulianDay(1979, Season.SEPTEMBER_EQUINOX); // 2444140.137  (book Example 20.a)
 e.moonPhaseJulianDay(1977.13, MoonPhase.NEW_MOON);          // 2443192.6525 (book Example 32.a)
 double[] xyz = e.sunRectangularEquatorialCoordinates(2443824.5, 1950.0); // {-0.65138, -0.68379, -0.29650}
+e.equationOfTime(2443529.5);                                // -11.171 min  (book -11m10.3s, Example 21.b)
+```
+
+Parallax reduction lives in the static `ParallaxCorrection` (Ch. 29):
+
+```java
+// rigorous topocentric reduction (use this form for the Moon)
+EquatorialCoordinates topo = ParallaxCorrection.topocentric(alphaDeg, deltaDeg, parallaxDeg,
+        rhoSinPhiPrime, rhoCosPhiPrime, hourAngleDeg);
+ParallaxCorrection.topocentricApproximate(...);             // non-rigorous (Sun/planets/comets)
+ParallaxCorrection.parallaxFromDistanceInDegrees(0.3757);   // π from distance (AU), formula 29.1
 ```
 
 > **HOT TIP:** the elongation chapters (31, 13) use the Sun's **true** longitude
@@ -458,6 +471,10 @@ double[] xyz = e.sunRectangularEquatorialCoordinates(2443824.5, 1950.0); // {-0.
 > (`sunApparentLongitude`) — the apparent place is what defines the season. Two static helpers,
 > `EphemerisEngineImpl.phaseAngleFromCoordinates(...)` and `.brightLimbPositionAngle(...)`, expose
 > the pure geometry for validating against externally supplied (A.E.) coordinates.
+>
+> **HOT TIP (Ch. 29):** for the **Moon** always use the rigorous `topocentric` form — the
+> non-rigorous one can be off by tens of arcseconds. For the Sun, planets and comets either form is
+> fine. The geocentric hour angle is H = θ₀ − longitude(west) − α.
 
 ---
 

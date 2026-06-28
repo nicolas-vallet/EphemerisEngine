@@ -11,9 +11,10 @@ import com.nzv.astro.ephemeris.coordinate.GeographicCoordinates;
 import com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates;
 
 /**
- * Computes the times of rising, upper transit and setting of a celestial body,
- * following chapter 42 of Jean Meeus' <i>Astronomical Formulae for
- * Calculators</i>.
+ * Computes the times of rising, upper transit and setting of a celestial body
+ * using the standard rising/transit/setting method. This is a supplementary
+ * utility: it is not one of the chapters of the reference edition of Meeus'
+ * <i>Astronomical Formulae for Calculators</i> used by this project.
  * <p>
  * This is the first-approximation form of the method: the body's apparent right
  * ascension and declination are treated as constant over the day. That is exact
