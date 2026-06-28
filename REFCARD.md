@@ -2,7 +2,7 @@
 
 ### The astronomical formulae of Jean Meeus, in Java
 
-> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Solar Coordinates &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Precession &nbsp;·&nbsp; Angular Separation &nbsp;·&nbsp; Stellar Magnitudes &nbsp;·&nbsp; Rise / Transit / Set &nbsp;·&nbsp; Apparent Place of a Star &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
+> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Solar Coordinates &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Precession &nbsp;·&nbsp; Angular Separation &nbsp;·&nbsp; Stellar Magnitudes &nbsp;·&nbsp; Rise / Transit / Set &nbsp;·&nbsp; Apparent Place of a Star &nbsp;·&nbsp; Position of the Moon &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
 
 ---
 
@@ -396,7 +396,39 @@ EquatorialCoordinates apparent =
 
 ---
 
-## 14. Constants — `Constants`
+## 14. Position of the Moon — `EphemerisEngine` (Ch. 30)
+
+Geocentric longitude, latitude and equatorial horizontal parallax of the Moon, via the abridged
+AFFC chapter-30 theory. Accuracy ~10″ longitude, 3″ latitude, 0.2″ parallax. All angles in degrees.
+
+| Method | Returns |
+|---|---|
+| `moonGeocentricLongitude(T)` | true longitude λ of date (deg, normalised). |
+| `moonGeocentricLatitude(T)` | latitude β of date (deg). |
+| `moonEquatorialHorizontalParallaxe(T)` | horizontal parallax π (deg). |
+| `moonApparentEquatorialCoordinates(jd)` | apparent RA/Dec (deg): adds Δψ, rotates with true obliquity of date. |
+| `moonGeocentricEclipticCoordinates(jd)` | true ecliptic λ, β of date. |
+| `moonDistanceToEarthInKilometers(jd)` | Earth–Moon distance (km), from π. |
+
+The series live in **external CSV tables** under `resources/.../lunar/affc-1900/`, parsed by a
+table-driven evaluator (`com.nzv.astro.ephemeris.lunar`). Selecting a model is constructor-level:
+
+```java
+EphemerisEngine engine = new EphemerisEngineImpl();              // default: AFFC_1900
+// or: new EphemerisEngineImpl(MoonModels.AFFC_1900.getModel());
+double T = engine.T(2444214.5);                                 // 1979 Dec 7.0 ET
+engine.moonGeocentricLongitude(T);          //  113.6603°   (book 113.6604)
+engine.moonGeocentricLatitude(T);           //   -3.16367°  (AE -3°09'49".22)
+engine.moonEquatorialHorizontalParallaxe(T);//    0.930249° (book 0.930249)
+```
+
+> **HOT TIP:** the `T`-based methods give the **true** position of date; only the `jd`-based
+> `moonApparentEquatorialCoordinates` adds nutation + true obliquity. Validate β against the
+> Astronomical Ephemeris value, not the book's printed example B (which has a ~2″ slip).
+
+---
+
+## 15. Constants — `Constants`
 
 | Constant | Value |
 |---|---|
@@ -409,20 +441,20 @@ EquatorialCoordinates apparent =
 
 ---
 
-## 15. BUILD & DEPENDENCIES
+## 16. BUILD & DEPENDENCIES
 
 ```
-mvn clean verify            # compile + run the 68-test suite + build the jar
+mvn clean verify            # compile + run the 82-test suite + build the jar
 ```
 
 - **Java:** 17+   ·   **Build:** Maven 3.8+   ·   **Test:** JUnit 4.13.2
 - **Runtime dependency:** Apache Commons Math 3.6.1 (interpolation only)
 - **CI:** GitHub Actions, JDK 17 and 21 matrix (`.github/workflows/maven.yml`)
-- **Artifact:** `com.nzv.astro:meeus-engine:1.3.0`
+- **Artifact:** `com.nzv.astro:meeus-engine:1.4.0`
 
 ---
 
-## 16. END-TO-END EXAMPLE
+## 17. END-TO-END EXAMPLE
 
 ```java
 // Where is Saturn in the sky from Uccle on 1978-11-13 at 04:34 UT?
@@ -448,5 +480,5 @@ double apparent = new AtmosphericRefractionCalculatorImpl().getApparentElevation
 
 ---
 
-*EphemerisEngine 1.3.0 — formulae after J. Meeus, "Astronomical Formulae for
+*EphemerisEngine 1.4.0 — formulae after J. Meeus, "Astronomical Formulae for
 Calculators". Reference card generated June 2026.*

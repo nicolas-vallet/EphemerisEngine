@@ -1,7 +1,7 @@
 # EphemerisEngine vs. *Astronomical Formulae for Calculators* — Chapter-by-Chapter Coverage Report
 
 **Reference book:** Jean Meeus, *Astronomical Formulae for Calculators*, 4th edition (Willmann-Bell, 1988) — 43 chapters.
-**Library under review:** `com.nzv.astro:meeus-engine:1.3.0` (the EphemerisEngine project).
+**Library under review:** `com.nzv.astro:meeus-engine:1.4.0` (the EphemerisEngine project).
 **What the gauge means:** percentage of each chapter's formulae that the library actually exposes as callable, finished computations. A chapter that only supplies *inputs* (e.g. mean elements) to a calculation the book carries to completion is scored partial, not full.
 
 > Gauge legend: `██████████` = fully implemented · `░░░░░░░░░░` = not implemented.
@@ -11,6 +11,10 @@
 > **9 Angular Separation** (0% → 90%), **38 Stellar Magnitudes** (10% → 100%),
 > **6 Observer coordinates** (20% → 100%) and **42 Rising/Transit/Setting** (30% → 80%).
 >
+> **Version note (1.4.0):** Phase 2 is complete. **30 Position of the Moon** moves 20% → 90%:
+> the geocentric longitude, latitude and parallax are implemented via a table-driven evaluator
+> (external CSV coefficient tables), validated on AFFC Example 30.a.
+
 > **Version note (1.3.0):** Phase 2, step 1 (the star keystone) is complete.
 > **16 Apparent Place of a Star** moves 25% → 95%: proper motion, precession, nutation
 > and annual aberration (with the eccentricity terms) are now composed into a single
@@ -25,14 +29,13 @@ calendar, coordinate and solar-position foundations**, plus precession, interpol
 refraction and the common positional utilities (angular separation, photometry,
 rise/transit/set) and the apparent place of a star. It still stops before most of the
 **physical-ephemeris payload**: the
-full Moon position, the planets, comets, eclipses and the remaining phenomenon chapters
-are absent. For the Moon the library computes the *mean elements* but not the periodic
-series, so that chapter remains partial.
+the planets, comets, eclipses and the remaining phenomenon chapters are absent — but the
+Moon's geocentric position (Chapter 30) is now implemented via a table-driven series.
 
 | Coverage band | Chapters | Count |
 |---|---|---|
-| **Strong (≥ 90%)** | 2 Interpolation · 3 Julian Day · 4 Easter · 5 ET/UT · 6 Observer coords · 7 Sidereal Time · 8 Coordinate Transformation · 9 Angular Separation · 14 Precession · 15 Nutation · 16 Apparent place of a star · 18 Solar Coordinates · 38 Stellar Magnitudes · 41 Refraction | 14 |
-| **Partial (10–80%)** | 1 Hints · 29 Parallax · 30 Moon position · 40 Regression · 42 Rising/Transit/Setting | 5 |
+| **Strong (≥ 90%)** | 2 Interpolation · 3 Julian Day · 4 Easter · 5 ET/UT · 6 Observer coords · 7 Sidereal Time · 8 Coordinate Transformation · 9 Angular Separation · 14 Precession · 15 Nutation · 16 Apparent place of a star · 18 Solar Coordinates · 30 Position of the Moon · 38 Stellar Magnitudes · 41 Refraction | 15 |
+| **Partial (10–80%)** | 1 Hints · 29 Parallax · 40 Regression · 42 Rising/Transit/Setting | 4 |
 | **None (0%)** | 10–13, 17, 19–28, 31–37, 39, 43 | 24 |
 
 **Overall functional coverage: roughly one third of the book**, now spanning the entire
@@ -75,7 +78,7 @@ stellar magnitudes (38), refraction (41) and a strong partial on rising/transit/
 | 27 | Planets in Perihelion and Aphelion | MEDIUM | `░░░░░░░░░░` 0% |
 | 28 | Passages Through the Nodes | MEDIUM | `░░░░░░░░░░` 0% |
 | 29 | Correction for Parallax | MEDIUM | `█▌░░░░░░░░` 15% |
-| 30 | Position of the Moon | HIGH | `██░░░░░░░░` 20% |
+| 30 | Position of the Moon | HIGH | `█████████░` 90% |
 | 31 | Illuminated Fraction of the Moon's Disk | LOW | `░░░░░░░░░░` 0% |
 | 32 | Phases of the Moon | MEDIUM | `░░░░░░░░░░` 0% |
 | 33 | Eclipses | HIGH | `░░░░░░░░░░` 0% |
@@ -242,7 +245,7 @@ stellar magnitudes (38), refraction (41) and a strong partial on rising/transit/
 ### 30 — Position of the Moon · Complexity: HIGH · `██░░░░░░░░` 20%
 **Formulae.** Moon's mean elements (L′, M′, F, D, Ω) followed by long periodic series for longitude, latitude, and parallax → geocentric position and distance.
 **Applications.** Phases, eclipses, occultations, the Moon's place in the sky.
-**Coverage.** The library supplies all the mean elements and an Earth–Moon distance helper, but none of the periodic terms or the finished position — so only the easy front end of a hard chapter is done. This is the Phase 2 Moon keystone.
+**Coverage.** *Implemented in 1.4.0.* Geocentric longitude, latitude and equatorial horizontal parallax are produced by a table-driven evaluator (`com.nzv.astro.ephemeris.lunar`) reading external CSV coefficient tables for the AFFC-1900 model; `jd`-based conveniences give apparent RA/Dec (nutation + true obliquity of date), geocentric ecliptic coordinates, and the Earth–Moon distance. Validated on Example 30.a (λ and π vs the book; β vs the Astronomical Ephemeris value). The design supports dropping in a higher-precision model as data.
 
 ### 31 — Illuminated Fraction of the Moon's Disk · Complexity: LOW · `░░░░░░░░░░` 0%
 **Formulae.** Phase angle and illuminated fraction from Sun–Moon geometry.

@@ -1,0 +1,11 @@
+applies_to,coefficient,arg_const,arg_T,arg_T2,kind
+Lprime,0.000233,51.2,20.2,0.0,linear
+M,-0.001778,51.2,20.2,0.0,linear
+Mprime,0.000817,51.2,20.2,0.0,linear
+D,0.002011,51.2,20.2,0.0,linear
+Lprime|Mprime|D|F,0.003964,346.56,132.87,-0.0091731,linear
+Lprime,0.001964,,,,sinOmega
+Mprime,0.002541,,,,sinOmega
+D,0.001964,,,,sinOmega
+F,-0.024691,,,,sinOmega
+F,-0.004328,275.05,-2.3,0.0,sinOmegaPlus

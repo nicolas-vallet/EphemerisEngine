@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.4.0 — Phase 2 (step 2): the Moon keystone
+
+This release completes Phase 2 with **Chapter 30 — Position of the Moon**, implemented through a
+new table-driven evaluator so a higher-precision lunar model can later be added as data, not code.
+The suite grows from 68 to 82 tests, all passing.
+
+### New features
+
+- **Chapter 30 — Position of the Moon.** `EphemerisEngine` gains `moonGeocentricLongitude(T)`,
+  `moonGeocentricLatitude(T)` and `moonEquatorialHorizontalParallaxe(T)` (true position of date),
+  plus the `jd`-based conveniences `moonApparentEquatorialCoordinates`,
+  `moonGeocentricEclipticCoordinates` and `moonDistanceToEarthInKilometers`. The apparent
+  equatorial method adds the nutation in longitude and rotates with the true obliquity of date.
+  Accuracy follows the AFFC abridged theory (~10″ longitude, 3″ latitude, 0.2″ parallax).
+- **Table-driven lunar model** (`com.nzv.astro.ephemeris.lunar`): `PeriodicTerm`,
+  `MoonPositionModel`, `TableDrivenMoonModel`, `MoonTableLoader` and a `MoonModels` registry. The
+  AFFC-1900 coefficients ship as external CSV resources
+  (`resources/com/nzv/astro/ephemeris/lunar/affc-1900/`). A different model is a sibling resource
+  folder selected at construction: `new EphemerisEngineImpl(MoonModels.X.getModel())`.
+
+### Validation
+
+- Anchored on Meeus' worked Example 30.a (1979 Dec. 7.0 ET): longitude and parallax match the
+  book; latitude is validated against the Astronomical Ephemeris value (the book's printed
+  example B carries a ~2″ hand-arithmetic slip).
+
 ## 1.3.0 — Phase 2 (step 1): the star keystone
 
 This release implements the first of the two Phase 2 keystones, **Chapter 16 — Apparent

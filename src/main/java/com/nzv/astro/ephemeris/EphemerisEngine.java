@@ -82,11 +82,59 @@ public interface EphemerisEngine {
 	 */
 	public double moonMeanDistanceToAscendantNode(double T);
 
-	// public double moonGeocentricLongitude(double T);
+	/**
+	 * Returns the Moon's geocentric longitude (lambda), referred to the mean equinox of date,
+	 * following chapter 30 of AFFC.
+	 *
+	 * @param T the time in Julian centuries from 1900.0.
+	 * @return the geocentric longitude in degrees, normalised to [0, 360).
+	 */
+	public double moonGeocentricLongitude(double T);
 
-	// public double moonGeocentricLatitude(double T);
+	/**
+	 * Returns the Moon's geocentric latitude (beta), referred to the mean equinox of date.
+	 *
+	 * @param T the time in Julian centuries from 1900.0.
+	 * @return the geocentric latitude in degrees.
+	 */
+	public double moonGeocentricLatitude(double T);
 
-	// public double moonEquatorialHorizontalParallaxe(double T);
+	/**
+	 * Returns the Moon's equatorial horizontal parallax (pi).
+	 *
+	 * @param T the time in Julian centuries from 1900.0.
+	 * @return the equatorial horizontal parallax in degrees.
+	 */
+	public double moonEquatorialHorizontalParallaxe(double T);
+
+	/**
+	 * Returns the Moon's apparent equatorial coordinates at a given instant: the geocentric
+	 * position of date with nutation in longitude applied and rotated to the equator using the
+	 * true obliquity of date.
+	 *
+	 * @param julianDay the considered instant as a Julian day.
+	 * @return the apparent equatorial coordinates (right ascension and declination, in degrees).
+	 */
+	public com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates moonApparentEquatorialCoordinates(
+			double julianDay);
+
+	/**
+	 * Returns the Moon's geocentric ecliptic coordinates (true longitude and latitude of date).
+	 *
+	 * @param julianDay the considered instant as a Julian day.
+	 * @return the geocentric ecliptic coordinates in degrees.
+	 */
+	public com.nzv.astro.ephemeris.coordinate.impl.EclipticCoordinates moonGeocentricEclipticCoordinates(
+			double julianDay);
+
+	/**
+	 * Returns the distance between the centres of the Earth and the Moon at a given instant,
+	 * derived from the equatorial horizontal parallax.
+	 *
+	 * @param julianDay the considered instant as a Julian day.
+	 * @return the Earth-Moon distance in kilometers.
+	 */
+	public double moonDistanceToEarthInKilometers(double julianDay);
 
 	public double earthDistanceToMoonInKilometers(double moonEquatorialHorizontalParallaxe);
 
