@@ -9,8 +9,8 @@
 | Phase | Status | Chapters | Notes |
 |---|---|---|---|
 | **1 — Enablers & quick wins** | ✅ **DONE (v1.2.0)** | 6, 9, 14, 18, 38, 42 | All shipped with regression tests; 43 → 63 tests. |
-| **2 — The two keystones** | 🟦 **In progress (v1.3.0)** | 16 ✅, 30 | Star keystone (16) shipped: proper motion + precession + nutation + aberration composed. Moon keystone (30) remaining. |
-| **3 — Harvest** | ⬜ Not started | 13, 22, 29, 31, 32, 39 (+33 optional) | Becomes cheap once Phase 2 lands. |
+| **2 — The two keystones** | ✅ **Done (v1.4.0)** | 16 ✅, 30 ✅ | Star keystone (16) and Moon keystone (30, table-driven series) both shipped. |
+| **3 — Harvest** | ⬜ Next | 13, 22, 29, 31, 32, 39 (+33 optional) | Now unblocked — Phase 2 has landed. |
 | *Deferred* | ⬜ Out of scope | 23–28, 34–36, 43 | Planetary suite. |
 
 **What changed in v1.2.0 (Phase 1):**
@@ -37,12 +37,12 @@ Chapters positioned by implementation effort against value (with the Moon and st
 
 | | **Low effort** | **High effort** |
 |---|---|---|
-| **High value** | **Quick wins** — 18 Solar coordinates ✅ · 9 Angular separation ✅ · 42 Rising/transit/setting ✅ · 38 Stellar magnitudes ✅ · 6 Observer coordinates ✅ · 14 Precession ✅ | **Big bets** — 30 Position of the Moon ★★ · 16 Apparent place of a star ★★ ✅ · 33 Eclipses |
+| **High value** | **Quick wins** — 18 Solar coordinates ✅ · 9 Angular separation ✅ · 42 Rising/transit/setting ✅ · 38 Stellar magnitudes ✅ · 6 Observer coordinates ✅ · 14 Precession ✅ | **Big bets** — 30 Position of the Moon ★★ ✅ · 16 Apparent place of a star ★★ ✅ · 33 Eclipses |
 | **Low value** | **Fill-ins** — 31 Illuminated fraction (Moon) · 32 Phases of the Moon · 13 Bright-limb angle · 29 Parallax (topocentric Moon) · 21 Equation of time | **Defer** — 39 Binary stars · 22 Equation of Kepler · 23+ Planetary suite (Ch 23–28, 34–36, 43) |
 
 ★★ = the two keystones.
 
-Track legend: Moon track = Ch 13, 29, 30, 31, 32 · Star track = Ch 9 ✅, 14 ✅, 16 ✅, 38 ✅, 39 · Shared/deferred = Ch 18 ✅, 21, 22, 23+, 33, 42 ✅, 6 ✅.
+Track legend: Moon track = Ch 13, 29, 30 ✅, 31, 32 · Star track = Ch 9 ✅, 14 ✅, 16 ✅, 38 ✅, 39 · Shared/deferred = Ch 18 ✅, 21, 22, 23+, 33, 42 ✅, 6 ✅.
 
 ---
 
@@ -61,15 +61,15 @@ This phase shipped immediately useful features while quietly building the substr
 
 ---
 
-## Phase 2 — The two keystones 🟦 IN PROGRESS (step 1 done in v1.3.0)
+## Phase 2 — The two keystones ✅ DONE (v1.4.0)
 *High effort, high value — the stated priority.*
 
 These are the marquee deliverables. Each is genuinely laborious, but Phase 1 has removed the blockers.
 
-- **Ch 30 — Position of the Moon.** Transcribe and validate the periodic series for longitude, latitude and parallax on top of the mean elements already present, yielding the Moon's geocentric position and distance. This is the keystone that unlocks the entire Moon track.
+- ✅ **Ch 30 — Position of the Moon (DONE, v1.4.0).** Geocentric longitude, latitude and parallax built on the mean elements via a **table-driven evaluator** (`com.nzv.astro.ephemeris.lunar`) reading external CSV coefficient tables (AFFC-1900 model), plus `jd`-based apparent RA/Dec, ecliptic coordinates and Earth–Moon distance. Validated on Example 30.a. The table-driven design lets a higher-precision model be added later as data, not code. *Note:* the rise/transit/set iterative Moon refinement was deliberately deferred to Phase 3.
 - ✅ **Ch 16 — Apparent Place of a Star (DONE, v1.3.0).** Implemented as `ApparentPlace`/`ApparentPlaceImpl`, composing precession (Ch 14) + nutation (Ch 15) + annual aberration with the Earth-orbit eccentricity terms (using the Sun's true longitude from Ch 18) + proper motion (a plain coordinate rate in arcsec/year). Validated on Theta Persei reduced to the house date 1978-11-13, with the nutation and aberration components cross-checked term by term.
 
-**Exit state (step 1):** the star track's hard core is done. Once Ch 30 (Moon) lands in step 2, both priority tracks are complete and the remaining harvest chapters become cheap.
+**Exit state — achieved:** both priority tracks' hard cores are done. The Moon and star positions are solved, so the remaining harvest chapters (Phase 3) collapse to short geometric additions.
 
 ---
 
@@ -92,7 +92,7 @@ Each of these was "high effort" only because it presupposed a Moon or Sun positi
 
 **Effort is dominated by data entry and verification, not algorithm design.** The lunar and solar series are long coefficient tables that must be transcribed exactly. Budget the time accordingly, and lean on the fact that Meeus prints a fully worked numerical example for nearly every chapter.
 
-**Make each chapter regression-proof before moving on.** The library ships a 68-test suite built around canonical dates like `1978.1113`. The discipline that makes this plan low-risk is adding each chapter's book example as a regression test *before* moving to the next, so a transcription slip in one coefficient surfaces immediately rather than three chapters later. Phase 1 followed this discipline: every new chapter landed with its worked example (or an independent physical/round-trip check) as a test.
+**Make each chapter regression-proof before moving on.** The library ships an 82-test suite built around canonical dates like `1978.1113`. The discipline that makes this plan low-risk is adding each chapter's book example as a regression test *before* moving to the next, so a transcription slip in one coefficient surfaces immediately rather than three chapters later. Phase 1 followed this discipline: every new chapter landed with its worked example (or an independent physical/round-trip check) as a test.
 
 ---
 
@@ -101,6 +101,6 @@ Each of these was "high effort" only because it presupposed a Moon or Sun positi
 | Phase | Theme | Chapters | Effort | Status | Unlocks |
 |---|---|---|---|---|---|
 | **1** | Enablers & quick wins | 6, 9, 14, 18, 38, 42 | Low–medium | ✅ Done (v1.2.0) | The substrate for both keystones |
-| **2** | The two keystones | 16 ✅, 30 | High | 🟦 In progress (v1.3.0) | Both priority tracks' hard core |
-| **3** | Harvest | 13, 22, 29, 31, 32, 39 (+33 optional) | Low (post-keystone) | ⬜ | The derived Moon and star phenomena |
+| **2** | The two keystones | 16 ✅, 30 ✅ | High | ✅ Done (v1.4.0) | Both priority tracks' hard core |
+| **3** | Harvest | 13, 22, 29, 31, 32, 39 (+33 optional) | Low (post-keystone) | ⬜ Next | The derived Moon and star phenomena |
 | *Deferred* | Planetary suite | 23–28, 34–36, 43 | High | ⬜ | (Out of scope for a Moon/star focus) |

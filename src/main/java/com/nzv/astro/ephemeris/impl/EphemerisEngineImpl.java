@@ -4,6 +4,7 @@ import static java.lang.Math.asin;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+import static java.lang.Math.tan;
 import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
 
@@ -11,6 +12,21 @@ import com.nzv.astro.ephemeris.Constants;
 import com.nzv.astro.ephemeris.EphemerisEngine;
 
 public class EphemerisEngineImpl implements EphemerisEngine {
+
+	private final com.nzv.astro.ephemeris.lunar.MoonPositionModel moonModel;
+
+	/** Creates an engine using the default Moon model (AFFC chapter 30, epoch 1900.0). */
+	public EphemerisEngineImpl() {
+		this(com.nzv.astro.ephemeris.lunar.MoonModels.AFFC_1900.getModel());
+	}
+
+	/**
+	 * Creates an engine using the supplied Moon model, allowing a higher-precision model to be
+	 * substituted for the chapter-30 default.
+	 */
+	public EphemerisEngineImpl(com.nzv.astro.ephemeris.lunar.MoonPositionModel moonModel) {
+		this.moonModel = moonModel;
+	}
 
 	@Override
 	public double T(double julianDay) {
@@ -215,6 +231,53 @@ public class EphemerisEngineImpl implements EphemerisEngine {
 			result += 360d;
 		}
 		return result;
+	}
+
+
+	@Override
+	public double moonGeocentricLongitude(double T) {
+		return moonModel.geocentricLongitude(T);
+	}
+
+	@Override
+	public double moonGeocentricLatitude(double T) {
+		return moonModel.geocentricLatitude(T);
+	}
+
+	@Override
+	public double moonEquatorialHorizontalParallaxe(double T) {
+		return moonModel.horizontalParallax(T);
+	}
+
+	@Override
+	public com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates moonApparentEquatorialCoordinates(
+			double julianDay) {
+		double T = T(julianDay);
+		// Apparent longitude of date: true longitude plus the nutation in longitude.
+		double lambda = moonModel.geocentricLongitude(T) + getNutationInLongitude(julianDay) / 3600.0d;
+		double beta = moonModel.geocentricLatitude(T);
+		// True obliquity of date.
+		double epsilon = meanObliquityOfEcliptic(T) + getNutationInObliquity(julianDay) / 3600.0d;
+		double l = toRadians(lambda);
+		double b = toRadians(beta);
+		double e = toRadians(epsilon);
+		double alpha = toDegrees(atan2(sin(l) * cos(e) - tan(b) * sin(e), cos(l)));
+		double delta = toDegrees(asin(sin(b) * cos(e) + cos(b) * sin(e) * sin(l)));
+		return new com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates(
+				normalizeDegrees(alpha), delta);
+	}
+
+	@Override
+	public com.nzv.astro.ephemeris.coordinate.impl.EclipticCoordinates moonGeocentricEclipticCoordinates(
+			double julianDay) {
+		double T = T(julianDay);
+		return new com.nzv.astro.ephemeris.coordinate.impl.EclipticCoordinates(
+				moonModel.geocentricLongitude(T), moonModel.geocentricLatitude(T));
+	}
+
+	@Override
+	public double moonDistanceToEarthInKilometers(double julianDay) {
+		return earthDistanceToMoonInKilometers(moonModel.horizontalParallax(T(julianDay)));
 	}
 
 }
