@@ -1,5 +1,41 @@
 # Changelog
 
+## 1.6.0 — Phase 3 (step 2): Equation of Time, Parallax, and edition re-anchoring
+
+This release adds **Chapter 21** (Equation of Time) and **Chapter 29** (Correction for Parallax), and
+re-anchors the project's chapter numbering to the actual 39-chapter reference edition. The suite
+grows from 94 to 102 tests, all passing.
+
+### New features
+
+- **Chapter 21 — Equation of Time.** `equationOfTime(jd)` returns the value in minutes of time from
+  W. M. Smart's self-contained series (formula 21.1), built on the Chapter-18 solar elements. The
+  static `equationOfTimeFromApparentValues(θ₀, αSun, ΔT)` reproduces the A.E.-based form at the head
+  of the chapter. Validated on Examples 21.a (−11ᵐ09.7ˢ) and 21.b (−11ᵐ10.3ˢ).
+- **Chapter 29 — Correction for Parallax.** New `ParallaxCorrection` static utility:
+  `parallaxFromDistanceInDegrees` (29.1), the rigorous `topocentric` (29.2/29.3, required for the
+  Moon) and the non-rigorous `topocentricApproximate` (29.4/29.5). Plus the Moon convenience
+  `moonTopocentricEquatorialCoordinates(jd, observer, height, θ₀)`. Validated on Example 29.a (Mars,
+  both formula sets) and exercised at Moon-scale parallax.
+
+### Edition re-anchoring
+
+- The project's reference is the **39-chapter edition** of AFFC (ending at chapter 39, *Linear
+  Regression; Correlation*), not the 4th edition's 43-chapter numbering used in earlier docs. The two
+  agree for chapters 1–34; thereafter the docs are corrected: the phantom *Central Meridian of
+  Jupiter* is removed, and **Stellar Magnitudes 38→37**, **Binary Stars 39→38**, **Linear Regression
+  40→39**. *Atmospheric Refraction* and *Rising/Transit/Setting* are reclassified as **supplementary
+  utilities** beyond the reference edition (code unchanged); *Heliocentric Position of Pluto* is
+  dropped from the roadmap. Code comments and the coverage report / plan / refcard are updated;
+  immutable history (older CHANGELOG entries, past PR titles) keeps its original numbering.
+
+### Notes
+
+- The Moon rise/transit/set iterative refinement previously pencilled in for this step is dropped:
+  the reference edition has no Rising/Transit/Setting chapter, so there is no text to transcribe or
+  worked example to validate against. The first-approximation `RiseTransitSetCalculator` remains as a
+  supplementary utility.
+
 ## 1.5.0 — Phase 3 (step 1): Moon phenomena and Sun bonuses
 
 This release opens Phase 3 ("Harvest") with the first batch of derived Sun and Moon phenomena,

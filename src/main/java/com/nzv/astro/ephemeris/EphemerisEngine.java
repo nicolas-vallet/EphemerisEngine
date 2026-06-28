@@ -338,4 +338,48 @@ public interface EphemerisEngine {
 	 */
 	public double moonPhaseJulianDay(double year, MoonPhase phase);
 
+
+	// =====================================================================
+	// Chapter 21 - Equation of Time
+	// =====================================================================
+
+	/**
+	 * Returns the equation of time for a given instant, expressed in
+	 * <b>minutes of time</b> (chapter 21). The equation of time is the
+	 * difference between the apparent (true) and mean Sun; a negative value
+	 * means the apparent Sun is behind the mean Sun. This implementation uses
+	 * the self-contained series (formula 21.1) built on the solar elements of
+	 * chapter 18, so no Astronomical Ephemeris look-up is required.
+	 *
+	 * @param julianDay the considered instant as Julian day.
+	 * @return the equation of time, in minutes of time.
+	 */
+	public double equationOfTime(double julianDay);
+
+	// =====================================================================
+	// Chapter 29 - Correction for Parallax
+	// =====================================================================
+
+	/**
+	 * Returns the Moon's topocentric apparent equatorial coordinates (right
+	 * ascension and declination, in degrees) as seen from a given observer
+	 * (chapter 29). The Moon's geocentric apparent position and equatorial
+	 * horizontal parallax are taken from chapter 30; the rigorous reduction
+	 * (formulae 29.2 and 29.3) is then applied.
+	 *
+	 * @param julianDay the considered instant as Julian day.
+	 * @param observer the observer's geographic coordinates (latitude in
+	 *            degrees, longitude positive west in degrees).
+	 * @param observerHeightInMeters the observer's height above sea level, in
+	 *            metres.
+	 * @param apparentSiderealTimeAtGreenwichInHours the apparent sidereal time at
+	 *            Greenwich for the instant, in hours (see
+	 *            {@link MeeusEphemeris}).
+	 * @return the Moon's topocentric apparent equatorial coordinates (right
+	 *         ascension in degrees, declination in degrees).
+	 */
+	public com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates moonTopocentricEquatorialCoordinates(
+			double julianDay, com.nzv.astro.ephemeris.coordinate.GeographicCoordinates observer,
+			double observerHeightInMeters, double apparentSiderealTimeAtGreenwichInHours);
+
 }

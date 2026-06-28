@@ -198,7 +198,7 @@ public class EphemerisEngineImpl implements EphemerisEngine {
 
 	@Override
 	public double sunRadiusVector(double T) {
-		double e = 0.01675104d - 0.0000418d * T - 0.000000126d * T * T;
+		double e = earthOrbitEccentricity(T);
 		double v = sunTrueAnomaly(T);
 		return (1.0000002d * (1 - e * e)) / (1 + e * cos(toRadians(v)));
 	}
@@ -540,6 +540,97 @@ public class EphemerisEngineImpl implements EphemerisEngine {
 				+ 0.0003d * sin(m + 2 * mp)
 				+ 0.0004d * sin(m - 2 * mp)
 				- 0.0003d * sin(2 * m + mp);
+	}
+
+
+	// =====================================================================
+	// Chapter 21 - Equation of Time
+	// =====================================================================
+
+	@Override
+	public double equationOfTime(double julianDay) {
+		double T = T(julianDay);
+		double epsilon = meanObliquityOfEcliptic(T);
+		double L = sunMeanLongitude(T);
+		double M = sunMeanAnomaly(T);
+		double e = earthOrbitEccentricity(T);
+		double y = Math.pow(tan(toRadians(epsilon / 2.0d)), 2);
+		double Lr = toRadians(L);
+		double Mr = toRadians(M);
+
+		// W. M. Smart's series (formula 21.1); E is obtained in radians.
+		double E = y * sin(2 * Lr)
+				- 2 * e * sin(Mr)
+				+ 4 * e * y * sin(Mr) * cos(2 * Lr)
+				- 0.5d * y * y * sin(4 * Lr)
+				- 1.25d * e * e * sin(2 * Mr);
+
+		// Radians -> degrees -> minutes of time (1 degree = 4 minutes of time).
+		return toDegrees(E) * 4.0d;
+	}
+
+	/**
+	 * Computes the equation of time (in minutes of time) from values that are
+	 * tabulated in the Astronomical Ephemeris, using the relation given at the
+	 * head of chapter 21. Exposed so the chapter's worked example, which feeds
+	 * A.E. values, can be reproduced exactly.
+	 *
+	 * @param apparentSiderealTimeAtGreenwich0hUTInHours apparent sidereal time at
+	 *            Greenwich for 0h UT, in hours.
+	 * @param sunApparentRightAscension0hETInHours the Sun's apparent right
+	 *            ascension at 0h ET, in hours.
+	 * @param deltaTInSeconds the difference ET - UT, in seconds.
+	 * @return the equation of time, in minutes of time.
+	 */
+	public static double equationOfTimeFromApparentValues(
+			double apparentSiderealTimeAtGreenwich0hUTInHours,
+			double sunApparentRightAscension0hETInHours, double deltaTInSeconds) {
+		double eHours = 12.0d + apparentSiderealTimeAtGreenwich0hUTInHours
+				- sunApparentRightAscension0hETInHours
+				- (0.002738d * deltaTInSeconds) / 3600.0d;
+		// The equation of time is small; fold the result into (-12, 12] hours so
+		// inputs straddling the 0h/24h boundary still give the right value.
+		eHours = eHours % 24.0d;
+		if (eHours > 12.0d) {
+			eHours -= 24.0d;
+		} else if (eHours < -12.0d) {
+			eHours += 24.0d;
+		}
+		return eHours * 60.0d;
+	}
+
+	// =====================================================================
+	// Chapter 29 - Correction for Parallax
+	// =====================================================================
+
+	@Override
+	public com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates moonTopocentricEquatorialCoordinates(
+			double julianDay, com.nzv.astro.ephemeris.coordinate.GeographicCoordinates observer,
+			double observerHeightInMeters, double apparentSiderealTimeAtGreenwichInHours) {
+		double T = T(julianDay);
+		com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates geocentric =
+				moonApparentEquatorialCoordinates(julianDay);
+		double alpha = geocentric.getRightAscension();
+		double delta = geocentric.getDeclinaison();
+		double parallax = moonEquatorialHorizontalParallaxe(T);
+
+		com.nzv.astro.ephemeris.coordinate.GeocentricCoordinates observerGeocentric =
+				new com.nzv.astro.ephemeris.coordinate.GeocentricCoordinates(
+						observer.getLatitude(), (float) observerHeightInMeters);
+
+		// Geocentric hour angle H = theta0 - longitude(west) - alpha, in degrees.
+		double H = apparentSiderealTimeAtGreenwichInHours * 15.0d - observer.getLongitude() - alpha;
+
+		return com.nzv.astro.ephemeris.ParallaxCorrection.topocentric(alpha, delta, parallax,
+				observerGeocentric.getRhoSinPhiPrime(), observerGeocentric.getRhoCosPhiPrime(), H);
+	}
+
+	/**
+	 * Returns the eccentricity of the Earth's orbit for a given instant
+	 * (chapter 18). Shared by the radius vector and the equation of time.
+	 */
+	private static double earthOrbitEccentricity(double T) {
+		return 0.01675104d - 0.0000418d * T - 0.000000126d * T * T;
 	}
 
 }

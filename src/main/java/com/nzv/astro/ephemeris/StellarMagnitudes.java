@@ -4,7 +4,7 @@ import static java.lang.Math.log10;
 import static java.lang.Math.pow;
 
 /**
- * Photometric relations between stellar magnitudes, following chapter 38 of Jean
+ * Photometric relations between stellar magnitudes, following chapter 37 of Jean
  * Meeus' <i>Astronomical Formulae for Calculators</i>: Pogson's relation, the
  * brightness ratio corresponding to a magnitude difference, and the combined
  * magnitude of two or more bodies.
