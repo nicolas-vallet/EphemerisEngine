@@ -428,7 +428,40 @@ engine.moonEquatorialHorizontalParallaxe(T);//    0.930249° (book 0.930249)
 
 ---
 
-## 15. Constants — `Constants`
+## 15. Moon & Sun Phenomena — `EphemerisEngine` (Ch. 31, 13, 32, 20, 19)
+
+Derived phenomena built on the Sun (Ch. 18) and Moon (Ch. 30) positions. All angles in degrees;
+phase/equinox methods return a Julian Ephemeris Day.
+
+| Method | Returns |
+|---|---|
+| `moonPhaseAngle(jd)` | phase angle *i* of the Moon (deg), high accuracy (Ch. 31). |
+| `moonIlluminatedFraction(jd)` | illuminated fraction *k* of the disk, in [0, 1] (Ch. 31). |
+| `moonPhaseAngleApproximate(jd)` | low-accuracy *i* from mean elements, no latitude (formula 31.4). |
+| `moonBrightLimbPositionAngle(jd)` | position angle χ of the bright limb (deg, [0, 360)) (Ch. 13). |
+| `equinoxSolsticeJulianDay(year, Season)` | JDE of the equinox/solstice (Ch. 20). |
+| `moonPhaseJulianDay(year, MoonPhase)` | JDE of the New/First/Full/Last phase nearest `year` (Ch. 32). |
+| `sunRectangularEquatorialCoordinates(jd)` | `double[]{X,Y,Z}` (AU), mean equinox of date (Ch. 19). |
+| `sunRectangularEquatorialCoordinates(jd, equinox)` | `double[]{X,Y,Z}` (AU), reduced to `equinox` (e.g. 1950.0). |
+
+```java
+EphemerisEngine e = new EphemerisEngineImpl();
+e.moonIlluminatedFraction(2444232.5);                       // 0.3639  (book 0.36, 1979 Dec 25.0)
+e.moonBrightLimbPositionAngle(jd);                          // χ ≈ 250.38° (book Example 13.a)
+e.equinoxSolsticeJulianDay(1979, Season.SEPTEMBER_EQUINOX); // 2444140.137  (book Example 20.a)
+e.moonPhaseJulianDay(1977.13, MoonPhase.NEW_MOON);          // 2443192.6525 (book Example 32.a)
+double[] xyz = e.sunRectangularEquatorialCoordinates(2443824.5, 1950.0); // {-0.65138, -0.68379, -0.29650}
+```
+
+> **HOT TIP:** the elongation chapters (31, 13) use the Sun's **true** longitude
+> (`sunTrueLongitude`), while equinoxes/solstices (20) use the **apparent** longitude
+> (`sunApparentLongitude`) — the apparent place is what defines the season. Two static helpers,
+> `EphemerisEngineImpl.phaseAngleFromCoordinates(...)` and `.brightLimbPositionAngle(...)`, expose
+> the pure geometry for validating against externally supplied (A.E.) coordinates.
+
+---
+
+## 16. Constants — `Constants`
 
 | Constant | Value |
 |---|---|
@@ -441,7 +474,7 @@ engine.moonEquatorialHorizontalParallaxe(T);//    0.930249° (book 0.930249)
 
 ---
 
-## 16. BUILD & DEPENDENCIES
+## 17. BUILD & DEPENDENCIES
 
 ```
 mvn clean verify            # compile + run the 82-test suite + build the jar
@@ -454,7 +487,7 @@ mvn clean verify            # compile + run the 82-test suite + build the jar
 
 ---
 
-## 17. END-TO-END EXAMPLE
+## 18. END-TO-END EXAMPLE
 
 ```java
 // Where is Saturn in the sky from Uccle on 1978-11-13 at 04:34 UT?

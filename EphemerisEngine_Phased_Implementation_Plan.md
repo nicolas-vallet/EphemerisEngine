@@ -10,7 +10,7 @@
 |---|---|---|---|
 | **1 — Enablers & quick wins** | ✅ **DONE (v1.2.0)** | 6, 9, 14, 18, 38, 42 | All shipped with regression tests; 43 → 63 tests. |
 | **2 — The two keystones** | ✅ **Done (v1.4.0)** | 16 ✅, 30 ✅ | Star keystone (16) and Moon keystone (30, table-driven series) both shipped. |
-| **3 — Harvest** | ⬜ Next | 13, 22, 29, 31, 32, 39 (+33 optional) | Now unblocked — Phase 2 has landed. |
+| **3 — Harvest** | 🟦 In progress — step 1 ✅ (v1.5.0) | 13 ✅, 19 ✅, 20 ✅, 31 ✅, 32 ✅ · then 29, 21, 22, 39 | Step 1 (Moon phenomena + Sun bonuses 19/20) shipped, 82 → 94 tests. Steps 2–3 next. |
 | *Deferred* | ⬜ Out of scope | 23–28, 34–36, 43 | Planetary suite. |
 
 **What changed in v1.2.0 (Phase 1):**
@@ -73,16 +73,16 @@ These are the marquee deliverables. Each is genuinely laborious, but Phase 1 has
 
 ---
 
-## Phase 3 — Harvest ⬜
-*Low effort once the keystones exist.*
+## Phase 3 — Harvest 🟦 IN PROGRESS
+*Low effort once the keystones exist. Delivered as three small PRs, one minor version each.*
 
-Each of these was "high effort" only because it presupposed a Moon or Sun position. With Phase 2 done they collapse to short, mostly geometric additions.
+Each of these was "high effort" only because it presupposed a Moon or Sun position. With Phase 2 done they collapse to short, mostly geometric additions. Eclipses (Ch 33) are explicitly **out** of Phase 3; the planetary suite stays deferred.
 
-- **Moon track:** Ch 31 (illuminated fraction), Ch 13 (bright-limb position angle), Ch 32 (phases), Ch 29 (topocentric parallax, using Ch 6 ✅).
-- **Star track:** Ch 39 (binary stars) — needs a small Kepler-equation solver (Ch 22), which is itself a modest add and also opens the door to planets later; the separation/position-angle output can reuse Ch 9 ✅.
-- **Optional capstone:** Ch 33 (Eclipses) becomes feasible here since it needs accurate Sun *and* Moon — high value, but still high effort, so treat it as a stretch goal rather than a commitment.
+- ✅ **Step 1 — Moon phenomena + Sun bonuses (DONE, v1.5.0).** Ch 31 (illuminated fraction), Ch 13 (bright-limb position angle), Ch 32 (phases), plus the Sun-adjacent bonuses Ch 20 (equinoxes & solstices) and Ch 19 (rectangular coordinates of the Sun, of-date and reduced to a chosen equinox). All five validated on their Meeus worked examples; suite 82 → 94 tests.
+- ⬜ **Step 2 — Parallax + Moon rise/transit/set + Equation of Time (v1.6.0).** Ch 29 (topocentric parallax, using Ch 6 ✅), the deferred iterative Moon rise/transit/set refinement, and the Sun bonus Ch 21 (Equation of Time).
+- ⬜ **Step 3 — Kepler + binary stars (v1.7.0).** Ch 22 (Equation of Kepler, hand-iterated — no external solver, keeping the build dependency-light) and Ch 39 (binary stars), whose separation/position-angle output reuses Ch 9 ✅.
 
-**Sun-adjacent bonus (now cheap after Phase 1):** Ch 21 (Equation of Time), Ch 20 (Equinoxes & Solstices) and Ch 19 (Rectangular Coordinates of the Sun) all follow directly from the solar coordinates shipped in Phase 1 and could be folded in opportunistically.
+**Note on the true-vs-apparent longitude split:** within step 1, the elongation chapters (31, 13) use the Sun's *true* longitude, while equinoxes/solstices (20) use the *apparent* longitude — the apparent place is what defines the season. Mixing these up is a silent error, so it is called out in the findings log.
 
 **Deliberately deferred:** the planetary suite (Ch 23–28, 34–36, 43), shown as the `23+` cluster in the matrix's bottom-right. It's the largest body of work in the book and the least aligned with a Moon/star focus, so it sits in the "defer" quadrant until those tracks are complete.
 
@@ -92,7 +92,7 @@ Each of these was "high effort" only because it presupposed a Moon or Sun positi
 
 **Effort is dominated by data entry and verification, not algorithm design.** The lunar and solar series are long coefficient tables that must be transcribed exactly. Budget the time accordingly, and lean on the fact that Meeus prints a fully worked numerical example for nearly every chapter.
 
-**Make each chapter regression-proof before moving on.** The library ships an 82-test suite built around canonical dates like `1978.1113`. The discipline that makes this plan low-risk is adding each chapter's book example as a regression test *before* moving to the next, so a transcription slip in one coefficient surfaces immediately rather than three chapters later. Phase 1 followed this discipline: every new chapter landed with its worked example (or an independent physical/round-trip check) as a test.
+**Make each chapter regression-proof before moving on.** The library ships a 94-test suite built around canonical dates like `1978.1113`. The discipline that makes this plan low-risk is adding each chapter's book example as a regression test *before* moving to the next, so a transcription slip in one coefficient surfaces immediately rather than three chapters later. Phase 1 followed this discipline: every new chapter landed with its worked example (or an independent physical/round-trip check) as a test.
 
 ---
 
@@ -102,5 +102,5 @@ Each of these was "high effort" only because it presupposed a Moon or Sun positi
 |---|---|---|---|---|---|
 | **1** | Enablers & quick wins | 6, 9, 14, 18, 38, 42 | Low–medium | ✅ Done (v1.2.0) | The substrate for both keystones |
 | **2** | The two keystones | 16 ✅, 30 ✅ | High | ✅ Done (v1.4.0) | Both priority tracks' hard core |
-| **3** | Harvest | 13, 22, 29, 31, 32, 39 (+33 optional) | Low (post-keystone) | ⬜ Next | The derived Moon and star phenomena |
+| **3** | Harvest (3 steps) | step 1: 13 ✅ 19 ✅ 20 ✅ 31 ✅ 32 ✅ · then 29, 21, 22, 39 | Low (post-keystone) | 🟦 Step 1 done (v1.5.0) | The derived Moon and star phenomena |
 | *Deferred* | Planetary suite | 23–28, 34–36, 43 | High | ⬜ | (Out of scope for a Moon/star focus) |

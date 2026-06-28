@@ -1,7 +1,7 @@
 # EphemerisEngine vs. *Astronomical Formulae for Calculators* — Chapter-by-Chapter Coverage Report
 
 **Reference book:** Jean Meeus, *Astronomical Formulae for Calculators*, 4th edition (Willmann-Bell, 1988) — 43 chapters.
-**Library under review:** `com.nzv.astro:meeus-engine:1.4.0` (the EphemerisEngine project).
+**Library under review:** `com.nzv.astro:meeus-engine:1.5.0` (the EphemerisEngine project).
 **What the gauge means:** percentage of each chapter's formulae that the library actually exposes as callable, finished computations. A chapter that only supplies *inputs* (e.g. mean elements) to a calculation the book carries to completion is scored partial, not full.
 
 > Gauge legend: `██████████` = fully implemented · `░░░░░░░░░░` = not implemented.
@@ -14,6 +14,11 @@
 > **Version note (1.4.0):** Phase 2 is complete. **30 Position of the Moon** moves 20% → 90%:
 > the geocentric longitude, latitude and parallax are implemented via a table-driven evaluator
 > (external CSV coefficient tables), validated on AFFC Example 30.a.
+>
+> **Version note (1.5.0):** Phase 3, step 1 (Harvest) is complete. Five derived chapters move to
+> full coverage: **13 Bright Limb** (0% → 100%), **31 Illuminated Fraction** (0% → 100%),
+> **32 Phases of the Moon** (0% → 100%), **20 Equinoxes and Solstices** (0% → 100%) and
+> **19 Rectangular Coordinates of the Sun** (0% → 100%, of-date and reduced to a chosen equinox).
 
 > **Version note (1.3.0):** Phase 2, step 1 (the star keystone) is complete.
 > **16 Apparent Place of a Star** moves 25% → 95%: proper motion, precession, nutation
@@ -28,20 +33,23 @@ The library is now a faithful, well-tested implementation of the book's **timeke
 calendar, coordinate and solar-position foundations**, plus precession, interpolation,
 refraction and the common positional utilities (angular separation, photometry,
 rise/transit/set) and the apparent place of a star. It still stops before most of the
-**physical-ephemeris payload**: the
-the planets, comets, eclipses and the remaining phenomenon chapters are absent — but the
-Moon's geocentric position (Chapter 30) is now implemented via a table-driven series.
+**physical-ephemeris payload**: the planets, comets and eclipses are absent — but the Moon's
+geocentric position (Chapter 30) is implemented via a table-driven series, and the first batch of
+derived Sun/Moon phenomena (bright limb 13, illuminated fraction 31, phases 32, equinoxes/solstices
+20, rectangular solar coordinates 19) is now complete.
 
 | Coverage band | Chapters | Count |
 |---|---|---|
-| **Strong (≥ 90%)** | 2 Interpolation · 3 Julian Day · 4 Easter · 5 ET/UT · 6 Observer coords · 7 Sidereal Time · 8 Coordinate Transformation · 9 Angular Separation · 14 Precession · 15 Nutation · 16 Apparent place of a star · 18 Solar Coordinates · 30 Position of the Moon · 38 Stellar Magnitudes · 41 Refraction | 15 |
+| **Strong (≥ 90%)** | 2 Interpolation · 3 Julian Day · 4 Easter · 5 ET/UT · 6 Observer coords · 7 Sidereal Time · 8 Coordinate Transformation · 9 Angular Separation · 13 Bright Limb · 14 Precession · 15 Nutation · 16 Apparent place of a star · 18 Solar Coordinates · 19 Rectangular Coords of the Sun · 20 Equinoxes and Solstices · 30 Position of the Moon · 31 Illuminated Fraction · 32 Phases of the Moon · 38 Stellar Magnitudes · 41 Refraction | 20 |
 | **Partial (10–80%)** | 1 Hints · 29 Parallax · 40 Regression · 42 Rising/Transit/Setting | 4 |
-| **None (0%)** | 10–13, 17, 19–28, 31–37, 39, 43 | 24 |
+| **None (0%)** | 10–12, 17, 21–28, 33–37, 39, 43 | 19 |
 
-**Overall functional coverage: roughly one third of the book**, now spanning the entire
+**Overall functional coverage: getting on for half the book**, now spanning the entire
 foundational arc (Chapters 1–9) plus precession (14), nutation (15), the apparent place of
-a star (16), solar coordinates (18),
-stellar magnitudes (38), refraction (41) and a strong partial on rising/transit/setting (42).
+a star (16), solar coordinates (18) and rectangular solar coordinates (19), equinoxes/solstices (20),
+the position of the Moon (30) and its derived phenomena — bright limb (13), illuminated fraction (31)
+and phases (32) — stellar magnitudes (38), refraction (41) and a strong partial on
+rising/transit/setting (42).
 
 ---
 
@@ -61,14 +69,14 @@ stellar magnitudes (38), refraction (41) and a strong partial on rising/transit/
 | 10 | Conjunction Between Two Planets | MEDIUM | `░░░░░░░░░░` 0% |
 | 11 | Bodies in a Straight Line | LOW | `░░░░░░░░░░` 0% |
 | 12 | Smallest Circle Containing Three Bodies | MEDIUM | `░░░░░░░░░░` 0% |
-| 13 | Position Angle of the Moon's Bright Limb | LOW | `░░░░░░░░░░` 0% |
+| 13 | Position Angle of the Moon's Bright Limb | LOW | `██████████` 100% |
 | 14 | Precession | MEDIUM | `██████████` 100% |
 | 15 | Nutation | MEDIUM | `█████████░` 90% |
 | 16 | Apparent Place of a Star | HIGH | `█████████▌` 95% |
 | 17 | Reduction of Ecliptical Elements (equinox→equinox) | MEDIUM | `░░░░░░░░░░` 0% |
 | 18 | Solar Coordinates | MEDIUM | `██████████` 100% |
-| 19 | Rectangular Coordinates of the Sun | MEDIUM | `░░░░░░░░░░` 0% |
-| 20 | Equinoxes and Solstices | MEDIUM | `░░░░░░░░░░` 0% |
+| 19 | Rectangular Coordinates of the Sun | MEDIUM | `██████████` 100% |
+| 20 | Equinoxes and Solstices | MEDIUM | `██████████` 100% |
 | 21 | Equation of Time | MEDIUM | `░░░░░░░░░░` 0% |
 | 22 | Equation of Kepler | MEDIUM | `░░░░░░░░░░` 0% |
 | 23 | Elements of the Planetary Orbits | MEDIUM | `░░░░░░░░░░` 0% |
@@ -79,8 +87,8 @@ stellar magnitudes (38), refraction (41) and a strong partial on rising/transit/
 | 28 | Passages Through the Nodes | MEDIUM | `░░░░░░░░░░` 0% |
 | 29 | Correction for Parallax | MEDIUM | `█▌░░░░░░░░` 15% |
 | 30 | Position of the Moon | HIGH | `█████████░` 90% |
-| 31 | Illuminated Fraction of the Moon's Disk | LOW | `░░░░░░░░░░` 0% |
-| 32 | Phases of the Moon | MEDIUM | `░░░░░░░░░░` 0% |
+| 31 | Illuminated Fraction of the Moon's Disk | LOW | `██████████` 100% |
+| 32 | Phases of the Moon | MEDIUM | `██████████` 100% |
 | 33 | Eclipses | HIGH | `░░░░░░░░░░` 0% |
 | 34 | Illuminated Fraction of the Disk of a Planet | MEDIUM | `░░░░░░░░░░` 0% |
 | 35 | Central Meridian of Jupiter | MEDIUM | `░░░░░░░░░░` 0% |
@@ -157,10 +165,10 @@ stellar magnitudes (38), refraction (41) and a strong partial on rising/transit/
 **Applications.** Framing a group of bodies (e.g. for a photograph or a finder field).
 **Coverage.** Not implemented.
 
-### 13 — Position Angle of the Moon's Bright Limb · Complexity: LOW · `░░░░░░░░░░` 0%
+### 13 — Position Angle of the Moon's Bright Limb · Complexity: LOW · `██████████` 100%
 **Formulae.** Position angle of the Moon's illuminated limb from the relative positions of Sun and Moon.
 **Applications.** Drawing the Moon with correct orientation; planning limb observations.
-**Coverage.** Not implemented (needs the full lunar position, which is still absent — though the Sun's position is now available).
+**Coverage.** Implemented: `moonBrightLimbPositionAngle(jd)` forms χ from the apparent equatorial coordinates of Sun and Moon, with the quadrant resolved by `atan2`. Validated on Example 13.a (χ = 250°.38); the pure geometry is also exposed as a static helper for A.E.-coordinate checks.
 
 ### 14 — Precession · Complexity: MEDIUM · `██████████` 100%
 **Formulae.** Rigorous reduction of equatorial (and ecliptic) coordinates from one equinox/epoch to another via the precessional angles.
@@ -187,15 +195,15 @@ stellar magnitudes (38), refraction (41) and a strong partial on rising/transit/
 **Applications.** Day/night and twilight, the Sun's place for refraction and for the Moon's phase, solar-geometry tools.
 **Coverage.** *Completed in 1.2.0.* The equation of centre, true anomaly, true and apparent longitude, radius vector, mean obliquity and apparent equatorial coordinates are all implemented. Cross-checked against the canonical 1992-10-13 worked example to better than 0.01°. This is the keystone enabler on which both later tracks build.
 
-### 19 — Rectangular Coordinates of the Sun · Complexity: MEDIUM · `░░░░░░░░░░` 0%
-**Formulae.** The Sun's geocentric X, Y, Z referred to the equator/ecliptic.
+### 19 — Rectangular Coordinates of the Sun · Complexity: MEDIUM · `██████████` 100%
+**Formulae.** The Sun's geocentric X, Y, Z referred to the equator/ecliptic (19.1), and their reduction to a chosen standard equinox (19.2).
 **Applications.** Building geocentric planet/comet positions; eclipse geometry.
-**Coverage.** Not implemented (now a short add, since the Sun's spherical apparent position and radius vector are available).
+**Coverage.** Implemented: `sunRectangularEquatorialCoordinates(jd)` (mean equinox of date) and `sunRectangularEquatorialCoordinates(jd, equinox)` (reduced via the Chapter-14 precessional angles). Validated on Example 19.a, of-date and reduced to 1950.0.
 
-### 20 — Equinoxes and Solstices · Complexity: MEDIUM · `░░░░░░░░░░` 0%
-**Formulae.** Instants of the equinoxes and solstices, found iteratively from the Sun's longitude.
+### 20 — Equinoxes and Solstices · Complexity: MEDIUM · `██████████` 100%
+**Formulae.** Instants of the equinoxes and solstices, found iteratively from the Sun's apparent longitude.
 **Applications.** Season boundaries; calendar and almanac work.
-**Coverage.** Not implemented (the Sun's longitude it iterates on is now available).
+**Coverage.** Implemented: `equinoxSolsticeJulianDay(year, Season)` iterates formula 20.2 on the Sun's apparent longitude until the correction falls below a fraction of a second. Validated on Example 20.a (September equinox 1979 at JD 2444140.137).
 
 ### 21 — Equation of Time · Complexity: MEDIUM · `░░░░░░░░░░` 0%
 **Formulae.** Difference between apparent and mean solar time.
@@ -247,15 +255,15 @@ stellar magnitudes (38), refraction (41) and a strong partial on rising/transit/
 **Applications.** Phases, eclipses, occultations, the Moon's place in the sky.
 **Coverage.** *Implemented in 1.4.0.* Geocentric longitude, latitude and equatorial horizontal parallax are produced by a table-driven evaluator (`com.nzv.astro.ephemeris.lunar`) reading external CSV coefficient tables for the AFFC-1900 model; `jd`-based conveniences give apparent RA/Dec (nutation + true obliquity of date), geocentric ecliptic coordinates, and the Earth–Moon distance. Validated on Example 30.a (λ and π vs the book; β vs the Astronomical Ephemeris value). The design supports dropping in a higher-precision model as data.
 
-### 31 — Illuminated Fraction of the Moon's Disk · Complexity: LOW · `░░░░░░░░░░` 0%
-**Formulae.** Phase angle and illuminated fraction from Sun–Moon geometry.
+### 31 — Illuminated Fraction of the Moon's Disk · Complexity: LOW · `██████████` 100%
+**Formulae.** Phase angle and illuminated fraction from Sun–Moon geometry (31.1–31.3), plus a latitude-free approximation (31.4).
 **Applications.** Phase displays; observation planning around moonlight.
-**Coverage.** Not implemented (waiting on the Moon's position; the Sun's is ready).
+**Coverage.** Implemented: `moonPhaseAngle(jd)`, `moonIlluminatedFraction(jd)` and `moonPhaseAngleApproximate(jd)`. Uses the Sun's true longitude to avoid double-counting nutation/aberration. Validated on Examples 31.a/31.b (k = 0.36 for 1979 Dec. 25.0).
 
-### 32 — Phases of the Moon · Complexity: MEDIUM · `░░░░░░░░░░` 0%
-**Formulae.** Times of new/first-quarter/full/last-quarter from mean phase plus periodic corrections.
+### 32 — Phases of the Moon · Complexity: MEDIUM · `██████████` 100%
+**Formulae.** Times of new/first-quarter/full/last-quarter from the mean phase (32.1) plus the periodic corrections of 32.4 (New/Full) and 32.5 (First/Last Quarter).
 **Applications.** Calendars, almanacs, tide context.
-**Coverage.** Not implemented.
+**Coverage.** Implemented: `moonPhaseJulianDay(year, MoonPhase)` returns the Julian Ephemeris Day of the phase nearest a decimal-year time. Validated on Examples 32.a (New Moon, JD 2443192.6523) and 32.b (Last Quarter, JD 2434326.1553).
 
 ### 33 — Eclipses · Complexity: HIGH · `░░░░░░░░░░` 0%
 **Formulae.** Whether and when solar/lunar eclipses occur, and their basic circumstances.
