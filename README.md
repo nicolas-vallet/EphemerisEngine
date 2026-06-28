@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./ephemeris-engine-logo.png" alt="Ephemeris Engine logo" width="220">
+</p>
+
 # EphemerisEngine
 
 A Java implementation of the astronomical formulae of **Jean Meeus**, as described

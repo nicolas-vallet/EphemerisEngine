@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.5.0 — Phase 3 (step 1): Moon phenomena and Sun bonuses
+
+This release opens Phase 3 ("Harvest") with the first batch of derived Sun and Moon phenomena,
+now short geometric additions on top of the two keystones. It covers **Chapter 31** (illuminated
+fraction of the Moon's disk), **Chapter 13** (position angle of the bright limb), **Chapter 32**
+(phases of the Moon), **Chapter 20** (equinoxes and solstices) and **Chapter 19** (rectangular
+coordinates of the Sun). The suite grows from 82 to 94 tests, all passing.
+
+### New features
+
+- **Chapter 31 — Illuminated fraction of the Moon's disk.** `moonPhaseAngle(jd)` and
+  `moonIlluminatedFraction(jd)` (high accuracy, formulae 31.1–31.3), plus
+  `moonPhaseAngleApproximate(jd)` (the latitude-free formula 31.4). The Sun's **true** longitude is
+  used when forming the elongation so nutation and aberration are not double-counted.
+- **Chapter 13 — Position angle of the Moon's bright limb.** `moonBrightLimbPositionAngle(jd)`,
+  computed from the apparent equatorial coordinates of the Sun and Moon with the quadrant resolved
+  by `atan2`.
+- **Chapter 32 — Phases of the Moon.** `moonPhaseJulianDay(year, MoonPhase)` returns the Julian
+  Ephemeris Day of the New / First-Quarter / Full / Last-Quarter nearest a decimal-year time, with
+  the mean phase (32.1) corrected by the periodic series (32.4 / 32.5). New `MoonPhase` enum.
+- **Chapter 20 — Equinoxes and solstices.** `equinoxSolsticeJulianDay(year, Season)` iterates the
+  Sun's **apparent** longitude to the instant it reaches a multiple of 90°. New `Season` enum.
+- **Chapter 19 — Rectangular coordinates of the Sun.** `sunRectangularEquatorialCoordinates(jd)`
+  for the mean equinox of date (19.1), and `sunRectangularEquatorialCoordinates(jd, targetEquinox)`
+  reducing to a chosen equinox via the Chapter-14 precessional angles (19.2).
+
+### Validation
+
+- Anchored on the Meeus worked examples: 31.a/31.b (k = 0.36 for 1979 Dec. 25.0), 13.a
+  (χ = 250°.38), 19.a (X/Y/Z of date and reduced to 1950.0), 20.a (September equinox 1979 at
+  JD 2444140.137) and 32.a/32.b (New Moon and Last Quarter). Pure geometry (31, 13) is exercised
+  directly with the book's A.E. coordinates to separate a transcription slip from a model
+  difference; high-precision computed values are pinned as regression anchors.
+
 ## 1.4.0 — Phase 2 (step 2): the Moon keystone
 
 This release completes Phase 2 with **Chapter 30 — Position of the Moon**, implemented through a

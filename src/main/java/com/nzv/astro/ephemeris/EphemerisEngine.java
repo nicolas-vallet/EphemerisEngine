@@ -225,4 +225,117 @@ public interface EphemerisEngine {
 	public com.nzv.astro.ephemeris.coordinate.impl.EquatorialCoordinates sunApparentEquatorialCoordinates(
 			double julianDay);
 
+
+	// =====================================================================
+	// Chapter 31 - Illuminated Fraction of the Moon's Disk
+	// =====================================================================
+
+	/**
+	 * Returns the Moon's phase angle (the Sun-Earth angular distance as seen
+	 * from the Moon) for a given instant, following chapter 31 (formulae 31.2
+	 * and 31.3). The Sun's <b>true</b> longitude is used when forming the
+	 * elongation, so that nutation and aberration are not double-counted.
+	 *
+	 * @param julianDay the considered instant as Julian day.
+	 * @return the Moon's phase angle, expressed in degrees.
+	 */
+	public double moonPhaseAngle(double julianDay);
+
+	/**
+	 * Returns the illuminated fraction of the Moon's disk as seen from the
+	 * centre of the Earth for a given instant (chapter 31, formula 31.1),
+	 * derived from the high-accuracy phase angle. The result lies in [0, 1].
+	 *
+	 * @param julianDay the considered instant as Julian day.
+	 * @return the illuminated fraction of the Moon's disk, in the range [0, 1].
+	 */
+	public double moonIlluminatedFraction(double julianDay);
+
+	/**
+	 * Returns a lower-accuracy estimate of the Moon's phase angle, obtained
+	 * from the mean elements alone and neglecting the Moon's latitude (chapter
+	 * 31, formula 31.4).
+	 *
+	 * @param julianDay the considered instant as Julian day.
+	 * @return the approximate phase angle, expressed in degrees.
+	 */
+	public double moonPhaseAngleApproximate(double julianDay);
+
+	// =====================================================================
+	// Chapter 13 - Position Angle of the Moon's Bright Limb
+	// =====================================================================
+
+	/**
+	 * Returns the position angle of the midpoint of the Moon's bright limb,
+	 * reckoned eastward from the north point of the disk (chapter 13). The
+	 * angle is computed from the apparent equatorial coordinates of the Sun and
+	 * the Moon.
+	 *
+	 * @param julianDay the considered instant as Julian day.
+	 * @return the position angle of the bright limb, expressed in degrees in the
+	 *         range [0, 360).
+	 */
+	public double moonBrightLimbPositionAngle(double julianDay);
+
+	// =====================================================================
+	// Chapter 19 - Rectangular Coordinates of the Sun
+	// =====================================================================
+
+	/**
+	 * Returns the Sun's geocentric rectangular equatorial coordinates X, Y, Z
+	 * referred to the mean equator and equinox of date (chapter 19, formula
+	 * 19.1), expressed in astronomical units. The Sun's latitude is neglected.
+	 *
+	 * @param julianDay the considered instant as Julian day.
+	 * @return an array {@code {X, Y, Z}} in astronomical units, referred to the
+	 *         mean equinox of date.
+	 */
+	public double[] sunRectangularEquatorialCoordinates(double julianDay);
+
+	/**
+	 * Returns the Sun's geocentric rectangular equatorial coordinates X, Y, Z
+	 * reduced to a chosen standard equinox (chapter 19, formula 19.2), expressed
+	 * in astronomical units. The reduction reuses the chapter-14 precessional
+	 * angles.
+	 *
+	 * @param julianDay the considered instant as Julian day.
+	 * @param targetEquinox the equinox to which the coordinates are referred,
+	 *            expressed as a decimal year (for example {@code 1950.0}).
+	 * @return an array {@code {X, Y, Z}} in astronomical units, referred to
+	 *         {@code targetEquinox}.
+	 */
+	public double[] sunRectangularEquatorialCoordinates(double julianDay, double targetEquinox);
+
+	// =====================================================================
+	// Chapter 20 - Equinoxes and Solstices
+	// =====================================================================
+
+	/**
+	 * Returns the instant of the given equinox or solstice of the given year as
+	 * a Julian Ephemeris Day (chapter 20). The instant is found iteratively from
+	 * the Sun's <b>apparent</b> longitude (formulae 20.1 and 20.2).
+	 *
+	 * @param year the calendar year.
+	 * @param season the equinox or solstice sought.
+	 * @return the instant of the event, expressed as a Julian Ephemeris Day.
+	 */
+	public double equinoxSolsticeJulianDay(int year, Season season);
+
+	// =====================================================================
+	// Chapter 32 - Phases of the Moon
+	// =====================================================================
+
+	/**
+	 * Returns the instant of the principal Moon phase nearest the given time, as
+	 * a Julian Ephemeris Day (chapter 32). The mean phase given by formula
+	 * (32.1) is corrected to the true phase by the periodic terms of formula
+	 * (32.4) for New and Full Moon, or (32.5) for First and Last Quarter.
+	 *
+	 * @param year the approximate time of the phase, as a decimal year (for
+	 *            example {@code 1977.13} for mid-February 1977).
+	 * @param phase the phase sought.
+	 * @return the instant of the true phase, expressed as a Julian Ephemeris Day.
+	 */
+	public double moonPhaseJulianDay(double year, MoonPhase phase);
+
 }
