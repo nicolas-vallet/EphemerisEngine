@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.7.0 — Phase 3 (step 3a): Equation of Kepler
+
+This release adds **Chapter 22** (the equation of Kepler), the small transcendental solver that
+underpins elliptic motion and binary-star orbits. Chapter 38 (Binary Stars) follows in a later
+release. The suite grows from 102 to 108 tests, all passing.
+
+### New features
+
+- **Chapter 22 — Equation of Kepler.** New `KeplerEquation` static utility solving `E = M + e sin E`
+  for the eccentric anomaly, with all three methods of the chapter:
+  - `solveEccentricAnomaly(M, e)` / `solveEccentricAnomaly(M, e, tolerance)` — Newton's correction
+    (formula 22.3, the recommended method); converges quickly for every eccentricity.
+  - `solveEccentricAnomalyByIteration(M, e, tolerance)` — the simple fixed-point iteration (first
+    method); slow for large e.
+  - `approximateEccentricAnomaly(M, e)` — the closed-form approximation (formula 22.4), for small e.
+  All angles in degrees, using the "modified" eccentricity `e0 = e × 180/π` so the work stays in
+  degrees. No external dependency: the iteration is hand-coded.
+
+### Validation
+
+- Anchored on the chapter's worked examples: 22.a (e = 0.100, M = 5° → E = 5.554589 by iteration),
+  22.b (same data → E = 5.554589253 by Newton), the hard case e = 0.990, M = 2° → E = 32.361007,
+  and the closed-form approximation (E = 5.554599). Guard tests confirm E = M when e = 0 and that a
+  returned E satisfies Kepler's equation across a range of eccentricities and mean anomalies.
+
 ## 1.6.0 — Phase 3 (step 2): Equation of Time, Parallax, and edition re-anchoring
 
 This release adds **Chapter 21** (Equation of Time) and **Chapter 29** (Correction for Parallax), and

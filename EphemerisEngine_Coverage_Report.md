@@ -1,7 +1,7 @@
 # EphemerisEngine vs. *Astronomical Formulae for Calculators* — Chapter-by-Chapter Coverage Report
 
 **Reference book:** Jean Meeus, *Astronomical Formulae for Calculators* (Willmann-Bell) — the **39-chapter edition** used as this project's working reference, ending at chapter 39 (*Linear Regression; Correlation*).
-**Library under review:** `com.nzv.astro:meeus-engine:1.6.0` (the EphemerisEngine project).
+**Library under review:** `com.nzv.astro:meeus-engine:1.7.0` (the EphemerisEngine project).
 
 > **Edition & chapter-numbering note (since 1.6.0).** Earlier revisions of this report numbered the
 > later chapters against the *4th edition* (1988, 43 chapters). The project's working copy is an
@@ -37,6 +37,11 @@
 > **29 Correction for Parallax** (15% → 100%, rigorous and non-rigorous topocentric reduction, with
 > a Moon convenience). The Moon rise/transit/set refinement once pencilled in here is dropped: the
 > reference edition has no Rising/Transit/Setting chapter.
+>
+> **Version note (1.7.0):** Phase 3, step 3a is complete. **22 Equation of Kepler** moves 0% → 100%:
+> the new `KeplerEquation` utility solves `E = M + e sin E` with all three methods of the chapter
+> (Newton's correction, the simple fixed-point iteration, and the closed-form approximation),
+> validated on Examples 22.a/22.b and the high-eccentricity case. Binary Stars (38) follows later.
 
 > **Version note (1.3.0):** Phase 2, step 1 (the star keystone) is complete.
 > **16 Apparent Place of a Star** moves 25% → 95%: proper motion, precession, nutation
@@ -59,14 +64,14 @@ solar coordinates 19) are complete, and the equation of time (21) and the correc
 
 | Coverage band | Chapters | Count |
 |---|---|---|
-| **Strong (≥ 90%)** | 2 Interpolation · 3 Julian Day · 4 Easter · 5 ET/UT · 6 Observer coords · 7 Sidereal Time · 8 Coordinate Transformation · 9 Angular Separation · 13 Bright Limb · 14 Precession · 15 Nutation · 16 Apparent place of a star · 18 Solar Coordinates · 19 Rectangular Coords of the Sun · 20 Equinoxes and Solstices · 21 Equation of Time · 29 Correction for Parallax · 30 Position of the Moon · 31 Illuminated Fraction · 32 Phases of the Moon · 37 Stellar Magnitudes | 21 |
+| **Strong (≥ 90%)** | 2 Interpolation · 3 Julian Day · 4 Easter · 5 ET/UT · 6 Observer coords · 7 Sidereal Time · 8 Coordinate Transformation · 9 Angular Separation · 13 Bright Limb · 14 Precession · 15 Nutation · 16 Apparent place of a star · 18 Solar Coordinates · 19 Rectangular Coords of the Sun · 20 Equinoxes and Solstices · 21 Equation of Time · 22 Equation of Kepler · 29 Correction for Parallax · 30 Position of the Moon · 31 Illuminated Fraction · 32 Phases of the Moon · 37 Stellar Magnitudes | 22 |
 | **Partial (10–80%)** | 1 Hints · 39 Linear Regression | 2 |
-| **None (0%)** | 10–12, 17, 22–28, 33–36, 38 | 16 |
+| **None (0%)** | 10–12, 17, 23–28, 33–36, 38 | 15 |
 
 **Overall functional coverage: about half the book**, now spanning the entire
 foundational arc (Chapters 1–9) plus precession (14), nutation (15), the apparent place of
 a star (16), solar coordinates (18) and rectangular solar coordinates (19), equinoxes/solstices (20),
-the equation of time (21), the correction for parallax (29), the position of the Moon (30) and its
+the equation of time (21), the equation of Kepler (22), the correction for parallax (29), the position of the Moon (30) and its
 derived phenomena — bright limb (13), illuminated fraction (31) and phases (32) — and stellar
 magnitudes (37), with atmospheric refraction and rising/transit/setting available as supplementary
 utilities beyond the reference edition.
@@ -98,7 +103,7 @@ utilities beyond the reference edition.
 | 19 | Rectangular Coordinates of the Sun | MEDIUM | `██████████` 100% |
 | 20 | Equinoxes and Solstices | MEDIUM | `██████████` 100% |
 | 21 | Equation of Time | MEDIUM | `██████████` 100% |
-| 22 | Equation of Kepler | MEDIUM | `░░░░░░░░░░` 0% |
+| 22 | Equation of Kepler | MEDIUM | `██████████` 100% |
 | 23 | Elements of the Planetary Orbits | MEDIUM | `░░░░░░░░░░` 0% |
 | 24 | Planets: Principal Perturbations | HIGH | `░░░░░░░░░░` 0% |
 | 25 | Elliptic Motion | HIGH | `░░░░░░░░░░` 0% |
@@ -234,10 +239,10 @@ chapters of the 39-chapter edition, so excluded from the per-chapter percentages
 **Applications.** Sundials, the analemma, converting clock time to true solar time.
 **Coverage.** Implemented: `equationOfTime(jd)` returns the value in minutes of time from the series built on the Chapter-18 solar elements; the static `equationOfTimeFromApparentValues(...)` reproduces the A.E.-based form. Validated on Examples 21.a (−11ᵐ09.7ˢ) and 21.b (−11ᵐ10.3ˢ).
 
-### 22 — Equation of Kepler · Complexity: MEDIUM · `░░░░░░░░░░` 0%
-**Formulae.** Solving M = E − e·sin E for the eccentric anomaly (iteration), then the true anomaly and radius vector.
-**Applications.** The heart of every elliptical-orbit position calculation.
-**Coverage.** Not implemented (general iterative solvers exist in the interpolation engine but Kepler's equation is not wired up).
+### 22 — Equation of Kepler · Complexity: MEDIUM · `██████████` 100%
+**Formulae.** Solving E = M + e·sin E for the eccentric anomaly by Newton's correction (22.3), the simple fixed-point iteration, and the closed-form approximation (22.4).
+**Applications.** The heart of every elliptical-orbit position calculation; needed for binary stars (38).
+**Coverage.** Implemented in `KeplerEquation`: `solveEccentricAnomaly` (Newton, recommended), `solveEccentricAnomalyByIteration` (first method) and `approximateEccentricAnomaly` (formula 22.4). Validated on Examples 22.a/22.b (E = 5.554589…) and the hard case e = 0.99, M = 2° (E = 32.361007).
 
 ### 23 — Elements of the Planetary Orbits · Complexity: MEDIUM · `░░░░░░░░░░` 0%
 **Formulae.** Mean orbital elements of the planets as polynomials in time.

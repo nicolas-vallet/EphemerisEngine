@@ -2,7 +2,7 @@
 
 ### The astronomical formulae of Jean Meeus, in Java
 
-> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Solar Coordinates &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Precession &nbsp;·&nbsp; Angular Separation &nbsp;·&nbsp; Stellar Magnitudes &nbsp;·&nbsp; Rise / Transit / Set &nbsp;·&nbsp; Apparent Place of a Star &nbsp;·&nbsp; Position of the Moon &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
+> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Solar Coordinates &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Precession &nbsp;·&nbsp; Angular Separation &nbsp;·&nbsp; Stellar Magnitudes &nbsp;·&nbsp; Rise / Transit / Set &nbsp;·&nbsp; Apparent Place of a Star &nbsp;·&nbsp; Position of the Moon &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Equation of Kepler &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
 
 ---
 
@@ -478,7 +478,33 @@ ParallaxCorrection.parallaxFromDistanceInDegrees(0.3757);   // π from distance 
 
 ---
 
-## 16. Constants — `Constants`
+## 16. Equation of Kepler — `KeplerEquation` (static, Ch. 22)
+
+`com.nzv.astro.ephemeris.KeplerEquation`. Solves `E = M + e sin E` for the eccentric anomaly *E*
+given the mean anomaly *M* and eccentricity *e*. All angles in degrees.
+
+| Method | Returns |
+|---|---|
+| `solveEccentricAnomaly(M, e)` | *E* (deg) by Newton's correction (22.3) — **recommended**, tol 1e-9°. |
+| `solveEccentricAnomaly(M, e, tol)` | as above, caller-supplied tolerance. |
+| `solveEccentricAnomalyByIteration(M, e, tol)` | *E* (deg) by fixed-point iteration (first method); slow for large *e*. |
+| `approximateEccentricAnomaly(M, e)` | *E* (deg) by the closed form (22.4); small *e* only. |
+
+```java
+KeplerEquation.solveEccentricAnomaly(5.0, 0.100);              // 5.554589253  (book Example 22.b)
+KeplerEquation.solveEccentricAnomalyByIteration(5.0, 0.100, 1e-6); // 5.554589 (book Example 22.a)
+KeplerEquation.solveEccentricAnomaly(2.0, 0.990);             // 32.361007    (hard case, Newton)
+KeplerEquation.approximateEccentricAnomaly(5.0, 0.100);      // 5.554599     (formula 22.4)
+```
+
+> **HOT TIP:** internally the chapter uses the *modified* eccentricity `e0 = e × 180/π` so the work
+> can be done in degrees. In Newton's correction the **numerator** carries `e0` while the
+> **denominator** carries the ordinary `e` — mixing them up is the easy transcription slip. Prefer
+> `solveEccentricAnomaly` (Newton) everywhere; the simple iteration can need 50+ steps near e = 1.
+
+---
+
+## 17. Constants — `Constants`
 
 | Constant | Value |
 |---|---|
@@ -491,7 +517,7 @@ ParallaxCorrection.parallaxFromDistanceInDegrees(0.3757);   // π from distance 
 
 ---
 
-## 17. BUILD & DEPENDENCIES
+## 18. BUILD & DEPENDENCIES
 
 ```
 mvn clean verify            # compile + run the 82-test suite + build the jar
@@ -504,7 +530,7 @@ mvn clean verify            # compile + run the 82-test suite + build the jar
 
 ---
 
-## 18. END-TO-END EXAMPLE
+## 19. END-TO-END EXAMPLE
 
 ```java
 // Where is Saturn in the sky from Uccle on 1978-11-13 at 04:34 UT?
