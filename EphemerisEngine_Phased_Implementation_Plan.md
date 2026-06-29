@@ -11,7 +11,7 @@
 | **1 — Enablers & quick wins** | ✅ **DONE (v1.2.0)** | 6, 9, 14, 18, 38, 42 | All shipped with regression tests; 43 → 63 tests. |
 | **2 — The two keystones** | ✅ **Done (v1.4.0)** | 16 ✅, 30 ✅ | Star keystone (16) and Moon keystone (30, table-driven series) both shipped. |
 | **3 — Harvest** | 🟦 In progress — steps 1–2 ✅, 3a ✅ (v1.5.0–v1.7.0) | 13 ✅, 19 ✅, 20 ✅, 21 ✅, 22 ✅, 29 ✅, 31 ✅, 32 ✅ · then 38 | Steps 1–2 and 3a (equation of Kepler) shipped, 82 → 108 tests. Step 3b (binary stars, Ch 38) is the last Harvest item. |
-| *Deferred* | ⬜ Out of scope | 23–28, 34–36, 43 | Planetary suite. |
+| **4–5 — Planets & minor bodies** | 🟦 Committed (Option C); data-acquisition track started | 23–28, 34–36 | Engine code not yet started. Parallel **data-acquisition side-track** live on `feat/phase-4-data-acquisition` (docs/masters only): Ch 23 elements ✅ transcribed & self-checked, Ch 24 perturbations next. See the proposal + data-acquisition tracker. |
 
 **What changed in v1.2.0 (Phase 1):**
 - **Ch 18 Solar Coordinates** 25% → **100%** — equation of centre, true/apparent longitude, radius vector, mean obliquity, apparent RA/Dec.
@@ -85,7 +85,30 @@ Each of these was "high effort" only because it presupposed a Moon or Sun positi
 
 **Note on the true-vs-apparent longitude split:** within step 1, the elongation chapters (31, 13) use the Sun's *true* longitude, while equinoxes/solstices (20) use the *apparent* longitude — the apparent place is what defines the season. Mixing these up is a silent error, so it is called out in the findings log.
 
-**Deliberately deferred:** the planetary suite (Ch 23–28, 34–36, 43), shown as the `23+` cluster in the matrix's bottom-right. It's the largest body of work in the book and the least aligned with a Moon/star focus, so it sits in the "defer" quadrant until those tracks are complete.
+---
+
+## Phases 4 & 5 — Planets & Minor Bodies 🟦 COMMITTED (Option C)
+
+With Phase 3 effectively complete (only Ch 38 remains) and the Kepler solver (Ch 22) shipped, the
+planetary suite is no longer deferred: it proceeds along **Option C** of the *Planets & Minor
+Bodies Plan Proposal* — two lanes sharing one engine:
+
+- **Phase 4 — Orbital-motion engine & minor bodies** *(algorithm-bound; needs no tables)*. Ch 25
+  elliptic engine + Ch 26 parabolic/comets, driven by **caller-supplied elements** and validated on
+  the book's own worked intermediates; plus light derived chapters (Ch 27/28/36). Ships fast,
+  independent of any data.
+- **Phase 5 — Major planets & planet-derived phenomena** *(data-bound)*. Ch 23 built-in elements →
+  Ch 24 perturbations (on a `planetary` table package mirroring `lunar`) → Ch 34 + conjunction
+  capstone; Ch 35 Galilean satellites independent.
+
+**Parallel data-acquisition side-track (live).** Because Phase 4 needs no tables and Phase 5 is
+table-bound, the data work runs as a decoupled side-track on `feat/phase-4-data-acquisition`
+(docs, master spreadsheets, and eventually `resources/.../planetary/**` CSVs — **no Java, no
+version bump until code consumes the data**). Kick-off delivered: the **Ch 23 element master**
+(Tables 23.A/B/C — of date / 1950.0 / 2000.0, all selectable, default of date), transcribed by
+visual reading and self-checked against Example 23.a to sub-arcsecond; the **`planetary` table
+contract** (External-Tables guide §7); and the **data-acquisition tracker**. Next: Ch 24
+perturbations, staged per planet (inner → Jupiter/Saturn). Engine code (Ch 25) has not started.
 
 ---
 
@@ -104,4 +127,4 @@ Each of these was "high effort" only because it presupposed a Moon or Sun positi
 | **1** | Enablers & quick wins | 6, 9, 14, 18, 38, 42 | Low–medium | ✅ Done (v1.2.0) | The substrate for both keystones |
 | **2** | The two keystones | 16 ✅, 30 ✅ | High | ✅ Done (v1.4.0) | Both priority tracks' hard core |
 | **3** | Harvest | 13 ✅ 19 ✅ 20 ✅ 21 ✅ 22 ✅ 29 ✅ 31 ✅ 32 ✅ · then 38 | Low (post-keystone) | 🟦 Steps 1–2, 3a done (v1.5.0–v1.7.0) | The derived Moon and star phenomena |
-| *Deferred* | Planetary suite | 23–28, 34–36, 43 | High | ⬜ | (Out of scope for a Moon/star focus) |
+| **4–5** | Planets & minor bodies (Option C) | 23–28, 34–36 | L (engine) + XL (Ch 24 data) | 🟦 Committed; data track started | Positions of comets, minor planets, and the major planets |
