@@ -42,6 +42,16 @@
 > the new `KeplerEquation` utility solves `E = M + e sin E` with all three methods of the chapter
 > (Newton's correction, the simple fixed-point iteration, and the closed-form approximation),
 > validated on Examples 22.a/22.b and the high-eccentricity case. Binary Stars (38) follows later.
+>
+> **Version note (1.8.0):** Phase 4, step 1 (the orbital-motion keystone) is complete.
+> **25 Elliptic Motion** moves 0% → 95%: the new `com.nzv.astro.ephemeris.orbit` package implements
+> both methods of the chapter — the first (major planets, mean equinox of date) and the second
+> (minor planets/comets, standard-equinox elements, reusing the Chapter-19 Sun) — driven by a
+> caller-supplied `OrbitalElements`. Validated on Examples 25.a (Mercury) and 25.b (433 Eros) and on
+> the chapter's published-ephemeris exercise (234 Barbara). The positions are geometric, with the
+> light-time correction available; nutation/aberration onto a fully apparent place (Chapter 16) are
+> left to the caller, hence 95% rather than 100%. No table data is involved — this is the engine the
+> data-bound planetary track (Chapters 23/24) will feed later.
 
 > **Version note (1.3.0):** Phase 2, step 1 (the star keystone) is complete.
 > **16 Apparent Place of a Star** moves 25% → 95%: proper motion, precession, nutation
@@ -106,7 +116,7 @@ utilities beyond the reference edition.
 | 22 | Equation of Kepler | MEDIUM | `██████████` 100% |
 | 23 | Elements of the Planetary Orbits | MEDIUM | `░░░░░░░░░░` 0% |
 | 24 | Planets: Principal Perturbations | HIGH | `░░░░░░░░░░` 0% |
-| 25 | Elliptic Motion | HIGH | `░░░░░░░░░░` 0% |
+| 25 | Elliptic Motion | HIGH | `█████████░` 95% |
 | 26 | Parabolic Motion | MEDIUM | `░░░░░░░░░░` 0% |
 | 27 | Planets in Perihelion and Aphelion | MEDIUM | `░░░░░░░░░░` 0% |
 | 28 | Passages Through the Nodes | MEDIUM | `░░░░░░░░░░` 0% |
@@ -254,10 +264,10 @@ chapters of the 39-chapter edition, so excluded from the per-chapter percentages
 **Applications.** Bringing planetary positions to arc-minute (and better) accuracy.
 **Coverage.** Not implemented.
 
-### 25 — Elliptic Motion · Complexity: HIGH · `░░░░░░░░░░` 0%
-**Formulae.** From elements → heliocentric → geocentric equatorial coordinates of a body in an elliptical orbit.
-**Applications.** Positions of planets and elliptical-orbit minor planets.
-**Coverage.** Not implemented.
+### 25 — Elliptic Motion · Complexity: HIGH · `█████████░` 95%
+**Formulae.** From elements → heliocentric → geocentric equatorial coordinates of a body in an elliptical orbit (both methods: 25.1–25.16).
+**Applications.** Positions of planets and elliptical-orbit minor planets and comets.
+**Coverage.** Implemented in `com.nzv.astro.ephemeris.orbit` (`EllipticMotion`, `OrbitalElements`, `OrbitPosition`). First method (major planets, mean equinox of date) and second method (minor planets/comets, standard-equinox elements, reusing the Chapter-19 Sun and the Chapter-22 Kepler solver), driven by caller-supplied elements. Geometric positions plus elongation, phase angle, light-time correction (25.10) and the magnitude relations (25.16). Validated on Examples 25.a (Mercury) and 25.b (433 Eros) and the 234 Barbara published-ephemeris exercise. The remaining 5% is nutation/aberration onto a fully apparent place (Chapter 16), deliberately left to the caller.
 
 ### 26 — Parabolic Motion · Complexity: MEDIUM · `░░░░░░░░░░` 0%
 **Formulae.** Position of a body on a parabolic orbit (Barker's equation).

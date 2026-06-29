@@ -2,7 +2,7 @@
 
 ### The astronomical formulae of Jean Meeus, in Java
 
-> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Solar Coordinates &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Precession &nbsp;·&nbsp; Angular Separation &nbsp;·&nbsp; Stellar Magnitudes &nbsp;·&nbsp; Rise / Transit / Set &nbsp;·&nbsp; Apparent Place of a Star &nbsp;·&nbsp; Position of the Moon &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Equation of Kepler &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
+> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Solar Coordinates &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Precession &nbsp;·&nbsp; Angular Separation &nbsp;·&nbsp; Stellar Magnitudes &nbsp;·&nbsp; Rise / Transit / Set &nbsp;·&nbsp; Apparent Place of a Star &nbsp;·&nbsp; Position of the Moon &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Equation of Kepler &nbsp;·&nbsp; Elliptic Motion &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
 
 ---
 
@@ -504,7 +504,60 @@ KeplerEquation.approximateEccentricAnomaly(5.0, 0.100);      // 5.554599     (fo
 
 ---
 
-## 17. Constants — `Constants`
+## 17. Elliptic Motion — `EllipticMotion` / `OrbitalElements` / `OrbitPosition` (static, Ch. 25)
+
+`com.nzv.astro.ephemeris.orbit`. Geocentric position of a planet, minor planet or comet from its
+orbital elements. Two methods, both pure statics. Angles in **degrees**, distances in **AU**. Each
+call returns an `OrbitPosition` (`equatorial` RA/Dec in degrees, `radiusVectorAU` *r*,
+`distanceToEarthAU` Δ, `elongationDegrees` ψ, `phaseAngleDegrees`).
+
+**First method** — major planets, elements of the **mean equinox of date** (`L, a, e, i, Ω, M`):
+
+| Method | Returns |
+|---|---|
+| `heliocentricEcliptic(L, a, e, i, Ω, M)` | `{l, b, r}` (25.1–25.6) |
+| `geocentricEcliptic(l, b, r, Θ, R)` | `{λ, β, Δ}` (25.7–25.9) |
+| `firstMethod(L, a, e, i, Ω, M, Θ, R, ε)` | `OrbitPosition` of date |
+| `firstMethod(engine, jd, L, a, e, i, Ω, M)` | as above, with Θ/R/ε from the engine |
+
+**Second method** — minor planets & comets, **standard-equinox** elements (`OrbitalElements`):
+
+| Method | Returns |
+|---|---|
+| `gaussianConstants(Ω, i, ε)` | `{a, b, c, A, B, C}` (25.13), constant for the orbit |
+| `heliocentricEquatorialRectangular(el, M, ε)` | `{x, y, z, r}` (25.14) |
+| `secondMethod(el, M, X, Y, Z, ε)` | `OrbitPosition` (25.15), Sun X/Y/Z same equinox |
+| `secondMethod(engine, jd, el, equinox, ε)` | as above, Sun from Ch. 19 |
+| `secondMethodLightTimeCorrected(engine, jd, el, equinox, ε)` | astrometric place, light-time (25.10) |
+
+`OrbitalElements` — `a, e, i, ω, Ω` plus a mean anomaly at an epoch and daily mean motion *n*;
+`meanAnomalyAt(jd)`; factories `fromMeanAnomalyAtEpoch(...)`, `fromPerihelionPassage(...)`;
+helpers `meanMotionFromSemiMajorAxis(a)` (25.12), `semiMajorAxisFromPerihelionDistance(q, e)`.
+
+```java
+EphemerisEngine engine = new EphemerisEngineImpl();
+
+// First method — Mercury, 1978 Nov 12.0 ET (book Example 25.a):
+OrbitPosition mercury = EllipticMotion.firstMethod(engine, 2443824.5,
+        337.053200, 0.3870986, 0.20563033, 7.004337, 48.080736, 259.92660);
+// α ≈ 249.3176°, δ ≈ −24.7477° (of date)
+
+// Second method — 433 Eros, 1975 Feb 11.0 ET (book Example 25.b):
+OrbitalElements eros = OrbitalElements.fromPerihelionPassage(
+        1.4579641, 0.2227021, 10.82772, 178.44991, 303.83085, 2442437.20450, 0.55986565);
+OrbitPosition p = EllipticMotion.secondMethodLightTimeCorrected(
+        engine, 2442454.5, eros, 1950.0, 23.4457889);   // α/δ referred to 1950.0
+```
+
+> **HOT TIP:** keep the elements and the Sun on the **same equinox** — the one hard rule of the
+> second method. Pass the matching obliquity (`23.4457889°` for 1950.0). The positions are
+> **geometric** (as the book's examples are); apply nutation & aberration (Ch. 16) yourself for a
+> fully apparent place. Don't reuse `EclipticCoordinatesAdapter` for the of-date conversion — it is
+> hard-wired to the 1950.0 obliquity; the engine converts with the obliquity *of date*.
+
+---
+
+## 18. Constants — `Constants`
 
 | Constant | Value |
 |---|---|
@@ -517,7 +570,7 @@ KeplerEquation.approximateEccentricAnomaly(5.0, 0.100);      // 5.554599     (fo
 
 ---
 
-## 18. BUILD & DEPENDENCIES
+## 19. BUILD & DEPENDENCIES
 
 ```
 mvn clean verify            # compile + run the 82-test suite + build the jar
@@ -530,7 +583,7 @@ mvn clean verify            # compile + run the 82-test suite + build the jar
 
 ---
 
-## 19. END-TO-END EXAMPLE
+## 20. END-TO-END EXAMPLE
 
 ```java
 // Where is Saturn in the sky from Uccle on 1978-11-13 at 04:34 UT?

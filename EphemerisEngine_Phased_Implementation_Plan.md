@@ -11,7 +11,8 @@
 | **1 — Enablers & quick wins** | ✅ **DONE (v1.2.0)** | 6, 9, 14, 18, 38, 42 | All shipped with regression tests; 43 → 63 tests. |
 | **2 — The two keystones** | ✅ **Done (v1.4.0)** | 16 ✅, 30 ✅ | Star keystone (16) and Moon keystone (30, table-driven series) both shipped. |
 | **3 — Harvest** | 🟦 In progress — steps 1–2 ✅, 3a ✅ (v1.5.0–v1.7.0) | 13 ✅, 19 ✅, 20 ✅, 21 ✅, 22 ✅, 29 ✅, 31 ✅, 32 ✅ · then 38 | Steps 1–2 and 3a (equation of Kepler) shipped, 82 → 108 tests. Step 3b (binary stars, Ch 38) is the last Harvest item. |
-| *Deferred* | ⬜ Out of scope | 23–28, 34–36, 43 | Planetary suite. |
+| **4 — Orbital-motion engine & minor bodies** | 🟦 In progress — step 1 ✅ (v1.8.0) | 25 ✅ · then 26, 27, 28, 36 | Elliptic-motion engine (Ch 25) shipped, 108 → 121 tests. Algorithm-bound, table-free; runs in parallel with the Ch 23/24 data-acquisition track. |
+| *Deferred* | ⬜ Out of scope (data-bound) | 23–24, 34–35, 43 | Major-planet data (elements + perturbations) and Phase-5 derived phenomena. |
 
 **What changed in v1.2.0 (Phase 1):**
 - **Ch 18 Solar Coordinates** 25% → **100%** — equation of centre, true/apparent longitude, radius vector, mean obliquity, apparent RA/Dec.
@@ -81,11 +82,24 @@ Each of these was "high effort" only because it presupposed a Moon or Sun positi
 - ✅ **Step 1 — Moon phenomena + Sun bonuses (DONE, v1.5.0).** Ch 31 (illuminated fraction), Ch 13 (bright-limb position angle), Ch 32 (phases), plus the Sun-adjacent bonuses Ch 20 (equinoxes & solstices) and Ch 19 (rectangular coordinates of the Sun, of-date and reduced to a chosen equinox). All five validated on their Meeus worked examples; suite 82 → 94 tests.
 - ✅ **Step 2 — Parallax + Equation of Time (DONE, v1.6.0).** Ch 29 (topocentric parallax — rigorous and non-rigorous reduction plus a Moon convenience, using Ch 6 ✅) and the Sun bonus Ch 21 (Equation of Time). The Moon rise/transit/set refinement once planned here is **dropped**: re-anchoring to the working 39-chapter edition showed it has no Rising/Transit/Setting chapter, so there is no text to transcribe or worked example to validate against; the first-approximation calculator stays as a supplementary utility. This step also **re-anchored the project's chapter numbering** to the working edition (Stellar Magnitudes 38→37, Binary Stars 39→38, Linear Regression 40→39; the phantom Central Meridian of Jupiter removed; Refraction/RTS reclassified as supplementary, Pluto dropped).
 - ✅ **Step 3a — Equation of Kepler (DONE, v1.7.0).** Ch 22 (Equation of Kepler) implemented as the `KeplerEquation` utility with all three methods of the chapter (Newton's correction, fixed-point iteration, closed-form approximation), hand-iterated with no external solver. Validated on Examples 22.a/22.b and the high-eccentricity case.
-- ⬜ **Step 3b — Binary stars (v1.8.0).** Ch 38 (binary stars), whose apparent-orbit solution reuses the Kepler solver just shipped and whose separation/position-angle output reuses Ch 9 ✅. The last Harvest item.
+- ⬜ **Step 3b — Binary stars (a later release).** Ch 38 (binary stars), whose apparent-orbit solution reuses the Kepler solver just shipped and whose separation/position-angle output reuses Ch 9 ✅. The last Harvest item; independent of the Phase 4 engine track now under way in parallel.
 
 **Note on the true-vs-apparent longitude split:** within step 1, the elongation chapters (31, 13) use the Sun's *true* longitude, while equinoxes/solstices (20) use the *apparent* longitude — the apparent place is what defines the season. Mixing these up is a silent error, so it is called out in the findings log.
 
 **Deliberately deferred:** the planetary suite (Ch 23–28, 34–36, 43), shown as the `23+` cluster in the matrix's bottom-right. It's the largest body of work in the book and the least aligned with a Moon/star focus, so it sits in the "defer" quadrant until those tracks are complete.
+
+---
+
+## Phase 4 — Orbital-motion engine & minor bodies 🟦 IN PROGRESS
+*Algorithm-bound, table-free. Consumes caller-supplied elements, so it ships independently of the Ch 23/24 planetary-data track and runs in parallel with it (per the Planets & Minor Bodies proposal, Option C).*
+
+The keystone here is **Chapter 25 (Elliptic Motion)**: it turns orbital elements into a geocentric position and is reused by every later planet and minor-body chapter. It needs no perturbation tables — only the Chapter-22 Kepler solver ✅ and the Chapter-19 Sun ✅, both already in the library.
+
+- ✅ **Step 1 — Elliptic-motion engine (DONE, v1.8.0).** Ch 25, both methods, in the new `com.nzv.astro.ephemeris.orbit` package (`EllipticMotion`, `OrbitalElements`, `OrbitPosition`). The first method (major planets, mean equinox of date) forms heliocentric → geocentric ecliptic → equatorial of date; the second method (minor planets/comets, standard-equinox elements) forms heliocentric rectangular equatorial coordinates via the per-orbit Gaussian constants and reads RA/Dec directly off the Chapter-19 Sun, with a light-time correction. Geometric positions plus elongation, phase angle and the magnitude relations. Validated on Examples 25.a (Mercury) and 25.b (433 Eros) and the 234 Barbara published-ephemeris exercise; suite 108 → 121 tests.
+- ⬜ **Step 2 — Parabolic motion / comets (Ch 26).** Barker's equation (direct cubic, no iteration) feeding the same geocentric reduction. Self-contained, no tables; the best value-per-effort item left.
+- ⬜ **Step 3 — Light derived chapters (Ch 27, 28, 36).** Perihelion/aphelion instants, nodal passages and semidiameter, for caller-supplied elements/distances.
+
+**End-of-phase deliverable:** *"give me the apparent position of any comet or minor planet from its orbital elements,"* plus apsides, nodes and semidiameter — entirely algorithm-bound. The data-bound major-planet work (Ch 23 elements, Ch 24 perturbations on a `planetary` table package, Ch 34, Ch 10 capstone) is **Phase 5**, gated on the data-acquisition track now running in parallel.
 
 ---
 
@@ -104,4 +118,5 @@ Each of these was "high effort" only because it presupposed a Moon or Sun positi
 | **1** | Enablers & quick wins | 6, 9, 14, 18, 38, 42 | Low–medium | ✅ Done (v1.2.0) | The substrate for both keystones |
 | **2** | The two keystones | 16 ✅, 30 ✅ | High | ✅ Done (v1.4.0) | Both priority tracks' hard core |
 | **3** | Harvest | 13 ✅ 19 ✅ 20 ✅ 21 ✅ 22 ✅ 29 ✅ 31 ✅ 32 ✅ · then 38 | Low (post-keystone) | 🟦 Steps 1–2, 3a done (v1.5.0–v1.7.0) | The derived Moon and star phenomena |
-| *Deferred* | Planetary suite | 23–28, 34–36, 43 | High | ⬜ | (Out of scope for a Moon/star focus) |
+| **4** | Orbital-motion engine & minor bodies | 25 ✅ · then 26, 27, 28, 36 | Medium (algorithm-bound) | 🟦 Step 1 done (v1.8.0) | Positions of comets & minor planets from elements |
+| *Phase 5* | Major planets (data-bound) | 23, 24, 34, 10 | High | ⬜ | Built-in major-planet positions; gated on data acquisition |
