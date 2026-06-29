@@ -12,7 +12,7 @@
 | **2 — The two keystones** | ✅ **Done (v1.4.0)** | 16 ✅, 30 ✅ | Star keystone (16) and Moon keystone (30, table-driven series) both shipped. |
 | **3 — Harvest** | 🟦 In progress — steps 1–2 ✅, 3a ✅ (v1.5.0–v1.7.0) | 13 ✅, 19 ✅, 20 ✅, 21 ✅, 22 ✅, 29 ✅, 31 ✅, 32 ✅ · then 38 | Steps 1–2 and 3a (equation of Kepler) shipped, 82 → 108 tests. Step 3b (binary stars, Ch 38) is the last Harvest item. |
 | **4 — Planets & minor bodies** | 🟦 Committed (Option C); data-acquisition track started | 23–28, 34–36 | Parallel **data-acquisition side-track** live on `feat/phase-4-data-acquisition` (docs/masters only): Ch 23 elements ✅ transcribed & self-checked, Ch 24 perturbations next. See the proposal + data-acquisition tracker. |
-| **4 — Orbital-motion engine & minor bodies** | 🟦 In progress — step 1 ✅ (v1.8.0) | 25 ✅ · then 26, 27, 28, 36 | Elliptic-motion engine (Ch 25) shipped, 108 → 121 tests. Algorithm-bound, table-free; runs in parallel with the Ch 23/24 data-acquisition track. |
+| **4 — Orbital-motion engine & minor bodies** | 🟦 In progress — steps 1–2 ✅ (v1.8.0–v1.9.0) | 25 ✅, 26 ✅ · then 27, 28, 36 | Elliptic (Ch 25) and parabolic/comet (Ch 26) engines shipped, 108 → 131 tests. Algorithm-bound, table-free; runs in parallel with the Ch 23/24 data-acquisition track. |
 | *Deferred* | ⬜ Out of scope (data-bound) | Major-planet data (elements + perturbations) and Phase-5 derived phenomena. |
 
 **What changed in v1.2.0 (Phase 1):**
@@ -120,7 +120,7 @@ perturbations, staged per planet (inner → Jupiter/Saturn). Engine code (Ch 25)
 The keystone here is **Chapter 25 (Elliptic Motion)**: it turns orbital elements into a geocentric position and is reused by every later planet and minor-body chapter. It needs no perturbation tables — only the Chapter-22 Kepler solver ✅ and the Chapter-19 Sun ✅, both already in the library.
 
 - ✅ **Step 1 — Elliptic-motion engine (DONE, v1.8.0).** Ch 25, both methods, in the new `com.nzv.astro.ephemeris.orbit` package (`EllipticMotion`, `OrbitalElements`, `OrbitPosition`). The first method (major planets, mean equinox of date) forms heliocentric → geocentric ecliptic → equatorial of date; the second method (minor planets/comets, standard-equinox elements) forms heliocentric rectangular equatorial coordinates via the per-orbit Gaussian constants and reads RA/Dec directly off the Chapter-19 Sun, with a light-time correction. Geometric positions plus elongation, phase angle and the magnitude relations. Validated on Examples 25.a (Mercury) and 25.b (433 Eros) and the 234 Barbara published-ephemeris exercise; suite 108 → 121 tests.
-- ⬜ **Step 2 — Parabolic motion / comets (Ch 26).** Barker's equation (direct cubic, no iteration) feeding the same geocentric reduction. Self-contained, no tables; the best value-per-effort item left.
+- ✅ **Step 2 — Parabolic motion / comets (DONE, v1.9.0).** Ch 26: `BarkerEquation` solves `s³ + 3s − W = 0` for `s = tan(v/2)` (both the iteration 26.4 and the closed-form 26.5), feeding the **same** geocentric reduction as Ch 25 — now factored into a shared `GeocentricReduction` helper. `ParabolicMotion` + `ParabolicElements`. Validated on Example 26.a (comet Kohler 1977m); suite 121 → 131.
 - ⬜ **Step 3 — Light derived chapters (Ch 27, 28, 36).** Perihelion/aphelion instants, nodal passages and semidiameter, for caller-supplied elements/distances.
 
 **End-of-phase deliverable:** *"give me the apparent position of any comet or minor planet from its orbital elements,"* plus apsides, nodes and semidiameter — entirely algorithm-bound. The data-bound major-planet work (Ch 23 elements, Ch 24 perturbations on a `planetary` table package, Ch 34, Ch 10 capstone) is **Phase 5**, gated on the data-acquisition track now running in parallel.
@@ -143,5 +143,5 @@ The keystone here is **Chapter 25 (Elliptic Motion)**: it turns orbital elements
 | **2** | The two keystones | 16 ✅, 30 ✅ | High | ✅ Done (v1.4.0) | Both priority tracks' hard core |
 | **3** | Harvest | 13 ✅ 19 ✅ 20 ✅ 21 ✅ 22 ✅ 29 ✅ 31 ✅ 32 ✅ · then 38 | Low (post-keystone) | 🟦 Steps 1–2, 3a done (v1.5.0–v1.7.0) | The derived Moon and star phenomena |
 | **4** | Data acquisition | Planets & minor bodies (Option C) | 23–28, 34–36 | L (engine) + XL (Ch 24 data) | 🟦 Committed; data track started | Positions of comets, minor planets, and the major planets |
-| **4** | Orbital-motion engine | 25 ✅ · then 26, 27, 28, 36 | Medium (algorithm-bound) | 🟦 Step 1 done (v1.8.0) | Positions of comets & minor planets from elements |
+| **4** | Orbital-motion engine | 25 ✅ 26 ✅ · then 27, 28, 36 | Medium (algorithm-bound) | 🟦 Steps 1–2 done (v1.8.0–v1.9.0) | Positions of comets & minor planets from elements |
 | *Phase 5* | Major planets (data-bound) | 23, 24, 34, 10 | High | ⬜ | Built-in major-planet positions; gated on data acquisition |

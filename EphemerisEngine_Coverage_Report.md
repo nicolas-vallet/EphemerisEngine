@@ -52,6 +52,13 @@
 > light-time correction available; nutation/aberration onto a fully apparent place (Chapter 16) are
 > left to the caller, hence 95% rather than 100%. No table data is involved — this is the engine the
 > data-bound planetary track (Chapters 23/24) will feed later.
+>
+> **Version note (1.9.0):** Phase 4, step 2 is complete. **26 Parabolic Motion** moves 0% → 95%:
+> new `BarkerEquation` (solves `s³ + 3s − W = 0` for `s = tan(v/2)`, both the iteration and the
+> closed-form methods), `ParabolicElements` and `ParabolicMotion` reuse the Chapter-25 geocentric
+> reduction (now factored into a shared `GeocentricReduction` helper) and the Chapter-19 Sun.
+> Validated on Example 26.a (comet Kohler 1977m) to the book's printed precision. Geometric +
+> light-time, same as Ch 25; suite 121 → 131 tests.
 
 > **Version note (1.3.0):** Phase 2, step 1 (the star keystone) is complete.
 > **16 Apparent Place of a Star** moves 25% → 95%: proper motion, precession, nutation
@@ -117,7 +124,7 @@ utilities beyond the reference edition.
 | 23 | Elements of the Planetary Orbits | MEDIUM | `░░░░░░░░░░` 0% |
 | 24 | Planets: Principal Perturbations | HIGH | `░░░░░░░░░░` 0% |
 | 25 | Elliptic Motion | HIGH | `█████████░` 95% |
-| 26 | Parabolic Motion | MEDIUM | `░░░░░░░░░░` 0% |
+| 26 | Parabolic Motion | MEDIUM | `█████████░` 95% |
 | 27 | Planets in Perihelion and Aphelion | MEDIUM | `░░░░░░░░░░` 0% |
 | 28 | Passages Through the Nodes | MEDIUM | `░░░░░░░░░░` 0% |
 | 29 | Correction for Parallax | MEDIUM | `██████████` 100% |
@@ -272,10 +279,10 @@ to be authored next (inner planets → Jupiter/Saturn).
 **Applications.** Positions of planets and elliptical-orbit minor planets and comets.
 **Coverage.** Implemented in `com.nzv.astro.ephemeris.orbit` (`EllipticMotion`, `OrbitalElements`, `OrbitPosition`). First method (major planets, mean equinox of date) and second method (minor planets/comets, standard-equinox elements, reusing the Chapter-19 Sun and the Chapter-22 Kepler solver), driven by caller-supplied elements. Geometric positions plus elongation, phase angle, light-time correction (25.10) and the magnitude relations (25.16). Validated on Examples 25.a (Mercury) and 25.b (433 Eros) and the 234 Barbara published-ephemeris exercise. The remaining 5% is nutation/aberration onto a fully apparent place (Chapter 16), deliberately left to the caller.
 
-### 26 — Parabolic Motion · Complexity: MEDIUM · `░░░░░░░░░░` 0%
-**Formulae.** Position of a body on a parabolic orbit (Barker's equation).
+### 26 — Parabolic Motion · Complexity: MEDIUM · `█████████░` 95%
+**Formulae.** Position of a comet on a parabolic orbit: Barker's equation `s³ + 3s − W = 0` (26.1–26.5) feeding the Chapter-25 geocentric reduction.
 **Applications.** Comet ephemerides.
-**Coverage.** Not implemented.
+**Coverage.** Implemented in `com.nzv.astro.ephemeris.orbit`: `BarkerEquation` (both the iteration 26.4 and closed-form 26.5 solving methods), `ParabolicElements` (`q, i, ω, Ω, T`) and `ParabolicMotion`, reusing the shared `GeocentricReduction` tail and the Chapter-19 Sun. Geometric positions plus elongation, phase angle, light-time correction and the comet magnitude relation (25.16). Validated on Example 26.a (comet Kohler 1977m). The remaining 5% is nutation/aberration onto a fully apparent place (Chapter 16), left to the caller — consistent with Chapter 25.
 
 ### 27 — Planets in Perihelion and Aphelion · Complexity: MEDIUM · `░░░░░░░░░░` 0%
 **Formulae.** Times and distances of perihelion/aphelion passage.
