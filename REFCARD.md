@@ -2,7 +2,7 @@
 
 ### The astronomical formulae of Jean Meeus, in Java
 
-> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Solar Coordinates &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Precession &nbsp;·&nbsp; Angular Separation &nbsp;·&nbsp; Stellar Magnitudes &nbsp;·&nbsp; Rise / Transit / Set &nbsp;·&nbsp; Apparent Place of a Star &nbsp;·&nbsp; Position of the Moon &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Equation of Kepler &nbsp;·&nbsp; Elliptic Motion &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
+> **CONTENTS** &nbsp;·&nbsp; Conventions &nbsp;·&nbsp; Sexagesimal &nbsp;·&nbsp; Julian Day & Calendar &nbsp;·&nbsp; Sidereal Time &nbsp;·&nbsp; Delta-T / ET <-> UT &nbsp;·&nbsp; Sun & Moon Elements &nbsp;·&nbsp; Solar Coordinates &nbsp;·&nbsp; Nutation &nbsp;·&nbsp; Easter &nbsp;·&nbsp; Coordinate Systems &nbsp;·&nbsp; Precession &nbsp;·&nbsp; Angular Separation &nbsp;·&nbsp; Stellar Magnitudes &nbsp;·&nbsp; Rise / Transit / Set &nbsp;·&nbsp; Apparent Place of a Star &nbsp;·&nbsp; Position of the Moon &nbsp;·&nbsp; Atmospheric Refraction &nbsp;·&nbsp; Interpolation &nbsp;·&nbsp; Equation of Kepler &nbsp;·&nbsp; Elliptic Motion &nbsp;·&nbsp; Parabolic Motion &nbsp;·&nbsp; Constants &nbsp;·&nbsp; Build
 
 ---
 
@@ -557,7 +557,51 @@ OrbitPosition p = EllipticMotion.secondMethodLightTimeCorrected(
 
 ---
 
-## 18. Constants — `Constants`
+## 18. Parabolic Motion — `ParabolicMotion` / `ParabolicElements` / `BarkerEquation` (static, Ch. 26)
+
+`com.nzv.astro.ephemeris.orbit`. Geocentric position of a **comet** in a parabolic orbit. Same
+geocentric reduction as Ch. 25's second method, with **Barker's equation** in place of Kepler
+(a parabola has *e = 1*). Angles in **degrees**, distances in **AU**. Returns an `OrbitPosition`.
+
+**`BarkerEquation`** — solves `s³ + 3s − W = 0` for `s = tan(v/2)`:
+
+| Method | Returns |
+|---|---|
+| `wCoefficient(q, t−T)` | `W` (26.1) |
+| `solveTrueAnomalyParameter(W)` | `s` — recommended (iteration 26.4) |
+| `solveTrueAnomalyParameterByIteration(W)` / `…ClosedForm(W)` | `s` (26.4 / 26.5) |
+| `trueAnomalyAndRadius(s, q)` | `{v, r}` (26.2) |
+
+**`ParabolicMotion`** — `ParabolicElements(q, i, ω, Ω, T)`, `T` = perihelion-passage JD:
+
+| Method | Returns |
+|---|---|
+| `geocentricPosition(el, t−T, X, Y, Z, ε)` | `OrbitPosition`, Sun X/Y/Z same equinox |
+| `geocentricPosition(engine, jd, el, equinox, ε)` | as above, Sun from Ch. 19 |
+| `lightTimeCorrected(engine, jd, el, equinox, ε)` | astrometric place, light-time (25.10) |
+
+```java
+EphemerisEngine engine = new EphemerisEngineImpl();
+
+// Comet Kohler (1977m), 1977 Sep 29.0 ET (book Example 26.a), elements at equinox 1950.0:
+ParabolicElements kohler = new ParabolicElements(
+        0.990662, 48.7196, 163.4799, 181.8175, /*perihelion JD*/ 2443458.0659);
+OrbitPosition p = ParabolicMotion.lightTimeCorrected(
+        engine, 2443415.5, kohler, 1950.0, 23.4457889);   // α/δ referred to 1950.0
+// α ≈ 244.62°, δ ≈ +20.45°
+
+double mag = EllipticMotion.cometTotalMagnitude(6.0, p.distanceToEarthAU(), p.radiusVectorAU(), 10.0);
+```
+
+> **HOT TIP:** the root `s` has the **same sign as `t − T`** — negative before perihelion. As with
+> Ch. 25, keep the elements and the Sun on the **same equinox** and pass the matching obliquity
+> (`23.4457889°` for 1950.0). Positions are **geometric** (+ optional light-time); nutation &
+> aberration (Ch. 16) are the caller's. Build Julian Days carefully — an off-by-N-days slip is a
+> ~N° Sun error in the convenience path; verify `t − T` against the book.
+
+---
+
+## 19. Constants — `Constants`
 
 | Constant | Value |
 |---|---|
@@ -570,7 +614,7 @@ OrbitPosition p = EllipticMotion.secondMethodLightTimeCorrected(
 
 ---
 
-## 19. BUILD & DEPENDENCIES
+## 20. BUILD & DEPENDENCIES
 
 ```
 mvn clean verify            # compile + run the 82-test suite + build the jar
@@ -583,7 +627,7 @@ mvn clean verify            # compile + run the 82-test suite + build the jar
 
 ---
 
-## 20. END-TO-END EXAMPLE
+## 21. END-TO-END EXAMPLE
 
 ```java
 // Where is Saturn in the sky from Uccle on 1978-11-13 at 04:34 UT?

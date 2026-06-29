@@ -1,5 +1,42 @@
 # Changelog
 
+## 1.9.0 — Phase 4 (step 2): Parabolic-motion engine (Chapter 26)
+
+This release adds the **parabolic-motion engine** (Chapter 26) — geocentric positions of comets in
+parabolic orbits — and factors out the geocentric-reduction tail now shared with Chapter 25. Like
+the elliptic engine it is algorithm-bound and table-free. The suite grows from 121 to 131 tests, all
+passing.
+
+### New features
+
+- **Chapter 26 — Parabolic Motion.** New classes in `com.nzv.astro.ephemeris.orbit`:
+  - **`BarkerEquation`** — solves `s³ + 3s − W = 0` (26.3) for `s = tan(v/2)`, with the coefficient
+    `W` (26.1), both solving methods of the chapter — the iteration (26.4, the recommended default)
+    and the closed form (26.5, after Bauschinger) — and the true anomaly / radius vector (26.2). It
+    is to parabolic orbits what `KeplerEquation` is to elliptic ones (a parabola has `e = 1`, so the
+    equation of Kepler does not apply).
+  - **`ParabolicElements`** record — `q, i, ω, Ω, T` (perihelion distance, orientation, and time of
+    perihelion passage), with `daysSincePerihelion(jd)`.
+  - **`ParabolicMotion`** — `geocentricPosition(...)` (static and `julianDay` overloads) and
+    `lightTimeCorrected(...)`. The reduction reuses the Chapter-25 Gaussian constants (25.13), the
+    heliocentric rectangular coordinates (25.14) and the Sun combination (25.15), and the Chapter-19
+    Sun. Comet total magnitude (25.16) is already available on `EllipticMotion`.
+
+### Internal
+
+- **Shared geocentric reduction.** The `{x, y, z, r} + Sun → OrbitPosition` tail (25.14/25.15 plus
+  the elongation and phase angle) is extracted into a package-private `GeocentricReduction` helper
+  and reused by both the elliptic second method and the parabolic engine. Behaviour-preserving — the
+  existing Chapter-25 tests are unchanged and still pass.
+
+### Validation
+
+- **Example 26.a** (comet Kohler 1977m): the coefficient `W`, the root `s` by **both** solving
+  methods, the true anomaly `v`, radius vector `r`, the equatorial `α₁₉₅₀`/`δ₁₉₅₀`, Earth distance
+  `Δ`, elongation and total magnitude all reproduce the book to its printed precision against its
+  printed Sun `X, Y, Z`. Through the library's Chapter-19 Sun and the light-time correction the
+  agreement is ~0.004° and the value is pinned.
+
 ## 1.8.0 — Phase 4 (step 1): Elliptic-motion engine (Chapter 25)
 
 This release adds the **elliptic-motion engine** (Chapter 25), the keystone that turns orbital

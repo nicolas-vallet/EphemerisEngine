@@ -1,7 +1,6 @@
 package com.nzv.astro.ephemeris.orbit;
 
 import static java.lang.Math.asin;
-import static java.lang.Math.acos;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.hypot;
@@ -164,8 +163,8 @@ public final class EllipticMotion {
 		double delta = geo[2];
 		double r = lbr[2];
 		EquatorialCoordinates eq = eclipticToEquatorial(lambda, beta, obliquityDegrees);
-		double elongation = elongation(r, delta, sunRadiusVectorAU);
-		double phase = phaseAngle(r, delta, sunRadiusVectorAU);
+		double elongation = GeocentricReduction.elongation(r, delta, sunRadiusVectorAU);
+		double phase = GeocentricReduction.phaseAngle(r, delta, sunRadiusVectorAU);
 		return new OrbitPosition(eq, r, delta, elongation, phase);
 	}
 
@@ -242,11 +241,9 @@ public final class EllipticMotion {
 				elements.semiMajorAxisAU());
 		double v = vr[0];
 		double r = vr[1];
-		double omega = elements.argumentOfPerihelionDegrees();
-		double x = r * g[0] * sin(toRadians(g[3] + omega + v));
-		double y = r * g[1] * sin(toRadians(g[4] + omega + v));
-		double z = r * g[2] * sin(toRadians(g[5] + omega + v));
-		return new double[] { x, y, z, r };
+		double[] xyz = GeocentricReduction.heliocentricRectangular(g,
+				elements.argumentOfPerihelionDegrees(), v, r);
+		return new double[] { xyz[0], xyz[1], xyz[2], r };
 	}
 
 	/**
@@ -261,21 +258,7 @@ public final class EllipticMotion {
 			double sunX, double sunY, double sunZ, double obliquityDegrees) {
 		double[] xyzr = heliocentricEquatorialRectangular(elements, meanAnomalyDegrees,
 				obliquityDegrees);
-		double x = xyzr[0];
-		double y = xyzr[1];
-		double z = xyzr[2];
-		double r = xyzr[3];
-		double xi = sunX + x;
-		double eta = sunY + y;
-		double zeta = sunZ + z;
-		double alpha = normalize(toDegrees(atan2(eta, xi)));                       // (25.15)
-		double delta = sqrt(xi * xi + eta * eta + zeta * zeta);
-		double dec = toDegrees(asin(zeta / delta));
-		double sunR = sqrt(sunX * sunX + sunY * sunY + sunZ * sunZ);
-		double elongation = elongation(r, delta, sunR);
-		double phase = phaseAngle(r, delta, sunR);
-		return new OrbitPosition(new EquatorialCoordinates(alpha, dec), r, delta, elongation,
-				phase);
+		return GeocentricReduction.reduce(xyzr[0], xyzr[1], xyzr[2], xyzr[3], sunX, sunY, sunZ);
 	}
 
 	/**
@@ -385,28 +368,6 @@ public final class EllipticMotion {
 		double dec = toDegrees(asin(
 				sin(beta) * cos(eps) + cos(beta) * sin(eps) * sin(lambda)));       // (8.4)
 		return new EquatorialCoordinates(alpha, dec);
-	}
-
-	/** Elongation psi from the Sun, page 120: cos psi = (R^2 + D^2 - r^2)/(2 R D). */
-	private static double elongation(double r, double delta, double sunR) {
-		double cosPsi = (sunR * sunR + delta * delta - r * r) / (2d * sunR * delta);
-		return toDegrees(acos(clamp(cosPsi)));
-	}
-
-	/** Phase angle (Sun-body-Earth), page 120: cos beta = (r^2 + D^2 - R^2)/(2 r D). */
-	private static double phaseAngle(double r, double delta, double sunR) {
-		double cosBeta = (r * r + delta * delta - sunR * sunR) / (2d * r * delta);
-		return toDegrees(acos(clamp(cosBeta)));
-	}
-
-	private static double clamp(double cosine) {
-		if (cosine > 1d) {
-			return 1d;
-		}
-		if (cosine < -1d) {
-			return -1d;
-		}
-		return cosine;
 	}
 
 	private static double normalize(double degrees) {
