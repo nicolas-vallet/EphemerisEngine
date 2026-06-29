@@ -1,5 +1,54 @@
 # Changelog
 
+## 1.8.0 — Phase 4 (step 1): Elliptic-motion engine (Chapter 25)
+
+This release adds the **elliptic-motion engine** (Chapter 25), the keystone that turns orbital
+elements into a geocentric position. It is algorithm-bound and table-free: it consumes
+caller-supplied `OrbitalElements`, so it ships independently of the Chapter 23/24 planetary-data
+track. Both of the chapter's methods are implemented. The suite grows from 108 to 121 tests, all
+passing.
+
+### New features
+
+- **Chapter 25 — Elliptic Motion.** New package `com.nzv.astro.ephemeris.orbit` with a static
+  `EllipticMotion` utility, an `OrbitalElements` record and an `OrbitPosition` result.
+  - **First method** (major planets, elements of the mean equinox of date): `heliocentricEcliptic`
+    (25.1–25.6), `geocentricEcliptic` (25.7–25.9) and `firstMethod(...)`, with a `julianDay`
+    overload that takes the Sun's geometric longitude, radius vector and the obliquity of the date
+    from the engine itself.
+  - **Second method** (minor planets and comets, standard-equinox elements): `gaussianConstants`
+    (25.13), `heliocentricEquatorialRectangular` (25.14) and `secondMethod(...)` (25.15), reusing
+    `sunRectangularEquatorialCoordinates(jd, equinox)` (Chapter 19) directly. A
+    `secondMethodLightTimeCorrected(...)` overload applies the light-time correction (25.10),
+    iterating the body to `t − τ` while the Sun stays at `t`.
+  - Elongation and phase angle (page 120) on every result, plus the comet (25.16) and minor-planet
+    magnitude helpers.
+- **`OrbitalElements`** record: classical elements `a, e, i, ω, Ω` plus a mean anomaly at an epoch
+  and a daily mean motion, with `meanAnomalyAt(jd)` and factories `fromMeanAnomalyAtEpoch`,
+  `fromPerihelionPassage`, and the derivations `meanMotionFromSemiMajorAxis` (25.12) and
+  `semiMajorAxisFromPerihelionDistance`.
+
+### Scope
+
+The positions returned are the body's **geometric** coordinates, exactly as the chapter's worked
+examples produce them, plus the well-defined light-time/astrometric correction. Nutation and
+aberration (the remaining corrections to a fully *apparent* place, Chapter 16) are deliberately left
+to the caller: the book itself stops at the geometric position and defers those, and the correct
+combination of light-time and stellar aberration for a solar-system body is a separate concern best
+handled as its own step.
+
+### Validation
+
+- **Example 25.a** (Mercury, first method): heliocentric `l, b, r`, geocentric `λ, β, Δ` and the
+  equatorial `α, δ` of date all reproduce the book to its printed precision; the `julianDay`
+  overload reproduces it through the library's own Sun to ~1e-4°.
+- **Example 25.b** (433 Eros, second method): the Gaussian constants, `x, y, z`, `Δ`, `α₁₉₅₀`,
+  `δ₁₉₅₀`, elongation, phase angle and magnitude all reproduce the book against its printed Sun
+  `X, Y, Z`. Through the library's Chapter-19 Sun the agreement is ~0.04° — the near-Earth geometry
+  (Δ = 0.175 AU) amplifies the known ~1e-4 AU equinox-reduction residual — and the value is pinned.
+- **Minor planet 234 Barbara** (the chapter's exercise): the `julianDay` + light-time path matches
+  the published *Ephemerides of Minor Planets for 1979* to ≤0.012° across the tabulated dates.
+
 ## 1.7.0 — Phase 3 (step 3a): Equation of Kepler
 
 This release adds **Chapter 22** (the equation of Kepler), the small transcendental solver that
