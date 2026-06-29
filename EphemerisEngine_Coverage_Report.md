@@ -256,13 +256,16 @@ chapters of the 39-chapter edition, so excluded from the per-chapter percentages
 
 ### 23 — Elements of the Planetary Orbits · Complexity: MEDIUM · `░░░░░░░░░░` 0%
 **Formulae.** Mean orbital elements of the planets as polynomials in time.
-**Applications.** Starting point for any planetary position.
-**Coverage.** Not implemented.
+**Coverage.** Not implemented in code (0%). **Data acquired & verified** on the parallel
+data-acquisition track: master `AFFC-tables-chapter-23.xlsx` holds Tables 23.A/B/C (of date /
+1950.0 / 2000.0, selectable), self-checked against Example 23.a to sub-arcsecond. Awaiting the
+Phase-4 engine (Ch 25) to consume it.
 
 ### 24 — Planets: Principal Perturbations · Complexity: HIGH · `░░░░░░░░░░` 0%
 **Formulae.** Periodic perturbation series correcting the two-body elements of the major planets.
-**Applications.** Bringing planetary positions to arc-minute (and better) accuracy.
-**Coverage.** Not implemented.
+**Coverage.** Not implemented in code (0%). On the data-acquisition track: scan in hand; the
+`planetary` perturbation schema is specified (External-Tables guide §7.4); per-planet masters
+to be authored next (inner planets → Jupiter/Saturn).
 
 ### 25 — Elliptic Motion · Complexity: HIGH · `█████████░` 95%
 **Formulae.** From elements → heliocentric → geocentric equatorial coordinates of a body in an elliptical orbit (both methods: 25.1–25.16).
