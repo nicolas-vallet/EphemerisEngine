@@ -11,9 +11,9 @@
 | **1 — Enablers & quick wins** | ✅ **DONE (v1.2.0)** | 6, 9, 14, 18, 38, 42 | All shipped with regression tests; 43 → 63 tests. |
 | **2 — The two keystones** | ✅ **Done (v1.4.0)** | 16 ✅, 30 ✅ | Star keystone (16) and Moon keystone (30, table-driven series) both shipped. |
 | **3 — Harvest** | 🟦 In progress — steps 1–2 ✅, 3a ✅ (v1.5.0–v1.7.0) | 13 ✅, 19 ✅, 20 ✅, 21 ✅, 22 ✅, 29 ✅, 31 ✅, 32 ✅ · then 38 | Steps 1–2 and 3a (equation of Kepler) shipped, 82 → 108 tests. Step 3b (binary stars, Ch 38) is the last Harvest item. |
-| **4 — Planets & minor bodies** | 🟦 Committed (Option C); data-acquisition track started | 23–28, 34–36 | Parallel **data-acquisition side-track** live on `feat/phase-4-data-acquisition` (docs/masters only): Ch 23 elements ✅ transcribed & self-checked, Ch 24 perturbations next. See the proposal + data-acquisition tracker. |
-| **4 — Orbital-motion engine & minor bodies** | 🟦 In progress — steps 1–2 ✅ (v1.8.0–v1.9.0) | 25 ✅, 26 ✅ · then 27, 28, 36 | Elliptic (Ch 25) and parabolic/comet (Ch 26) engines shipped, 108 → 131 tests. Algorithm-bound, table-free; runs in parallel with the Ch 23/24 data-acquisition track. |
-| *Deferred* | ⬜ Out of scope (data-bound) | Major-planet data (elements + perturbations) and Phase-5 derived phenomena. |
+| **4 — Orbital-motion engine & minor bodies** | 🟦 In progress — steps 1–2 ✅ (v1.8.0–v1.9.0) | 25 ✅, 26 ✅ · then 27, 28, 36 | Elliptic (Ch 25) and parabolic/comet (Ch 26) engines shipped, 108 → 131 tests. Algorithm-bound, table-free; runs in parallel with the data-acquisition track. |
+| **— Data-acquisition side-track** | 🟦 Ch 23 ✅, Ch 24 ✅ (all 5 bodies) | 23, 24 (+ light 27/28/35/36) | Docs/masters only (no Java, no version bump): Ch 23 elements and Ch 24 perturbations (Mercury–Saturn) transcribed and self-checked/pinned. Feeds the Phase-5 wiring. |
+| **5 — Major planets (data-bound)** | ⬜ Code not started; **data acquired** | 23, 24, 34, 10, 35 | Wire the Ch 23/24 data into a `planetary` engine; then Ch 34, the Ch 10 conjunction capstone, and Ch 35 satellites. |
 
 **What changed in v1.2.0 (Phase 1):**
 - **Ch 18 Solar Coordinates** 25% → **100%** — equation of centre, true/apparent longitude, radius vector, mean obliquity, apparent RA/Dec.
@@ -40,7 +40,7 @@ Chapters positioned by implementation effort against value (with the Moon and st
 | | **Low effort** | **High effort** |
 |---|---|---|
 | **High value** | **Quick wins** — 18 Solar coordinates ✅ · 9 Angular separation ✅ · 42 Rising/transit/setting ✅ · 38 Stellar magnitudes ✅ · 6 Observer coordinates ✅ · 14 Precession ✅ | **Big bets** — 30 Position of the Moon ★★ ✅ · 16 Apparent place of a star ★★ ✅ · 33 Eclipses |
-| **Low value** | **Fill-ins** — 31 Illuminated fraction ✅ · 32 Phases of the Moon ✅ · 13 Bright-limb angle ✅ · 29 Parallax ✅ · 21 Equation of time ✅ | **Defer** — 38 Binary stars · 22 Equation of Kepler · 23+ Planetary suite (Ch 23–28, 34–36) |
+| **Low value** | **Fill-ins** — 31 Illuminated fraction ✅ · 32 Phases of the Moon ✅ · 13 Bright-limb angle ✅ · 29 Parallax ✅ · 21 Equation of time ✅ | **Defer** — 38 Binary stars · 22 Equation of Kepler ✅ · 23+ Planetary suite (engine 25 ✅/26 ✅; data 23 ✅/24 ✅) |
 
 ★★ = the two keystones.
 
@@ -95,10 +95,10 @@ With Phase 3 effectively complete (only Ch 38 remains) and the Kepler solver (Ch
 planetary suite is no longer deferred: it proceeds along **Option C** of the *Planets & Minor
 Bodies Plan Proposal* — two lanes sharing one engine:
 
-- **Phase 4 — Orbital-motion engine & minor bodies** *(algorithm-bound; needs no tables)*. Ch 25
-  elliptic engine + Ch 26 parabolic/comets, driven by **caller-supplied elements** and validated on
-  the book's own worked intermediates; plus light derived chapters (Ch 27/28/36). Ships fast,
-  independent of any data.
+- **Phase 4 — Orbital-motion engine & minor bodies** *(algorithm-bound; needs no tables)* — **steps 1–2 shipped**.
+  Ch 25 elliptic engine (v1.8.0) and Ch 26 parabolic/comet engine (v1.9.0), driven by
+  **caller-supplied elements** and validated on the book's own worked intermediates; the light
+  derived chapters (Ch 27/28/36) remain. Detailed in the Phase 4 section below.
 - **Phase 5 — Major planets & planet-derived phenomena** *(data-bound)*. Ch 23 built-in elements →
   Ch 24 perturbations (on a `planetary` table package mirroring `lunar`) → Ch 34 + conjunction
   capstone; Ch 35 Galilean satellites independent.
@@ -112,7 +112,7 @@ visual reading and self-checked against Example 23.a to sub-arcsecond; the **`pl
 contract** (External-Tables guide §7); and the **data-acquisition tracker**. **Ch 24 perturbations
 are now complete for all five bodies** — Mercury, Venus, Mars (flat series) and Jupiter, Saturn
 (procedural, with auxiliary angles and A − B/e), each pinned by a self-generated regression anchor.
-The full Ch 23 + Ch 24 planetary coefficient set is acquired and verified. Engine code (Ch 25) has not started.
+The full Ch 23 + Ch 24 planetary coefficient set is acquired and verified. The Ch 25 engine that will consume it is already shipped (v1.8.0); what remains is the **Phase-5 wiring** that feeds the built-in elements and perturbations into it.
 
 ---
 
@@ -133,7 +133,7 @@ The keystone here is **Chapter 25 (Elliptic Motion)**: it turns orbital elements
 
 **Effort is dominated by data entry and verification, not algorithm design.** The lunar and solar series are long coefficient tables that must be transcribed exactly. Budget the time accordingly, and lean on the fact that Meeus prints a fully worked numerical example for nearly every chapter.
 
-**Make each chapter regression-proof before moving on.** The library ships a 108-test suite built around canonical dates like `1978.1113`. The discipline that makes this plan low-risk is adding each chapter's book example as a regression test *before* moving to the next, so a transcription slip in one coefficient surfaces immediately rather than three chapters later. Phase 1 followed this discipline: every new chapter landed with its worked example (or an independent physical/round-trip check) as a test.
+**Make each chapter regression-proof before moving on.** The library ships a 131-test suite built around canonical dates like `1978.1113`. The discipline that makes this plan low-risk is adding each chapter's book example as a regression test *before* moving to the next, so a transcription slip in one coefficient surfaces immediately rather than three chapters later. Phase 1 followed this discipline: every new chapter landed with its worked example (or an independent physical/round-trip check) as a test.
 
 ---
 
@@ -144,6 +144,6 @@ The keystone here is **Chapter 25 (Elliptic Motion)**: it turns orbital elements
 | **1** | Enablers & quick wins | 6, 9, 14, 18, 38, 42 | Low–medium | ✅ Done (v1.2.0) | The substrate for both keystones |
 | **2** | The two keystones | 16 ✅, 30 ✅ | High | ✅ Done (v1.4.0) | Both priority tracks' hard core |
 | **3** | Harvest | 13 ✅ 19 ✅ 20 ✅ 21 ✅ 22 ✅ 29 ✅ 31 ✅ 32 ✅ · then 38 | Low (post-keystone) | 🟦 Steps 1–2, 3a done (v1.5.0–v1.7.0) | The derived Moon and star phenomena |
-| **4** | Data acquisition | Planets & minor bodies (Option C) | 23–28, 34–36 | L (engine) + XL (Ch 24 data) | 🟦 Committed; data track started | Positions of comets, minor planets, and the major planets |
 | **4** | Orbital-motion engine | 25 ✅ 26 ✅ · then 27, 28, 36 | Medium (algorithm-bound) | 🟦 Steps 1–2 done (v1.8.0–v1.9.0) | Positions of comets & minor planets from elements |
-| *Phase 5* | Major planets (data-bound) | 23, 24, 34, 10 | High | ⬜ | Built-in major-planet positions; gated on data acquisition |
+| **—** | Data-acquisition side-track | 23, 24 (+ light 27/28/35/36) | XL (Ch 24 data) | 🟦 Ch 23 ✅, Ch 24 ✅ (5 bodies) | The Phase-5 built-in major-planet positions |
+| **5** | Major planets (data-bound) | 23, 24, 34, 10, 35 | High | ⬜ Code not started; **data acquired** | Built-in major-planet positions |
