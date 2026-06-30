@@ -1,7 +1,7 @@
 # EphemerisEngine vs. *Astronomical Formulae for Calculators* — Chapter-by-Chapter Coverage Report
 
 **Reference book:** Jean Meeus, *Astronomical Formulae for Calculators* (Willmann-Bell) — the **39-chapter edition** used as this project's working reference, ending at chapter 39 (*Linear Regression; Correlation*).
-**Library under review:** `com.nzv.astro:meeus-engine:1.7.0` (the EphemerisEngine project).
+**Library under review:** `com.nzv.astro:meeus-engine:1.9.0` (the EphemerisEngine project).
 
 > **Edition & chapter-numbering note (since 1.6.0).** Earlier revisions of this report numbered the
 > later chapters against the *4th edition* (1988, 43 chapters). The project's working copy is an
@@ -72,8 +72,10 @@
 The library is now a faithful, well-tested implementation of the book's **timekeeping,
 calendar, coordinate and solar-position foundations**, plus precession, interpolation,
 refraction and the common positional utilities (angular separation, photometry,
-rise/transit/set) and the apparent place of a star. It still stops before most of the
-**physical-ephemeris payload**: the planets, comets and eclipses are absent — but the Moon's
+rise/transit/set) and the apparent place of a star. It now also includes an **orbital-motion engine** (Chapters 25–26) giving geocentric positions of
+minor planets and comets from caller-supplied elliptic or parabolic elements. It still stops before
+the remaining **physical-ephemeris payload** — built-in major-planet positions and eclipses are
+absent — but the Moon's
 geocentric position (Chapter 30) is implemented via a table-driven series, the derived Sun/Moon
 phenomena (bright limb 13, illuminated fraction 31, phases 32, equinoxes/solstices 20, rectangular
 solar coordinates 19) are complete, and the equation of time (21) and the correction for parallax
@@ -81,16 +83,16 @@ solar coordinates 19) are complete, and the equation of time (21) and the correc
 
 | Coverage band | Chapters | Count |
 |---|---|---|
-| **Strong (≥ 90%)** | 2 Interpolation · 3 Julian Day · 4 Easter · 5 ET/UT · 6 Observer coords · 7 Sidereal Time · 8 Coordinate Transformation · 9 Angular Separation · 13 Bright Limb · 14 Precession · 15 Nutation · 16 Apparent place of a star · 18 Solar Coordinates · 19 Rectangular Coords of the Sun · 20 Equinoxes and Solstices · 21 Equation of Time · 22 Equation of Kepler · 29 Correction for Parallax · 30 Position of the Moon · 31 Illuminated Fraction · 32 Phases of the Moon · 37 Stellar Magnitudes | 22 |
+| **Strong (≥ 90%)** | 2 Interpolation · 3 Julian Day · 4 Easter · 5 ET/UT · 6 Observer coords · 7 Sidereal Time · 8 Coordinate Transformation · 9 Angular Separation · 13 Bright Limb · 14 Precession · 15 Nutation · 16 Apparent place of a star · 18 Solar Coordinates · 19 Rectangular Coords of the Sun · 20 Equinoxes and Solstices · 21 Equation of Time · 22 Equation of Kepler · 25 Elliptic Motion · 26 Parabolic Motion · 29 Correction for Parallax · 30 Position of the Moon · 31 Illuminated Fraction · 32 Phases of the Moon · 37 Stellar Magnitudes | 24 |
 | **Partial (10–80%)** | 1 Hints · 39 Linear Regression | 2 |
-| **None (0%)** | 10–12, 17, 23–28, 33–36, 38 | 15 |
+| **None (0%)** | 10–12, 17, 23, 24, 27, 28, 33–36, 38 | 13 |
 
 **Overall functional coverage: about half the book**, now spanning the entire
 foundational arc (Chapters 1–9) plus precession (14), nutation (15), the apparent place of
 a star (16), solar coordinates (18) and rectangular solar coordinates (19), equinoxes/solstices (20),
 the equation of time (21), the equation of Kepler (22), the correction for parallax (29), the position of the Moon (30) and its
 derived phenomena — bright limb (13), illuminated fraction (31) and phases (32) — and stellar
-magnitudes (37), with atmospheric refraction and rising/transit/setting available as supplementary
+magnitudes (37), plus the orbital-motion engine for minor planets and comets (25–26), with atmospheric refraction and rising/transit/setting available as supplementary
 utilities beyond the reference edition.
 
 ---
@@ -265,8 +267,8 @@ chapters of the 39-chapter edition, so excluded from the per-chapter percentages
 **Formulae.** Mean orbital elements of the planets as polynomials in time.
 **Coverage.** Not implemented in code (0%). **Data acquired & verified** on the parallel
 data-acquisition track: master `AFFC-tables-chapter-23.xlsx` holds Tables 23.A/B/C (of date /
-1950.0 / 2000.0, selectable), self-checked against Example 23.a to sub-arcsecond. Awaiting the
-Phase-4 engine (Ch 25) to consume it.
+1950.0 / 2000.0, selectable), self-checked against Example 23.a to sub-arcsecond. The Ch 25 engine (v1.8.0) already consumes
+caller-supplied elements; the Phase-5 wiring will feed these built-in elements into it.
 
 ### 24 — Planets: Principal Perturbations · Complexity: HIGH · `░░░░░░░░░░` 0%
 **Formulae.** Periodic perturbation series correcting the two-body elements of the major planets.
@@ -301,7 +303,7 @@ examples). Awaiting the Phase-5 `planetary` engine to consume it.
 **Applications.** Moon and near-body positions as seen from a specific site; occultation/eclipse timing.
 **Coverage.** Implemented in `ParallaxCorrection`: `parallaxFromDistanceInDegrees`, the rigorous `topocentric` and the non-rigorous `topocentricApproximate`, plus the Moon convenience `moonTopocentricEquatorialCoordinates(jd, observer, height, θ₀)`. Validated on Example 29.a (Mars, both formula sets) and exercised at Moon-scale parallax.
 
-### 30 — Position of the Moon · Complexity: HIGH · `██░░░░░░░░` 20%
+### 30 — Position of the Moon · Complexity: HIGH · `█████████░` 90%
 **Formulae.** Moon's mean elements (L′, M′, F, D, Ω) followed by long periodic series for longitude, latitude, and parallax → geocentric position and distance.
 **Applications.** Phases, eclipses, occultations, the Moon's place in the sky.
 **Coverage.** *Implemented in 1.4.0.* Geocentric longitude, latitude and equatorial horizontal parallax are produced by a table-driven evaluator (`com.nzv.astro.ephemeris.lunar`) reading external CSV coefficient tables for the AFFC-1900 model; `jd`-based conveniences give apparent RA/Dec (nutation + true obliquity of date), geocentric ecliptic coordinates, and the Earth–Moon distance. Validated on Example 30.a (λ and π vs the book; β vs the Astronomical Ephemeris value). The design supports dropping in a higher-precision model as data.
