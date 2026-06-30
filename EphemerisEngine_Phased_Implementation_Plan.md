@@ -109,8 +109,10 @@ table-bound, the data work runs as a decoupled side-track on `feat/phase-4-data-
 version bump until code consumes the data**). Kick-off delivered: the **Ch 23 element master**
 (Tables 23.A/B/C — of date / 1950.0 / 2000.0, all selectable, default of date), transcribed by
 visual reading and self-checked against Example 23.a to sub-arcsecond; the **`planetary` table
-contract** (External-Tables guide §7); and the **data-acquisition tracker**. Next: Ch 24
-perturbations, staged per planet (inner → Jupiter/Saturn). Engine code (Ch 25) has not started.
+contract** (External-Tables guide §7); and the **data-acquisition tracker**. **Ch 24 perturbations
+are now complete for all five bodies** — Mercury, Venus, Mars (flat series) and Jupiter, Saturn
+(procedural, with auxiliary angles and A − B/e), each pinned by a self-generated regression anchor.
+The full Ch 23 + Ch 24 planetary coefficient set is acquired and verified. Engine code (Ch 25) has not started.
 
 ---
 

@@ -270,9 +270,11 @@ Phase-4 engine (Ch 25) to consume it.
 
 ### 24 — Planets: Principal Perturbations · Complexity: HIGH · `░░░░░░░░░░` 0%
 **Formulae.** Periodic perturbation series correcting the two-body elements of the major planets.
-**Coverage.** Not implemented in code (0%). On the data-acquisition track: scan in hand; the
-`planetary` perturbation schema is specified (External-Tables guide §7.4); per-planet masters
-to be authored next (inner planets → Jupiter/Saturn).
+**Coverage.** Not implemented in code (0%). **Data fully acquired & verified** on the
+data-acquisition track for **all five Ch 24 bodies** — Mercury, Venus, Mars (flat mean-anomaly
+series) and Jupiter, Saturn (procedural: auxiliary angles, υ-polynomial amplitudes, product-of-trig
+terms, A − B/e). Per-planet masters carry self-generated regression pins (Ch 24 has no worked
+examples). Awaiting the Phase-5 `planetary` engine to consume it.
 
 ### 25 — Elliptic Motion · Complexity: HIGH · `█████████░` 95%
 **Formulae.** From elements → heliocentric → geocentric equatorial coordinates of a body in an elliptical orbit (both methods: 25.1–25.16).
